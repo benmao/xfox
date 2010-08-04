@@ -10,9 +10,11 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 
 from util.handler import PublicHandler
+from account.models import Invitation
 
 class MainHandler(PublicHandler):
     def get(self):
+        invition = Invitation.new("ddd@mail.com")
         self.render("test.html")
 
 def main():

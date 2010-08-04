@@ -19,6 +19,13 @@ class PublicHandler(webapp.RequestHandler):
         webapp.RequestHandler.initialize(self,request,response)
         self.template_value={}
         
+    def is_ajax(self):
+        '''
+        http://code.djangoproject.com/attachment/ticket/6616/is_ajax.diff
+        '''
+        return "X-Requested-With" in self.request.headers and \
+               self.request.headers['X-Requested-With'] == "XMLHttpRequest"
+        
     def render(self, template_file):
         '''
         render template for desktop and mobile
