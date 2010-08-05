@@ -12,7 +12,7 @@ handlers:
   script: account/views.py
   
 - url: /b/.*
-  script: discussion/views.py
+  script: dash/views.py
   
 - url: /test.*
   script: gaeunit.py

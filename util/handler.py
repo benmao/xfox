@@ -12,6 +12,7 @@ from google.appengine.ext.webapp import template
 from dash.models import Setting
 from django.http import parse_cookie
 from account.models import Session
+from google.appengine.api import users
 
 class PublicHandler(webapp.RequestHandler):
     
@@ -32,7 +33,6 @@ class PublicHandler(webapp.RequestHandler):
         self.user = None
         if not self.session_key is None and len(self.session_key)==32:
             self.user = Session.get_user_by_session(self.session_key)
-            logging.info("ssfddsf:%s" % self.user.email)
         self.template_value['user']=self.user
         
     def is_ajax(self):
@@ -50,6 +50,22 @@ class PublicHandler(webapp.RequestHandler):
         path = os.path.join(os.path.dirname(__file__), r'../',template_file)
         self.response.out.write(template.render(path, self.template_value))
 
-
+class AdminHandler(webapp.RequestHandler):
+    def initialize(self,request,response):
+        webapp.RequestHandler.initialize(self,request,response)
+        self.setting = Setting.get_setting()
+        self.template_value={'setting':self.setting}
+        
+        #make ture login as admin
+        user = users.get_current_user()
+        if not user:
+            return  self.redirect(users.create_login_url(self.request.uri))
+        if users.is_current_user_admin():
+            return self.error(403)
+        
+    def render(self,template_file):        template_file = "dash/views/%s" % (template_file)
+        path = os.path.join(os.path.dirname(__file__), r'../',template_file)
+        self.response.out.write(template.render(path, self.template_value))
+        
 if __name__=='__main__':
     pass

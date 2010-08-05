@@ -5,18 +5,23 @@
 Created by ben on 2010/8/4 .
 Copyright (c) 2010 http://sa3.org All rights reserved. 
 """
-
+import settings
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 
-class MainHandler(webapp.RequestHandler):
+from util.handler import AdminHandler
+
+
+class AdminIndexHandler(AdminHandler):
     def get(self):
-        self.response.out.write('Hello world!')
+        self.render("test.html")
 
 
 def main():
-    application = webapp.WSGIApplication([('/b/', MainHandler)],
-                                         debug=True)
+    application = webapp.WSGIApplication([
+                                                 ('/b/', AdminIndexHandler),
+                                                 ],
+                                         debug=settings.DEBUG)
     util.run_wsgi_app(application)
 
 if __name__ == '__main__':
