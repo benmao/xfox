@@ -8,13 +8,16 @@
 <body>
 	<section id="header">
 		<header  class="w960">
-    	<h1><a title="xFox" href="#"><span>xFox</span></a></h1>
+    	<h1><a title="xFox" href="/"><span>xFox</span></a></h1>
         </header>
         <nav id="nav" class="w960">
         	<ul>
-                <li><a href="#">Discussions</a></li>
-                <li><a href="#">Inbox</a></li>
-                <li><a href="#">Sign in</a></li>
+            	{% if user %}
+                <li><a href="/a/signout/">登出</a></li>
+                {% else %}
+                <li><a href="/a/signin/">登录</a></li>
+                <li><a href="/a/signup/">注册</a></li>
+                {% endif %}
             </ul>
         </nav>
     </section>

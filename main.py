@@ -13,7 +13,7 @@ from util.handler import PublicHandler
 from util.decorator import requires_login
 class MainHandler(PublicHandler):
 
-    @requires_login
+    #@requires_login
     def get(self):
         self.render("test.html")
 
