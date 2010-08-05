@@ -6,22 +6,19 @@
 	<link rel="stylesheet" type="text/css" media="screen"  href="/static/style.css" />
 </head>
 <body>
-	<section id="header">
-		<header  class="w960">
-    	<h1><a title="xFox" href="/"><span>xFox</span></a></h1>
-        </header>
-        <nav id="nav" class="w960">
-        	<ul>
+	<header id="header">
+		<menu class="w960 clear" id="nav">
+			<h1 id="logo"><a title="xFox" href="/"><span>xFox</span></a></h1>
+            <ul>
             	{% if user %}
                 <li><a href="/a/signout/">登出</a></li>
                 {% else %}
                 <li><a href="/a/signin/">登录</a></li>
                 <li><a href="/a/signup/">注册</a></li>
                 {% endif %}
-            </ul>
-        </nav>
-    </section>
-    
+             </ul>
+		</menu>
+	</header>
     <section id="body" class="w960">
 		{% block body %}{% endblock %}
     </section>
