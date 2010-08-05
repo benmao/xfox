@@ -8,9 +8,10 @@ Copyright (c) 2010 http://sa3.org All rights reserved.
 import logging
 
 from google.appengine.api import memcache
+from functools import wraps
 
 #decorator for get data from memcache
-def mem(key, time=60):
+def mem(key, time=3600):
     def decorator(fxn):
         def wrapper(*args, **kwargs):
             data = memcache.get(key)
@@ -21,6 +22,24 @@ def mem(key, time=60):
             return data
         return wrapper
     return decorator
+
+def delmem(*keys):
+    def decorator(fnx):
+        def wrapper(*args,**kwargs):
+            return fnx(*args,**kwargs)
+        for key in  keys:
+            memcache.delete(key)
+            logging.info("del mem key :%s" % key)
+        return wrapper
+    return decorator
+
+def requires_login(method):
+    @wraps(method)
+    def wrapper(self, *args, **kwargs):
+        if not self.user is None:
+            return method(self,*args,**kwargs)
+        return self.redirect("/a/signin/")
+    return wrapper
 
 if __name__=='__main__':
     pass

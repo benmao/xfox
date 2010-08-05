@@ -18,6 +18,22 @@ class TestBase(unittest.TestCase):
     
     def test_random_md5(self):
         self.assertEqual(len(random_md5("a@sa3.org")),32)
+        
+    def test_check_email(self):
+        self.assertTrue(check_email("a@yyer.org"))
+        self.assertFalse(check_email("a_sdfsdf.dsfs@sdfdsf.dsfdsfds.fdsfdsf.com"))
+        self.assertFalse(check_email("sdfsfd@.cn"))
+        self.assertFalse(check_email("@aaa.cn"))
+        self.assertFalse(check_email(""))
+        self.assertFalse(check_email("a@g.cn<xss>"))
+        
+    def test_check_name(self):
+        self.assertFalse(check_name(""))
+        self.assertFalse(check_name("sfd_"))
+        self.assertFalse(check_name("11111111111111111111"))
+        self.assertTrue(check_name("abDe"))
+        
+        
 
 if __name__=='__main__':
     pass

@@ -9,16 +9,13 @@ Copyright (c) 2010 http://sa3.org All rights reserved.
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 
-from util.handler import PublicHandler
-from util.decorator import requires_login
-class MainHandler(PublicHandler):
-
-    @requires_login
+class MainHandler(webapp.RequestHandler):
     def get(self):
-        self.render("test.html")
+        self.response.out.write('Hello world!')
+
 
 def main():
-    application = webapp.WSGIApplication([('/', MainHandler)],
+    application = webapp.WSGIApplication([('/b/', MainHandler)],
                                          debug=True)
     util.run_wsgi_app(application)
 

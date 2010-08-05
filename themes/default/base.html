@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+	{% block head %} {% endblock %}
+	<link rel="stylesheet" type="text/css" media="screen"  href="/static/style.css" />
+</head>
+<body>
+	<section id="header">
+		<header  class="w960">
+    	<h1><a title="xFox" href="#"><span>xFox</span></a></h1>
+        </header>
+        <nav id="nav" class="w960">
+        	<ul>
+                <li><a href="#">Discussions</a></li>
+                <li><a href="#">Inbox</a></li>
+                <li><a href="#">Sign in</a></li>
+            </ul>
+        </nav>
+    </section>
+    
+    <section id="body" class="w960">
+		{% block body %}{% endblock %}
+    </section>
+    
+    <footer id="footer" class="w960">
+    	<p class="gray"><a href="http://xfox.appspot.com">Powered by xFox</a>-{{setting.version}}</p>
+    </footer>
+</body>
+</html>

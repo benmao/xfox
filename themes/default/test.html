@@ -1,1 +1,8 @@
-test
+{% extends "base.html" %}
+{%block head %}
+<title>Test</title>
+{% endblock %}
+
+{%block body %}
+{{user.email}}
+{% endblock %}

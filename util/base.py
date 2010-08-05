@@ -9,6 +9,8 @@ import random
 import time
 import string
 import md5
+import re
+
 
 def add(x,y):
     return x+y
@@ -30,6 +32,24 @@ def encrypt_pwd(pwd,secret_key = None):
     m.update(pwd)
     m.update(secret_key)
     return (secret_key,m.hexdigest())
+
+def check_email(email):
+    email = email.lower()
+    return len(email)<32 and re.match(r'(?:^|\s)[-a-z0-9_.]+@(?:[-a-z0-9]+\.)+[a-z]{2,6}(?:\s|$)',email) != None
+
+def check_name(name):
+    name = name.lower()
+    strset = set("abcdefghijklmnopqrstuvwxyz0123456789")
+    return 2<len(name)<17 and set(name) <= strset
+
+def check_pwd(pwd):
+    return 5<len(pwd)<17
+
+def get_gmt(date):
+    return date.strftime("%a, %d-%b-%Y %H:%M:%S GMT")
+
+
+
 
 if __name__=='__main__':
     pass

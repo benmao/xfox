@@ -5,9 +5,13 @@
 Created by ben on 2010/8/4 .
 Copyright (c) 2010 http://sa3.org All rights reserved. 
 """
+import time
+import datetime
+import logging
 from google.appengine.ext import db 
 
-from util.base import *
+from util.base import  *
+from util.decorator import *
 import datetime
 
 class User(db.Model):
@@ -40,54 +44,52 @@ class User(db.Model):
     
     @classmethod
     def check_name(cls,name):
-        return User.all().filter("name_lower =",name.lower).get()
+        return User.all().filter("name_lower =",name.lower()).get() is None
     
     @classmethod
     def check_email(cls,email):
-        return User.all().filter("email =",email).get()
+        return User.all().filter("email =",email).get() is None
     
     @classmethod
     def new(cls,email,name,pwd):
-        if cls.check_email(name) is None and cls.check_name(name) is None:
-            secret_key,pwd = encrypt_pwd(pwd) 
-            user = cls(email =email,name=name,secret_key=secret_key,pwd = pwd)
-            user.put()
-            return user
-        return None
+        secret_key,pwd = encrypt_pwd(pwd) 
+        user = cls(email =email,name=name,secret_key=secret_key,pwd = pwd)
+        user.put()
+        return (0,user)
     
     @classmethod
     def login(cls,email,pwd):
-        pass
-    
-class Invitation(db.Model):
-    email = db.StringProperty()
-    exp_date = db.DateTimeProperty()
-    
-    
-    @property
-    def key_name(self):
-        return self.key().name()
-    
-    #classmethod
-    @classmethod
-    def  new(cls,email):
-        invition = Invitation.all().filter("email =",email).get()
-        if not invition is None:
-            return  invition
-        
-        invition = Invitation(key_name = random_md5(email))
-        invition.email = email
-        invition.exp_date = datetime.datetime.now() + datetime.timedelta(days =3)
-        invition.put()
-        return invition
-        
-    @classmethod
-    def check_invitation(cls,key_name):
-        return Invitation.all().filter('key_name =',key_name).filter('exp_date <',datetime.datetime.now()).get()
+        user = User.all().filter("email =",email).get()
+        if user is None:
+            return (None,None)
+        logging.info("pwd:%s   pwd2:%s" % (user.pwd,encrypt_pwd(pwd,user.secret_key)[1]))
+        if user.pwd == encrypt_pwd(pwd,user.secret_key)[1]:
+            session = Session.new(user,30) #30days
+            return user,session
+        return None,None
     
 class Session(db.Model):
-    user = db.ReferenceProperty(user)
+    user = db.ReferenceProperty(User)
     exp_date = db.DateTimeProperty()
+    
+    @classmethod
+    def new(cls,user,exp_date =30):
+        '''
+        session_key:md5(name:time.time()+random_str(6))
+        '''
+        session_key = random_md5("%s:%s" %(user.name,time.time()))
+        logging.info("%s:session_key:%s" % (user.name,session_key))
+        session = Session(key_name = session_key,user = user,exp_date=datetime.datetime.now()+datetime.timedelta(days =exp_date))
+        session.put()
+        return session
+    
+    @classmethod
+    def get_user_by_session(cls,session_key):
+        @mem(session_key,3600*24)
+        def _get_user_by_session(session_key):
+            session = Session.get_by_key_name(session_key)
+            return None if session is None else session.user
+        return _get_user_by_session(session_key)
     
 if __name__=='__main__':
     pass
