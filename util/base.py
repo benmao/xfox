@@ -48,8 +48,5 @@ def check_pwd(pwd):
 def get_gmt(date):
     return date.strftime("%a, %d-%b-%Y %H:%M:%S GMT")
 
-
-
-
 if __name__=='__main__':
     pass

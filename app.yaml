@@ -11,7 +11,7 @@ handlers:
 - url: /a/.*
   script: account/views.py
   
-- url: /b/.*
+- url: /d/.*
   script: dash/views.py
   
 - url: /test.*

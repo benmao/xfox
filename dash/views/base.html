@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-ca">
+<head>
+    <title>Dashboard - xFox</title>
+    <link rel="stylesheet" type="text/css" href="/static/admin.css" media="screen" />
+</head>
+<body id="dashboard_settings_index" class="Dashboard Settings index ">
+    <div id="Frame">
+        <div id="Head">
+            <h1>
+                <a href="/">xFox<span>&larr; Visit Site</span></a></h1>
+            <div class="User">
+                <a href="#">Sign Out</a>
+            </div>
+        </div>
+        <div id="Body">
+            <div id="Panel">
+                <div class="">
+                    <div class="Box Group">
+                        <h4 ><a href="">Users</a></h4>
+                        <ul class="PanelInfo">
+                            <li><a href="/d/a/">User</a></li>
+                            <li><a href="/d/a/">User Control</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div id="Content">
+            {% block content %}
+            {% endblock %}
+            </div>
+        </div>
+        <div id="Foot">
+            <div class="Version">
+                Version 2.0</div>
+            <div><a href="http://xfox.appspot.com">xFox</a></div>
+        </div>
+    </div>
+</body>
+</html>

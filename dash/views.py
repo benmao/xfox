@@ -19,7 +19,7 @@ class AdminIndexHandler(AdminHandler):
 
 def main():
     application = webapp.WSGIApplication([
-                                                 ('/b/', AdminIndexHandler),
+                                                 ('/d/', AdminIndexHandler),
                                                  ],
                                          debug=settings.DEBUG)
     util.run_wsgi_app(application)
