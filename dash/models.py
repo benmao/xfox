@@ -7,6 +7,7 @@ Copyright (c) 2010 http://sa3.org All rights reserved.
 """
 from google.appengine.ext import db
 from util.decorator import mem,delmem
+from util.base import Base36
 
 class Setting(db.Model):
     title = db.StringProperty(default ='xFox')
@@ -34,5 +35,40 @@ class Setting(db.Model):
             setting.put()
         return setting
     
+class Counter(db.Model):
+    '''
+    from v2ex.babel.Counter
+    '''
+    name = db.StringProperty(required=False)
+    value = db.StringProperty(default ='0') #use base36
+    created = db.DateTimeProperty(auto_now_add =True)
+    last_updated = db.DateTimeProperty(auto_now = True)
+    
+    def put(self):
+        self.name = self.key().name()
+        super(Counter,self).put()
+    
+    @classmethod
+    def get_count(self,key_name):
+        obj = Counter.get_by_key_name(key_name) 
+        if obj is None:
+            obj = Counter(key_name = key_name)
+            obj.value='0'
+        return obj
+    
+    @classmethod
+    def get_max(self,key_name):
+        '''
+        return max value +1
+        '''
+        obj = Counter.get_count()
+        return Base36(obj.value)+1
+    
+    @classmethod
+    def update_max(self,key_name,value):
+        obj = Counter.get_count()
+        obj.value =value
+        obj.put()
+       
 if __name__=='__main__':
     pass

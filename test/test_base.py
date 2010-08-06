@@ -43,6 +43,11 @@ class TestBase(unittest.TestCase):
         base36 = base36 + 3
         self.assertEqual(base36,'12')
         
-
+    def test_filter_url(self):
+        self.assertEqual(filter_url(' '),'')
+        self.assertEqual(filter_url('a   -b   '),'a-b')
+        self.assertEqual(filter_url('   %$#a$b.@! d  e'),'a-b-d-e')
+        self.assertEqual(filter_url('ss-------dd'),'ss-dd')
+        
 if __name__=='__main__':
     pass

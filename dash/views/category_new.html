@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{% if category %}Modify {% else %}Add{% endif %} Category</h1>
+<form id="Form_User" method="post" action="/d/category/new/" class="User">
+<ul>
+   <li>
+    <label for="title">Title</label>
+	<input id="title" name="title" value="{%if category %}{{category.title}}{% endif %}" class="InputBox" type="text">   
+	</li>
+    <li>
+    <label for="slug">Slug</label>
+	<input id="slug" name="slug" value="{%if category %}{{category.slug}}{% endif %}" class="InputBox" type="text">   
+	</li>
+    <li>
+        <label for="key_words">Key Wrods</label>
+    	<textarea id="key_words" name="key_words" rows="3" cols="100" class="TextBox">{%if category %}{{category.key_words}}{% endif %}</textarea> 
+    </li>
+ 	<li>
+    <label for="description">Description</label>
+    <textarea id="description" name="description" rows="6" cols="100" class="TextBox">{%if category %}{{category.description}}{% endif %}</textarea>   </li>
+    </li>
+</ul>
+<input value="Save" class="Button" type="submit">
+</form>
+
+{% endblock %}

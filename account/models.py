@@ -15,7 +15,7 @@ from util.decorator import *
 import datetime
 
 class User(db.Model):
-    name = db.StringProperty(required=True)
+    name = db.StringProperty(required=True,indexed=True)
     pwd = db.StringProperty(required = True)
     secret_key =db.StringProperty(required = True)
     email = db.StringProperty(required = True)

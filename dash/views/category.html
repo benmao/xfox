@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Manager Category</h1>
+<div class="FilterMenu">
+   <a href="/d/category/new/" class="Popup SmallButton">Add Category</a>
+</div>
+<table id="Category" class="AltColumns">
+   <thead>
+      <tr>
+         <th>Title</th>
+         <th class="Alt">Slug</th>
+         <th>Last Update</th>
+         <th class="Alt">Tag Count</th>
+         <th>Options</th
+         </tr>
+   </thead>
+   <tbody>
+   {% for cat in cats %}
+   <tr class="Alt">
+      <td><strong>{{cat.title}}</strong></td>
+      <td class="Alt">{{cat.slug}}</td>
+      <td>{{cat.last_updated}}</td>
+      <td class="Alt">{{cat.count_tag}}</td
+      <td><a href="/d/category/new/?slug={{cat.slug}}" >Edit</a> | <a href="/d/category/o/?slug={{cat.slug}}&action=draft">Draft</a></td>
+   </tr>
+  	{% endfor %}
+   </tbody>
+
+</table>
+
+{% endblock %}

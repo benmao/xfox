@@ -82,7 +82,15 @@ class Base36():
             return self.base36(int(self.num,36)+num)
         return self.base36(int(self.num,36)+int(num,36))
     
-    
+def filter_url(url):
+    '''
+    url contains [a-z,0-9,-]
+    can not startswith or endswith '-'
+    '''
+    url = url.strip().lower()
+    url = re.sub(r'\W+',' ',url)
+    url = url.strip()
+    return url.replace(' ','-')
+     
 if __name__=='__main__':
-    b = Base36('z')
-    print b.base36(35)
+    pass
