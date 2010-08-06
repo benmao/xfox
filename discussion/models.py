@@ -79,10 +79,76 @@ class Tag(db.Model):
     allow_comment = db.BooleanProperty(default =True)
     is_draft = db.BooleanProperty(default =False)
     
+    def put(self):
+        if not self.is_saved(): #create
+            self.category.count_tag +=1
+            self.category.put() #add category tag count
+        super(Tag,self).put()
+        
+    def delete(self):
+        self.category.count_tag -=1
+        self.category.put()
+        self.is_draft=True
+        self.put() # set is_draft 
+        
+    @property
+    def slug(self):
+        return self.key().name()
+        
+    @property
+    def url(self):
+        return '/%s/' % self.key().name()
     
+    @classmethod
+    def get_all(cls):
+        return Tag.all().filter("is_draft =",False)
+    
+    @classmethod
+    def get_draft(cls):
+        return Tag.all().filter("is_draft =",True)
+    
+    @classmethod
+    def check_slug(cls,slug):
+        return Tag.get_by_key_name(slug)
+    
+    @classmethod
+    def get_tag_by_slug(cls,slug):
+        return Tag.get_by_key_name(slug)
+    
+    @classmethod
+    def new(cls,slug,title,key_words,description,category):
+        '''
+        Notice:http://code.google.com/intl/en/appengine/docs/python/datastore/keysandentitygroups.html
+        '''
+        slug = filter_url(slug)
+        tag = Tag.check_slug(slug)
+        if  tag is None:
+            tag = Tag(key_name = slug)
+        tag.title=title
+        tag.key_words=key_words
+        tag.description=description
+        tag.category = Category.get(category)
+        tag.put()
+        return tag
+    
+    @classmethod
+    def draft(cls,slug):
+        tag = Tag.get_tag_by_slug(slug)
+        if not tag is None:
+            tag.is_draft = True
+            tag.put()
+            
+    @classmethod
+    def un_draft(cls,slug):
+        tag = Tag.get_tag_by_slug(slug)
+        if not tag is None:
+            tag.is_draft = False
+            tag.put()
+            
 class Discussion(db.Model):
     tag = db.ReferenceProperty(Tag)
-    tag_key_name = db.StringProperty()
+    tag_title = db.StringProperty()
+    slug = db.StringProperty()
     title = db.StringProperty()
     key_words = db.StringProperty()
     description = db.StringProperty()

@@ -54,7 +54,46 @@ class CategoryOpertionHandler(AdminHandler):
             Category.un_draft(slug)
         self.redirect("/d/category/")
         
+       
+class TagIndexHandler(AdminHandler):
+    def get(self):
+        self.template_value['tags'] = Tag.get_all()
+        self.render('tag.html')
+
+class TagNewHandler(AdminHandler):
+    def get(self):
+        self.template_value['cats']=Category.get_all()
+        slug = self.request.get("slug",None)
+        if not slug is None:
+            self.template_value['tag']=Tag.get_tag_by_slug(slug)
+        self.render("tag_new.html")
         
+    def post(self):
+        title = self.request.get("title").strip()
+        slug = self.request.get("slug").strip()
+        key_words = self.request.get("key_words")
+        description = self.request.get("description")
+        category = self.request.get("category")
+        Tag.new(slug,title,key_words,description,category)
+        self.redirect("/d/tag/")
+        
+class TagOpertionHandler(AdminHandler):
+    def get(self):
+        action = self.request.get("action","").strip()
+        slug = self.request.get("slug","").strip()
+
+        if action =="draft":
+            Tag.draft(slug)
+        elif action=="undraft":
+            Tag.un_draft(slug)
+        self.redirect("/d/tag/")
+        
+class TagDraftedHandler(AdminHandler):
+    def get(self):
+        self.template_value['tags']=Tag.get_draft()
+        self.render('tag_undrafted.html')
+    
+
 def main():
     application = webapp.WSGIApplication([
                                                  ('/d/', AdminIndexHandler),
@@ -62,6 +101,13 @@ def main():
                                                  ('/d/category/new/',CategoryNewHandler),
                                                  ('/d/category/o/',CategoryOpertionHandler),
                                                  ('/d/category/drafted/',CategoryDraftedHandler),
+                                                 
+                                                 #tag
+                                                 ('/d/tag/',TagIndexHandler),
+                                                 ('/d/tag/new/',TagNewHandler),
+                                                 ('/d/tag/o/',TagOpertionHandler),
+                                                 ('/d/tag/drafted/',TagDraftedHandler),
+                                                 
                                                  ],
                                          debug=settings.DEBUG)
     util.run_wsgi_app(application)

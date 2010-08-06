@@ -84,7 +84,7 @@ class Base36():
     
 def filter_url(url):
     '''
-    url contains [a-z,0-9,-]
+    url contains [a-z0-9-]
     can not startswith or endswith '-'
     '''
     url = url.strip().lower()

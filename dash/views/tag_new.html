@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{% if tag %}Modify {% else %}Add{% endif %} Tag</h1>
+<form id="Form_User" method="post" action="/d/tag/new/" class="User">
+<ul>
+   <li>
+    <label for="title">Title</label>
+	<input id="title" name="title" value="{%if tag %}{{tag.title}}{% endif %}" class="InputBox" type="text">   
+	</li>
+
+    <li>
+    {% if tag %}
+	<input id="slug" name="slug"   value="{{tag.slug}}" class="InputBox" type="hidden">   
+    {% else %}
+    <label for="slug">Slug</label>
+	<input id="slug" name="slug"   value="" class="InputBox" type="text"> 
+    {% endif %} 
+	</li>
+
+    <li>
+        <label for="key_words">Key Wrods</label>
+    	<textarea id="key_words" name="key_words" rows="3" cols="100" class="TextBox">{%if tag %}{{tag.key_words}}{% endif %}</textarea> 
+    </li>
+ 	<li>
+    <label for="description">Description</label>
+    <textarea id="description" name="description" rows="6" cols="100" class="TextBox">{%if tag %}{{tag.description}}{% endif %}</textarea>   
+    </li>
+    {% if tag %}
+    <input id="category" name="category"   value="{{tag.category.key}}" class="InputBox" type="hidden">   
+    {% else %}
+       <li>
+      <label for="category">Category</label>
+		<select id="category" name="category">
+   		{% for cat in cats %}
+		<option value="{{cat.key}}">{{cat.title}}</option>
+    	{% endfor %}
+		</select> 
+
+	</li>
+    {% endif %}  
+</ul>
+<input value="Save" class="Button" type="submit">
+</form>
+
+{% endblock %}
