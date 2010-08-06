@@ -22,7 +22,7 @@ class Category(db.Model):
     count_tag = db.IntegerProperty(default =0)
     created = db.DateTimeProperty(auto_now_add=True)
     last_updated = db.DateTimeProperty(auto_now=True)
-    draft = db.BooleanProperty(default =False)
+    is_draft = db.BooleanProperty(default =False)
     
     @classmethod
     def new(cls,slug,title,key_words,description):
@@ -40,11 +40,11 @@ class Category(db.Model):
         
     @classmethod
     def get_all(cls):
-        return Category.all().filter("draft =",False)
+        return Category.all().filter("is_draft =",False)
     
     @classmethod
     def get_draft(cls):
-        return Category.all().filter("draft =",True)
+        return Category.all().filter("is_draft =",True)
     
     @classmethod
     def get_category(cls,slug):
@@ -54,14 +54,14 @@ class Category(db.Model):
     def draft(cls,slug):
         cat = Category.get_category(slug)
         if not cat is None:
-            cat.draft=True
+            cat.is_draft= True 
             cat.put()
             
     @classmethod
     def un_draft(cls,slug):
         cat = Category.get_category(slug)
         if not cat is None:
-            cat.draft=False
+            cat.is_draft= False
             cat.put()
     
 class Tag(db.Model):
@@ -77,7 +77,8 @@ class Tag(db.Model):
     count_discussion = db.IntegerProperty(default=0)
     allow_discussion = db.BooleanProperty(default =True)
     allow_comment = db.BooleanProperty(default =True)
-    draft = db.BooleanProperty(default =False)
+    is_draft = db.BooleanProperty(default =False)
+    
     
 class Discussion(db.Model):
     tag = db.ReferenceProperty(Tag)
@@ -99,10 +100,10 @@ class Discussion(db.Model):
     count_bookmark=db.IntegerProperty(default=0)
     
     source = db.StringProperty(required=False)
-    draft = db.BooleanProperty(default =False)
+    is_draft = db.BooleanProperty(default =False)
     
     f = db.StringProperty() #format type
-    closed = db.BooleanProperty(default = False)
+    is_closed = db.BooleanProperty(default = False)
 
     
 if __name__=='__main__':
