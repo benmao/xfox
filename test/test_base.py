@@ -33,6 +33,15 @@ class TestBase(unittest.TestCase):
         self.assertFalse(check_name("11111111111111111111"))
         self.assertTrue(check_name("abDe"))
         
+    def test_base36(self):
+        base36 = Base36('z')
+        self.assertEqual(base36.base10(),35)
+        self.assertEqual(base36.base36(35),'z')
+        self.assertEqual(base36 + 1,'10')
+        self.assertEqual(base36 + '1','10')
+        self.assertEqual(base36 + '2','11')
+        base36 = base36 + 3
+        self.assertEqual(base36,'12')
         
 
 if __name__=='__main__':
