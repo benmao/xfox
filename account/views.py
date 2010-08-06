@@ -63,12 +63,17 @@ class SignOutHandler(PublicHandler):
     def get(self):
         self.response.headers['Set-Cookie'] ='xfox-session-key="";path=/'
         self.redirect("/")
+
+class UserProfileHandler(PublicHandler):
+    def get(self,name):
+        self.error(404)
         
 def main():
     application = webapp.WSGIApplication(
                                                      [('/a/signup/',SignUpHandler),
                                                       ('/a/signin/',SignInHandler),
                                                       ('/a/signout/',SignOutHandler),
+                                                      ('/u/(?P<name>[a-z0-9]{3,16})/',UserProfileHandler),
                                                          ],
                                          debug=settings.DEBUG)
     util.run_wsgi_app(application)

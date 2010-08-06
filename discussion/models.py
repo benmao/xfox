@@ -9,7 +9,7 @@ from google.appengine.ext import db
 from util.decorator import *
 from util.base import *
 from account.models import User
-
+import datetime
 
 class Category(db.Model):
     '''
@@ -147,6 +147,7 @@ class Tag(db.Model):
             
 class Discussion(db.Model):
     tag = db.ReferenceProperty(Tag)
+    tag_slug = db.StringProperty()
     tag_title = db.StringProperty()
     slug = db.StringProperty()
     title = db.StringProperty()
@@ -170,7 +171,25 @@ class Discussion(db.Model):
     
     f = db.StringProperty() #format type
     is_closed = db.BooleanProperty(default = False)
+    
+    def put(self):
+        if not self.is_saved():
+            self.tag.count_discussion +=1
+            self.tag.put()
+        self.tag_slug = self.tag.key().name()
+        self.tag_title = self.tag.title
+        self.user_name = self.user.name
+        super(Discussion,self).put()
 
     
+    def delete(self):
+        self.tag.count_discussion -=1
+        self.tag.put()
+        super(Discussion,self).delete()
+        
+    @property
+    def url(self):
+        return "/%s/%s/" % (self.tag_slug,self.key().name())
+      
 if __name__=='__main__':
     pass

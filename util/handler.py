@@ -49,6 +49,11 @@ class PublicHandler(webapp.RequestHandler):
         template_file = "themes/default/%s" % (template_file)
         path = os.path.join(os.path.dirname(__file__), r'../',template_file)
         self.response.out.write(template.render(path, self.template_value))
+        
+    def error(self,code):
+        self.response.set_status(code)
+        if code ==404:
+            self.render("404.html")
 
 class AdminHandler(webapp.RequestHandler):
     def initialize(self,request,response):
