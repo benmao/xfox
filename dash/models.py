@@ -61,14 +61,10 @@ class Counter(db.Model):
         '''
         return max value +1
         '''
-        obj = Counter.get_count()
-        return Base36(obj.value)+1
-    
-    @classmethod
-    def update_max(self,key_name,value):
-        obj = Counter.get_count()
-        obj.value =value
+        obj = Counter.get_count(key_name)
+        obj.value = Base36(obj.value)+1
         obj.put()
+        return obj
        
 if __name__=='__main__':
     pass

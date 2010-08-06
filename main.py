@@ -15,10 +15,13 @@ class MainHandler(PublicHandler):
 
     #@requires_login
     def get(self):
-        self.render("test.html")
-
+        self.error(404)
+    
+    def post(self):
+        self.error(404)
+        
 def main():
-    application = webapp.WSGIApplication([('/', MainHandler)],
+    application = webapp.WSGIApplication([('/.*', MainHandler)],
                                          debug=True)
     util.run_wsgi_app(application)
 

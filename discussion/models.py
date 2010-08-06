@@ -10,6 +10,8 @@ from util.decorator import *
 from util.base import *
 from account.models import User
 import datetime
+from dash.models import Counter
+from util.textile import Textile
 
 class Category(db.Model):
     '''
@@ -150,11 +152,11 @@ class Discussion(db.Model):
     tag_slug = db.StringProperty()
     tag_title = db.StringProperty()
     slug = db.StringProperty()
-    title = db.StringProperty()
+    title = db.StringProperty(required = True)
     key_words = db.StringProperty()
     description = db.StringProperty()
-    body =db.TextProperty()
-    body_formated = db.TextProperty()
+    content=db.TextProperty(required = True)
+    content_formated = db.TextProperty()
     user = db.ReferenceProperty(User)
     user_name = db.StringProperty()
     
@@ -176,8 +178,12 @@ class Discussion(db.Model):
         if not self.is_saved():
             self.tag.count_discussion +=1
             self.tag.put()
+        #hander format
+        self.content_formated = Textile(restricted=True,lite=False,noimage=False).textile(\
+            self.content, rel='nofollow',html_type='xhtml')
         self.tag_slug = self.tag.key().name()
         self.tag_title = self.tag.title
+        self.slug = self.key().name()
         self.user_name = self.user.name
         super(Discussion,self).put()
 
@@ -190,6 +196,26 @@ class Discussion(db.Model):
     @property
     def url(self):
         return "/%s/%s/" % (self.tag_slug,self.key().name())
+    
+    @classmethod
+    def get_discussion_by_key(cls,tag_slug,key):
+        return Discussion.all().filter('key_name =',key).filter("tag_slug =",tag_slug).get()
+    
+    @classmethod
+    def is_exist(cls,key):
+        return not Discussion.get_by_key_name(key) is None
+    
+    @classmethod
+    def new(self,tag,title,content,user,f='T'):
+        key_name = Counter.get_max('discussion').value
+        while Discussion.is_exist(key_name):
+            key_name = Counter.get_max('discussion').value
+        dis = Discussion(key_name = key_name,title=title,content=content,tag=tag)
+        dis.f = f
+        dis.user = user
+        dis.put()
+        return dis
+            
       
 if __name__=='__main__':
     pass

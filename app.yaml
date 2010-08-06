@@ -17,6 +17,9 @@ handlers:
 - url: /d/.*
   script: dash/views.py
   
+- url: /p/.*
+  script: discussion/views.py
+  
 - url: /test.*
   script: gaeunit.py
   

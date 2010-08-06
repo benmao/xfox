@@ -103,6 +103,43 @@ menu a{
 	padding:6px 0 0;
 }
 
+/* post form */
+#p_form label {
+	font-size: 120%;
+	font-weight: bold;
+	color: #666;
+	display:block;
+}
+
+#p_form h3 {
+	border: none;
+   color: #02475A;
+   font-size: 140%;
+   font-weight: bold;
+   margin: 0;
+   padding: 6px;
+}
+
+#p_form  textarea {
+   width: 910px;
+   height: 100px;
+   min-height: 250px;
+   margin: 0 0 6px;
+}
+#p_form input.input_box {
+   width: 910px;
+   margin-bottom: 10px;
+   font-size:150%;
+}
+
+#p_form form {
+	background: #c4e1ff none repeat scroll 0 0;
+	border: 1px solid #7caccb;
+	margin: 0;
+	padding: 20px;
+	min-height:400px;
+}
+
 /* footer */
 
 .w960 {
@@ -260,7 +297,7 @@ menu a{
 	font-size: 140%;
 }
 
-input.input_box:focus,
+input:focus,
 textarea:focus {
    background: #ffe;
 }
