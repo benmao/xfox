@@ -163,9 +163,9 @@ class Discussion(db.Model):
     user_name = db.StringProperty()
     
     created = db.DateTimeProperty(auto_now_add=True)
-    last_update = db.DateTimeProperty(auto_now=True) 
+    last_updated = db.DateTimeProperty(auto_now=True) 
     last_comment_by = db.StringProperty()
-    last_commet = db.DateTimeProperty()
+    last_commet = db.DateTimeProperty(auto_now=True)
    
     count_comment =db.IntegerProperty(default=0)
     count_bookmark=db.IntegerProperty(default=0)
@@ -201,7 +201,8 @@ class Discussion(db.Model):
     
     @classmethod
     def get_discussion_by_key(cls,tag_slug,key):
-        return Discussion.all().filter('key_name =',key).filter("tag_slug =",tag_slug).get()
+        return Discussion.get_by_key_name(key)
+       # return Discussion.all().filter('key_name =',key).get()
     
     @classmethod
     def is_exist(cls,key):

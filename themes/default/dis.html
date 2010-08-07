@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{%block head %}
+<title>{{setting.title}} > {{dis.tag_title}} > {{dis.title}}</title>
+{% endblock %}
+
+{%block body %}
+    	<section id="content" class="w680">
+        	<header class="box radius">
+            	<h2><a href="/{{dis.tag_slug}}/">{{dis.tag_title|escape}}</a> &gt; <a href="{{dis.url}}">{{dis.title|escape}}</a></h2>
+            </header>
+            
+            <!-- content -->
+            <article class="box radius">
+            <p class="line1"><a href="/u/{{dis.user_name}}">{{dis.user_name}}</a> Post at <time datetime="{{dis.created}}">{{dis.created|humdate}}</time> {% ifequal user.name dis.user_name %}| <a href="/p/{{dis.tag_slug}}/{{dis.slug}}/">Edit</a>{% endifequal %}</p>
+            {{dis.content_formated}}
+            </article>
+        </section>
+     <!--sidebar include -->
+     {% include "sidebar.html" %}
+{% endblock %}

@@ -5,15 +5,16 @@
 
 {%block body %}
     <section id="p_form">
-           <h3>在 <a href="{{tag.url}}">{{tag.name}}</a> 发表讨论</h3>
-        	<form method="post" class="radius" action="/p/{{tag.key.name}}/">
+           <h3>修改 <a href="{{dis.url}}">{{dis.title}}</a></h3>
+        	<form method="post" class="radius" action="/p{{dis.url}}">
+            <input type="hidden" value="{{dis.key.name}}" name="key" />
 			<p>
             <label for="title">标题</label>
-            <input type="text" class="input_box radius" maxlength="100" value="{% if title %} {{title}} {% endif %}" name="title" id="title">
+            <input type="text" class="input_box radius" maxlength="100" value="{{dis.title|escape}}" name="title" id="title">
             </p>
             <p>
             <label for="content">内容</label>
-            <textarea class="input_box radius" cols="100" rows="6" name="content" id="content" >{% if content %}{{content}}{% endif %}</textarea>
+            <textarea class="input_box radius" cols="100" rows="6" name="content" id="content" >{{dis.content|escape}}</textarea>
             </p>
             {% if error %}
             <p>{{error}}</p>

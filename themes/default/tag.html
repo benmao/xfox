@@ -7,14 +7,14 @@
     	<section id="content" class="w680">
         	<header class="tabs radius">
             	<ul>
-                	<li class="block radius"><a href="{{tag.url}}">{{tag.title}}</a></li>
+                	<li class="block radius"><a href="{{tag.url}}">{{tag.title|escape}}</a></li>
                 </ul>
             </header>
             
             <!-- content -->
             {% for dis in diss %}
             <article class="discussion line w680">
-                <h2><a href="{{dis.url}}">{{dis.title}}</a><span class="radius">20</span></h2>
+                <h2><a href="{{dis.url}}">{{dis.title|escape}}</a><span class="radius">20</span></h2>
                 <p>
                     <span class="last_comment_by">start by <a href="/u/{{dis.user_name}}/">{{dis.user_name}}</a></span>
                     <span class="last_comment_date">{{dis.create}}</span>

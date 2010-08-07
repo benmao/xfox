@@ -15,6 +15,8 @@ from account.models import Session
 from google.appengine.api import users
 from discussion.models import Tag
 
+webapp.template.register_template_library('util.filter')
+
 class PublicHandler(webapp.RequestHandler):
     
     def initialize(self,request,response):
@@ -55,6 +57,9 @@ class PublicHandler(webapp.RequestHandler):
         self.response.set_status(code)
         if code ==404:
             self.render("404.html")
+        elif code ==403:
+            self.render("403.html")
+            
 class PublicWithSidebarHandler(PublicHandler):
     def initialize(self,request,response):
         PublicHandler.initialize(self,request,response)
