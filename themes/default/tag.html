@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{%block head %}
+<title>{{setting.title}} > Index</title>
+{% endblock %}
+
+{%block body %}
+    	<section id="content" class="w680">
+        	<header class="tabs radius">
+            	<ul>
+                	<li class="block radius"><a href="{{tag.url}}">{{tag.title}}</a></li>
+                </ul>
+            </header>
+            
+            <!-- content -->
+
+            <article class="discussion line w680">
+                <h2><a href="#">这里是第一篇文章哦</a><span class="radius">20</span></h2>
+                <p>
+                    <span class="last_comment_by">start by <a href="#">ben</a></span>
+                    <span class="last_comment_date">9:11AM</span>
+                    <span class="category radius"><a href="#">aaaaa</a></span>
+                </p>
+            </article>
+
+            <article class="discussion line">
+                <h2><a href="#">这里是第一篇文章哦</a><span class="radius">100</span></h2>
+                <p>
+                    <span class="last_comment_by">start by <a href="#">ben</a></span>
+                    <span class="last_comment_date">9:11AM</span>
+                    <span class="category radius"><a href="#">aaaaa</a></span>
+                </p>
+            </article>
+
+            <article class="discussion line">
+                <h2><a href="#">这里是第一篇文章哦</a><span class="radius">100</span></h2>
+                <p>
+                    <span class="last_comment_by">start by <a href="#">ben</a></span>
+                    <span class="last_comment_date">9:11AM</span>
+                    <span class="category radius"><a href="#">aaaaa</a></span>
+                </p>
+            </article>
+            <article class="discussion line">
+                <h2><a href="#">这里是第一篇文章哦</a><span class="radius">100</span></h2>
+                <p>
+                    <span class="last_comment_by">start by <a href="#">ben</a></span>
+                    <span class="last_comment_date">9:11AM</span>
+                    <span class="category radius"><a href="#">aaaaa</a></span>
+                </p>
+            </article>
+        </section>
+     <!--sidebar include -->
+     {% include "sidebar.html" %}
+{% endblock %}

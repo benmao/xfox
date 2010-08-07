@@ -8,15 +8,20 @@ Copyright (c) 2010 http://sa3.org All rights reserved.
 
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
-from util.handler import PublicHandler
+from util.handler import PublicHandler,PublicWithSidebarHandler
 from discussion.models import Tag,Discussion
 import settings
 from util.decorator import requires_login
-class TagHandler(PublicHandler):
-    def get(self,slug):
-        self.response.out.write(slug)
 
-class DiscussionHandler(PublicHandler):
+class TagHandler(PublicWithSidebarHandler):
+    def get(self,slug):
+        tag = Tag.get_tag_by_slug(slug)
+        if tag is None:
+            return self.error(404)
+        self.template_value['tag']=tag
+        self.render('tag.html')
+
+class DiscussionHandler(PublicWithSidebarHandler):
     def get(self,slug,key):
         self.response.out.write("%s:%s" % (slug,key))
         
@@ -44,11 +49,20 @@ class PostDisscussionHandler(PublicHandler):
         self.render('p.html')
             
         
+class NotFoundHandler(PublicHandler):
+    def get(self):
+        self.error(404)
+        
+    def post(self):
+        self.error(404)
+        
 def main():
     application = webapp.WSGIApplication([
                                                           ('/p/(?P<slug>[a-z0-9-]{2,})/',PostDisscussionHandler),
                                                           ('/(?P<slug>[a-z0-9-]{2,})/', TagHandler),
                                                           ('/(?P<slug>[a-z0-9-]{2,})/(?P<key>[a-z0-9]+)/',DiscussionHandler),
+                                                          
+                                                          ('/.*',NotFoundHandler),
                                                           ],
                                          debug=settings.DEBUG)
     util.run_wsgi_app(application)

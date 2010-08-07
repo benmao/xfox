@@ -81,6 +81,7 @@ class Tag(db.Model):
     allow_comment = db.BooleanProperty(default =True)
     is_draft = db.BooleanProperty(default =False)
     
+    @delmem("tags")
     def put(self):
         if not self.is_saved(): #create
             self.category.count_tag +=1
@@ -102,6 +103,7 @@ class Tag(db.Model):
         return '/%s/' % self.key().name()
     
     @classmethod
+    @mem('tags')
     def get_all(cls):
         return Tag.all().filter("is_draft =",False)
     

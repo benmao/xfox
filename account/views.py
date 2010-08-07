@@ -45,17 +45,19 @@ class SignUpHandler(PublicHandler):
         
 class SignInHandler(PublicHandler):
     def get(self):
+        self.template_value['go'] = self.request.get("go")
         self.render("signin.html")
     
     def post(self):
         email = self.request.get("email").strip()
         pwd = self.request.get("pwd").strip()
+        go = self.request.get("go").strip()
         
         user,session = User.login(email,pwd)
         if user and session:
             d = datetime.datetime.now()+datetime.timedelta(days =30)
             self.response.headers['Set-Cookie'] = "xfox-session-key=%s;path=/;expires=%s" % (session.key().name(),get_gmt(d))
-            self.redirect("/")
+            self.redirect(go) if go else self.redirect("/")
         self.template_value['error'] =u"邮箱或密码不正确"
         self.render("signin.html")
         
@@ -67,13 +69,21 @@ class SignOutHandler(PublicHandler):
 class UserProfileHandler(PublicHandler):
     def get(self,name):
         self.error(404)
-        
+
+class NotFoundHandler(PublicHandler):
+    def get(self):
+        self.error(404)
+    
+    def post(self):
+        self.error(404)
 def main():
     application = webapp.WSGIApplication(
                                                      [('/a/signup/',SignUpHandler),
                                                       ('/a/signin/',SignInHandler),
                                                       ('/a/signout/',SignOutHandler),
                                                       ('/u/(?P<name>[a-z0-9]{3,16})/',UserProfileHandler),
+                                                      
+                                                      ('/.*',NotFoundHandler),
                                                          ],
                                          debug=settings.DEBUG)
     util.run_wsgi_app(application)

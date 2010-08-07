@@ -8,6 +8,7 @@
         	<h3>用户登录</h3>
             <section class="box radius">
             <form method="post" action="/a/signin/">
+            <input type="hidden" name="go" value="{% if go %} {{go}} {% endif %}" />
             <p>
                 <label for="email">邮箱</label>
                 <input type="text" id="email" name="email" value="{{email}}" class="input_box" />

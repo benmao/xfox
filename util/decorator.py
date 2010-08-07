@@ -38,7 +38,7 @@ def requires_login(method):
     def wrapper(self, *args, **kwargs):
         if not self.user is None:
             return method(self,*args,**kwargs)
-        return self.redirect("/a/signin/")
+        return self.redirect("/a/signin/?go=%s" % self.request.url)
     return wrapper
 
 if __name__=='__main__':

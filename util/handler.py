@@ -13,6 +13,7 @@ from dash.models import Setting
 from django.http import parse_cookie
 from account.models import Session
 from google.appengine.api import users
+from discussion.models import Tag
 
 class PublicHandler(webapp.RequestHandler):
     
@@ -54,7 +55,11 @@ class PublicHandler(webapp.RequestHandler):
         self.response.set_status(code)
         if code ==404:
             self.render("404.html")
-
+class PublicWithSidebarHandler(PublicHandler):
+    def initialize(self,request,response):
+        PublicHandler.initialize(self,request,response)
+        self.template_value['tags']=Tag.get_all()
+    
 class AdminHandler(webapp.RequestHandler):
     def initialize(self,request,response):
         webapp.RequestHandler.initialize(self,request,response)
