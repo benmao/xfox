@@ -68,7 +68,7 @@ class SignOutHandler(PublicHandler):
 
 class UserProfileHandler(PublicHandler):
     def get(self,name):
-        self.error(404)
+        self.response.out.write(name)
 
 class NotFoundHandler(PublicHandler):
     def get(self):

@@ -19,6 +19,7 @@ class TagHandler(PublicWithSidebarHandler):
         if tag is None:
             return self.error(404)
         self.template_value['tag']=tag
+        self.template_value['diss']=Discussion.get_by_tag(tag)
         self.render('tag.html')
 
 class DiscussionHandler(PublicWithSidebarHandler):

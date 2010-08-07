@@ -10,6 +10,12 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
+- kind: Discussion
+  properties:
+  - name: tag
+  - name: created
+    direction: desc
+
 - kind: Session
   properties:
   - name: key_name

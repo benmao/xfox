@@ -217,6 +217,10 @@ class Discussion(db.Model):
         dis.user = user
         dis.put()
         return dis
+    
+    @classmethod
+    def get_by_tag(cls,tag,page=0):
+        return Discussion.all().filter('tag =',tag).order('-created')
             
       
 if __name__=='__main__':
