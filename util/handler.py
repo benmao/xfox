@@ -24,6 +24,8 @@ class PublicHandler(webapp.RequestHandler):
         init webapp.RequestHandler
         '''
         webapp.RequestHandler.initialize(self,request,response)
+        
+        
         self.setting = Setting.get_setting()
         self.template_value={'setting':self.setting}
         
@@ -54,6 +56,10 @@ class PublicHandler(webapp.RequestHandler):
         self.response.out.write(template.render(path, self.template_value))
         
     def error(self,code):
+        #handler not endswith /
+        if not self.request.path.endswith("/"):
+            return self.redirect(self.request.path+"/",True)
+        
         self.response.set_status(code)
         if code ==404:
             self.render("404.html")

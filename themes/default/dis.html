@@ -11,7 +11,7 @@
             
             <!-- content -->
             <article class="box radius">
-            <p class="line1"><a href="/u/{{dis.user_name}}">{{dis.user_name}}</a> Post at <time datetime="{{dis.created}}">{{dis.created|humdate}}</time> {% ifequal user.name dis.user_name %}| <a href="/p/{{dis.tag_slug}}/{{dis.slug}}/">Edit</a>{% endifequal %}</p>
+            <p class="line1"><a href="/u/{{dis.user_name}}/">{{dis.user_name}}</a> Post at <time datetime="{{dis.created}}">{{dis.created|humdate}}</time> {% ifequal user.name dis.user_name %}| <a href="/p/{{dis.tag_slug}}/{{dis.slug}}/">Edit</a>{% endifequal %}</p>
             {{dis.content_formated}}
             </article>
         </section>
