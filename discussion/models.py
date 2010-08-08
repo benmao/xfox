@@ -223,6 +223,115 @@ class Discussion(db.Model):
     def get_by_tag(cls,tag,page=0):
         return Discussion.all().filter('tag =',tag).order('-created')
             
+class Bookmark(db.Model):
+    user = db.ReferenceProperty(User)
+    dis = db.ReferenceProperty(Discussion)
+    created = db.DateTimeProperty(auto_now_add = True)
+    is_bookmarked = db.BooleanProperty(default = True)
+    
+    #
+    user_name = db.StringProperty()
+    dis_title = db.StringProperty()
+    dis_url = db.StringProperty()
+    
+    def put(self):
+        if not self.is_saved:
+            self.user.count_bookmarks +=1
+            self.user.put()
+            self.dis.count_bookmark +=1
+            self.dis.put()
+        
+            self.user_name = user.name
+            self.dis_title = dis.title
+            self.dis_url = dis.url
+        super(Bookmark,self).put()
+        
+        
+    @classmethod
+    def get_by_user(cls,user):
+        return Bookmark.all().filter('user =',user).order('-created')
+    
+    @classmethod
+    def get_bookmark_users(cls,dis):
+        '''
+        return bookmark_users
+        '''
+        users = []
+        [usres.append(bookmark.user_name) for bookmark in Bookmark.all().filter('dis =',dis)]
+        return users
+    
+    @classmethod
+    def check_bookmarked(cls,user,dis):
+        return Bookmark.all().filter('user =',user).filter('dis =',dis).get()
+    
+    @classmethod
+    def do_bookmark(cls,user,dis):
+        bookmark = Bookmark.check_bookmarked(user,dis)
+        if bookmark is None:
+            b = Bookmark(user =user,dis = dis)
+            b.put()
+            return (True,b)
+        elif bookmark.is_bookmarked:
+            return (False,None)
+        bookmark.is_bookmarked = True
+        bookmark.put()
+        return (True,bookmark)
+    
+    @classmethod
+    def un_bookmark(cls,user,dis):
+        bookmark = Bookmark.check_bookmarked(user,dis)
+        if not bookmark is None:
+            bookmark.is_bookmarked = False
+            bookmark.put()
       
+class Comment(db.Model):
+    user = db.ReferenceProperty(User)
+    dis = db.ReferenceProperty(Discussion)
+    slug = db.StringProperty()
+    source = db.StringProperty()
+    created = db.DateTimeProperty(auto_now_add = True,indexed = True)
+    last_updated = db.DateTimeProperty(auto_now = True)
+    
+    content = db.TextProperty()
+    content_formated = db.TextProperty()
+    f = db.StringProperty()
+    
+    user_name = db.StringProperty()
+    dis_slug = db.StringProperty()
+    
+    is_draft = db.BooleanProperty(default = False)
+    is_for_author = db.BooleanProperty(default = False)
+    
+    @property
+    def url(self):
+        return "%s#r-%s" % (self.dis_slug,self.slug)
+
+    def put(self):
+        if not self.is_saved():
+            self.user.count_comments +=1
+            self.user.put()
+            self.dis.count_comment +=1
+            self.dis.put()
+            self.user_name = self.user.name
+            self.dis_slug = self.dis.url
+            self.slug = self.key().name()
+        self.content_formated = Textile(restricted=True,lite=False,noimage=False).textile(\
+            self.content, rel='nofollow',html_type='xhtml')
+        super(Comment,self).put()
+        
+    
+    @classmethod
+    def new(cls,user,dis,content,f='T'):
+        key_name = Counter.get_max('comment').value
+        while Comment.get_by_key_name(key_name):
+            key_name = Counter.get_max('comment').value
+        
+        comment = Comment(key_name =key_name,user=user,dis = dis ,content=content,f=f)
+        comment.put()
+        return comment
+    @classmethod
+    def get_by_dis(cls,dis,page=1):
+        return Comment.all().filter('dis =',dis)
+        
 if __name__=='__main__':
     pass

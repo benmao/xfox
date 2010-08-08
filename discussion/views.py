@@ -9,7 +9,7 @@ Copyright (c) 2010 http://sa3.org All rights reserved.
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 from util.handler import PublicHandler,PublicWithSidebarHandler
-from discussion.models import Tag,Discussion
+from discussion.models import Tag,Discussion,Comment
 import settings
 from util.decorator import requires_login
 
@@ -28,6 +28,8 @@ class DiscussionHandler(PublicWithSidebarHandler):
         if dis is None:
             return self.error(404)
         self.template_value['dis']=dis
+        comments = Comment.get_by_dis(dis)
+        self.template_value['comments'] = comments if comments.count()>0 else None
         self.render("dis.html")
         
 class PostDisscussionHandler(PublicHandler):
@@ -85,6 +87,19 @@ class EditDisscussionHandler(PublicHandler):
         self.template_value['dis']=dis
         self.render('p_edit.html')
         
+class PostCommentHandler(PublicWithSidebarHandler):
+    def get(self):
+        self.error(403)
+     
+    @requires_login
+    def post(self):
+        key = self.request.get("key")
+        content = self.request.get("content")
+        dis = Discussion.get_by_key_name(key)
+        if dis is None:
+            return self.error(404)
+        comment =Comment.new(self.user,dis,content)
+        self.redirect(comment.url)
         
 class NotFoundHandler(PublicHandler):
     def get(self):
@@ -95,11 +110,11 @@ class NotFoundHandler(PublicHandler):
         
 def main():
     application = webapp.WSGIApplication([
+                                                          ('/c/',PostCommentHandler),
                                                           ('/p/(?P<slug>[a-z0-9-]{2,})/',PostDisscussionHandler),
                                                           ('/p/(?P<slug>[a-z0-9-]{2,})/(?P<key>[a-z0-9]+)/',EditDisscussionHandler),
                                                           ('/(?P<slug>[a-z0-9-]{2,})/', TagHandler),
                                                           ('/(?P<slug>[a-z0-9-]{2,})/(?P<key>[a-z0-9]+)/',DiscussionHandler),
-                                                          
                                                           ('/.*',NotFoundHandler),
                                                           ],
                                          debug=settings.DEBUG)

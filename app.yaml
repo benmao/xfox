@@ -20,6 +20,9 @@ handlers:
 - url: /p/.*
   script: discussion/views.py
   
+- url: /c/.*
+  script: discussion/views.py
+  
 - url: /test.*
   script: gaeunit.py
   

@@ -14,6 +14,36 @@
             <p class="line1"><a href="/u/{{dis.user_name}}/">{{dis.user_name}}</a> Post at <time datetime="{{dis.created}}">{{dis.created|humdate}}</time> {% ifequal user.name dis.user_name %}| <a href="/p/{{dis.tag_slug}}/{{dis.slug}}/">Edit</a>{% endifequal %}</p>
             {{dis.content_formated}}
             </article>
+            
+            <!--comment-->
+            {% if comments %}
+            <section class="box radius">
+            <h3>讨论</h3>
+            {% for comment in comments %}
+            <article class="comment line radius" id="r-{{comment.key.name}}">
+            	<header>
+                <strong><a href="/u/{{comment.user_name}}/">{{comment.user_name}}</a></strong><time class="gray">{{comment.created|humdate}}</time>
+                </header>
+                {{comment.content_formated}}
+            </article>
+			{% endfor %}
+            </section>
+            {% endif %}
+            
+            {% if user %}
+            <section class="box radius clear" >
+            	<h3>添加评论吧</h3>
+                <form method="post" action="/c/" id="comment_form" >
+                <input type="hidden" name="key" value="{{dis.key.name}}" />
+                <p>
+                    <textarea class="input_box" cols="100" rows="6" name="content" ></textarea>
+                </p>
+                <p>
+                    <input type="submit" value="发表" class="button radius" />
+                </p>
+                </form>
+            </section>
+            {% endif %}
         </section>
      <!--sidebar include -->
      {% include "sidebar.html" %}

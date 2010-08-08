@@ -67,12 +67,10 @@ menu a{
 #content {
 	float:left;
 	margin: 0 0 40px;
-	height:500px;
 }
 
 #side-bar {
 	float:right;
-	height:400px;
 }
 
 /* content */
@@ -120,14 +118,15 @@ menu a{
    padding: 6px;
 }
 
+#comment_form textarea,
 #p_form  textarea {
-   width: 910px;
+   width: 100%;
    height: 100px;
    min-height: 250px;
    margin: 0 0 6px;
 }
 #p_form input.input_box {
-   width: 910px;
+   width: 100%;
    margin-bottom: 10px;
    font-size:150%;
 }
@@ -201,6 +200,18 @@ menu a{
 	font-size:90%;
 }
 
+/* comment */
+.comment {
+	background:#f3fcff;
+}
+
+.comment header{
+	margin:0 10px 0 10px;
+}
+
+.comment header time{
+	margin-left:20px;
+}
 
 .block a,
 .block a:link,
@@ -315,4 +326,8 @@ textarea:focus {
 .button {
 	border: 1px solid #999;
 	font-size:130%;
+}
+
+.clear{
+	clear:both;
 }

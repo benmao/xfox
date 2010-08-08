@@ -35,6 +35,8 @@ class User(db.Model):
     count_bookmarks = db.IntegerProperty(default =0)
     photo = db.StringProperty()
     
+    comment_sort = db.BooleanProperty(default=False)
+    
     def put(self):
         self.name_lower = self.name.lower()
         self.email = self.email.lower()
