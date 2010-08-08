@@ -139,6 +139,37 @@ menu a{
 	min-height:400px;
 }
 
+/* tag_list */
+
+#tag_list {
+	margin:10px 0;
+}
+
+
+#tag_list th,
+#tag_list td {
+	font-size:14px;
+	line-height:24px;
+}
+
+#tag_list .title{
+	width:auto;
+	text-align:left;
+}
+
+#tag_list .count{
+	width:55px;
+	text-align:right;
+	padding-right:5px;
+}
+
+#tag_list .author{
+	width:80px;
+}
+
+#tag_list .date{
+	width:120px;
+}
 /* footer */
 
 .w960 {
@@ -330,4 +361,22 @@ textarea:focus {
 
 .clear{
 	clear:both;
+}
+
+.b {
+	font-weight:bold;
+}
+
+.green {
+	color:#339933
+}
+
+.prev {
+	margin-left:10px;
+	float:left;
+}
+
+.next {
+	margin-right:10px;
+	float:right
 }

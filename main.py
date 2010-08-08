@@ -20,7 +20,12 @@ class MainHandler(PublicWithSidebarHandler):
     def get(self):
         self.render('index.html')
     
-        
+class UpdateHandler(PublicHandler):
+    def get(self):
+        diss = Discussion.all()
+        for dis in diss:
+            dis.last_comment = dis.created
+            dis.put()
 class NotFoundHandler(PublicHandler):
     def get(self):
         self.error(404)
@@ -31,6 +36,7 @@ class NotFoundHandler(PublicHandler):
 def main():
     application = webapp.WSGIApplication([
                                         ('/', MainHandler),
+                                        ('/e/',UpdateHandler),
                                         ('/.*',NotFoundHandler),
                                         ],
                                          debug=settings.DEBUG)

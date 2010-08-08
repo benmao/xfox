@@ -10,16 +10,34 @@
             </header>
             
             <!-- content -->
-            {% for dis in diss %}
-            <article class="discussion line w680">
-                <h2><a href="{{dis.url}}">{{dis.title|escape}}</a><span class="radius">20</span></h2>
-                <p>
-                    <span class="last_comment_by">start by <a href="/u/{{dis.user_name}}/">{{dis.user_name}}</a></span>
-                    <span class="last_comment_date">{{dis.create}}</span>
-                    <span class="category radius"><a href="/{{dis.tag_slug}}/">{{dis.tag_title}}</a></span>
-                </p>
-            </article>
-			{% endfor %}
+            <section class="box radius">
+			<table cellpadding="5px" cellspacing="0" border="0" width="100%" id="tag_list">
+            	<tr>
+                	<th class="count gray">回复数</th>
+                    <th class="title gray">标题</th>
+                    <th class="author gray">作者</th>
+                    <th class="date gray">最后回复</th>
+                </tr>
+                {% for dis in diss %}
+                <tr>
+                	{% if dis.count_comment %}
+                    <td class="count b green">{{dis.count_comment}}</td>               
+                    {% else %}
+	 				<td class="count b gray">0</td>    
+                    {% endif %}
+
+                    <td class="title"><a href="{{dis.url}}">{{dis.title}}</a></td>
+                    <td class="author"><a href="/u/{{dis.user_name}}/">{{dis.user_name}}</a></td>
+                    <td class="date gray">{{dis.last_comment|datetz:"Y-m-d H:i"}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            </section>
+            
+            <section class="box radius">
+            {% if prev %}<a class="prev" href="{{tag.url}}?p={{prev}}">前一页</a> {% endif %}
+            {% if next %}<a class="next" href="{{tag.url}}?p={{next}}">后一页</a> {% endif %}
+       		</section>
         </section>
      <!--sidebar include -->
      {% include "sidebar.html" %}

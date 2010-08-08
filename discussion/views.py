@@ -12,14 +12,24 @@ from util.handler import PublicHandler,PublicWithSidebarHandler
 from discussion.models import Tag,Discussion,Comment
 import settings
 from util.decorator import requires_login
+from util.paging import PagedQuery
 
 class TagHandler(PublicWithSidebarHandler):
     def get(self,slug):
+        p = int(self.request.get("p","1"))
         tag = Tag.get_tag_by_slug(slug)
         if tag is None:
             return self.error(404)
         self.template_value['tag']=tag
-        self.template_value['diss']=Discussion.get_by_tag(tag)
+       
+        diss = Discussion.get_by_tag(tag)
+        #paging
+        prev = p -1 if p >1 else None
+        tnext = p+1 if diss.has_page(p+1) else None
+       
+        self.template_value['prev'] = prev
+        self.template_value['next'] = tnext
+        self.template_value['diss'] = diss.fetch_page(p)
         self.render('tag.html')
 
 class DiscussionHandler(PublicWithSidebarHandler):

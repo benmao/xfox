@@ -22,6 +22,18 @@ indexes:
   - name: created
     direction: desc
 
+- kind: Discussion
+  properties:
+  - name: tag
+  - name: last_comment
+    direction: desc
+
+- kind: Discussion
+  properties:
+  - name: tag
+  - name: last_commet
+    direction: desc
+
 - kind: Session
   properties:
   - name: key_name

@@ -35,9 +35,6 @@ class Setting(db.Model):
         return setting
     
 class Counter(db.Model):
-    '''
-    from v2ex.babel.Counter
-    '''
     name = db.StringProperty(required=False)
     value = db.StringProperty(default ='0') #use base36
     created = db.DateTimeProperty(auto_now_add =True)

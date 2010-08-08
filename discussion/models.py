@@ -12,6 +12,7 @@ from account.models import User
 import datetime
 from dash.models import Counter
 from util.textile import Textile
+from util.paging import PagedQuery
 
 class Category(db.Model):
     '''
@@ -165,7 +166,7 @@ class Discussion(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     last_updated = db.DateTimeProperty(auto_now=True) 
     last_comment_by = db.StringProperty()
-    last_commet = db.DateTimeProperty(auto_now=True)
+    last_comment = db.DateTimeProperty(auto_now=True)
    
     count_comment =db.IntegerProperty(default=0)
     count_bookmark=db.IntegerProperty(default=0)
@@ -220,8 +221,9 @@ class Discussion(db.Model):
         return dis
     
     @classmethod
-    def get_by_tag(cls,tag,page=0):
-        return Discussion.all().filter('tag =',tag).order('-created')
+    def get_by_tag(cls,tag):
+        diss = Discussion.all().filter('tag =',tag).order('-last_comment')
+        return PagedQuery(diss,2)
             
 class Bookmark(db.Model):
     user = db.ReferenceProperty(User)
@@ -311,6 +313,7 @@ class Comment(db.Model):
             self.user.count_comments +=1
             self.user.put()
             self.dis.count_comment +=1
+            self.dis.last_comment_by = self.user.name
             self.dis.put()
             self.user_name = self.user.name
             self.dis_slug = self.dis.url
@@ -319,7 +322,6 @@ class Comment(db.Model):
             self.content, rel='nofollow',html_type='xhtml')
         super(Comment,self).put()
         
-    
     @classmethod
     def new(cls,user,dis,content,f='T'):
         key_name = Counter.get_max('comment').value
