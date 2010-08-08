@@ -16,13 +16,12 @@ class Setting(db.Model):
     
     domain = db.StringProperty()
     timedelta = db.FloatProperty(default =8.0)
-    version = "0.0.2"
+    version = "0.0.3"
     
     @delmem("setting") 
     def put(self):
         super(Setting,self).put()
         
-
     @classmethod
     @mem("setting")
     def get_setting(cls):

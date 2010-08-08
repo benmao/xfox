@@ -12,6 +12,7 @@ from google.appengine.ext.webapp import util
 from util.handler import PublicHandler,PublicWithSidebarHandler
 from util.decorator import requires_login
 from discussion.models import Tag,Discussion
+import settings
 
 class MainHandler(PublicWithSidebarHandler):
 
@@ -32,7 +33,7 @@ def main():
                                         ('/', MainHandler),
                                         ('/.*',NotFoundHandler),
                                         ],
-                                         debug=True)
+                                         debug=settings.DEBUG)
     util.run_wsgi_app(application)
 
 if __name__ == '__main__':
