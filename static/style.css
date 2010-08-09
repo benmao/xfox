@@ -20,6 +20,11 @@ a:hover {
    color: #ff0084;
 }
 
+sub {
+	font-size:9px;
+	color:#999;
+}
+
 
 /* header */
 /* thanks for dimlau <http://kaix.in/daddy> */
@@ -141,34 +146,38 @@ menu a{
 
 /* tag_list */
 
-#tag_list {
+.tag_list {
 	margin:10px 0;
 }
 
 
-#tag_list th,
-#tag_list td {
+.tag_list th,
+.tag_list td {
 	font-size:14px;
 	line-height:24px;
 }
 
-#tag_list .title{
+.tag_list .title{
 	width:auto;
 	text-align:left;
 }
 
-#tag_list .count{
+.tag_list .count{
 	width:55px;
 	text-align:right;
 	padding-right:5px;
 }
 
-#tag_list .author{
+.tag_list .author{
 	width:80px;
 }
 
-#tag_list .date{
+.tag_list .date{
 	width:120px;
+}
+
+.user strong{
+	margin:0 5px;
 }
 /* footer */
 
@@ -339,6 +348,17 @@ menu a{
    	border-bottom: 1px  dashed #a3e6ff;
 }
 
+.box dl {
+	margin:0 10px 10px 10px;
+}
+.box dl dt {
+	color:#555555;
+	float:left;
+	width:80px;
+}
+.box dl dd {
+	font-weight:bold;
+}
 .input_box{
 	width: 250px;
 	border: 1px solid #aaa;
@@ -405,6 +425,7 @@ textarea:focus {
 	background: url('/static/images/star_sprite.png') center center no-repeat;
 }
 
-.bookmarking {
+.bookmark {
 	background: url('/static/images/star_sprite.png') bottom center no-repeat;
 }
+

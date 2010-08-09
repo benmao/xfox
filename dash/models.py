@@ -16,7 +16,7 @@ class Setting(db.Model):
     
     domain = db.StringProperty()
     timedelta = db.FloatProperty(default =8.0)
-    version = "0.0.3"
+    version = "0.0.4"
     
     @delmem("setting") 
     def put(self):
@@ -51,6 +51,10 @@ class Counter(db.Model):
             obj = Counter(key_name = key_name)
             obj.value='0'
         return obj
+    
+    @classmethod
+    def get_count_base(cls,key_name):
+        return int(Counter.get_count(key_name).value,36)
     
     @classmethod
     def get_max(self,key_name):

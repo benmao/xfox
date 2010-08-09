@@ -16,6 +16,12 @@ indexes:
   - name: created
     direction: desc
 
+- kind: Comment
+  properties:
+  - name: user
+  - name: created
+    direction: desc
+
 - kind: Discussion
   properties:
   - name: tag
@@ -32,6 +38,18 @@ indexes:
   properties:
   - name: tag
   - name: last_commet
+    direction: desc
+
+- kind: Discussion
+  properties:
+  - name: user
+  - name: created
+    direction: desc
+
+- kind: RecentCommentLog
+  properties:
+  - name: user
+  - name: last_comment
     direction: desc
 
 - kind: Session

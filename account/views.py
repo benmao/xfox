@@ -9,10 +9,11 @@ import logging
 import datetime
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
-from  util.handler import PublicHandler
+from  util.handler import PublicHandler,PublicWithSidebarHandler
 import settings
 from account.models import User
 from util.base import *
+from discussion.models import Discussion,Comment,Bookmark,RecentCommentLog
 
 class SignUpHandler(PublicHandler):
     def get(self):
@@ -66,9 +67,16 @@ class SignOutHandler(PublicHandler):
         self.response.headers['Set-Cookie'] ='xfox-session-key="";path=/'
         self.redirect("/")
 
-class UserProfileHandler(PublicHandler):
+class UserProfileHandler(PublicWithSidebarHandler):
     def get(self,name):
-        self.response.out.write(name)
+        u = User.get_user_by_name(name)
+        if u is None:
+            return self.error(404)
+        self.template_value['u']=u
+        self.template_value['recent_dis']= Discussion.get_recent_dis(u)
+        self.template_value['recent_comment'] = RecentCommentLog.get_recent_comment(u)
+        self.template_value['recent_bookmark']= Bookmark.get_recent_bookmark(u)
+        self.render('user.html')
 
 class NotFoundHandler(PublicHandler):
     def get(self):

@@ -224,6 +224,10 @@ class Discussion(db.Model):
     def get_by_tag(cls,tag):
         diss = Discussion.all().filter('tag =',tag).order('-last_comment')
         return PagedQuery(diss,20)
+    
+    @classmethod
+    def get_recent_dis(cls,user):
+        return Discussion.all().filter('user =',user).order('-created').fetch(10)
             
 class Bookmark(db.Model):
     user = db.ReferenceProperty(User)
@@ -289,6 +293,11 @@ class Bookmark(db.Model):
         if not bookmark is None:
             bookmark.is_bookmarked = False
             bookmark.put()
+            
+    @classmethod
+    def get_recent_bookmark(cls,user):
+        tmp = Bookmark.all().filter("user =",user).filter("is_bookmarked =",True).fetch(10)
+        return [t.dis for t in tmp]
       
 class Comment(db.Model):
     user = db.ReferenceProperty(User)
@@ -304,6 +313,7 @@ class Comment(db.Model):
     
     user_name = db.StringProperty()
     dis_slug = db.StringProperty()
+    dis_title = db.StringProperty()
     
     is_draft = db.BooleanProperty(default = False)
     is_for_author = db.BooleanProperty(default = False)
@@ -324,6 +334,7 @@ class Comment(db.Model):
             self.slug = self.key().name()
         self.content_formated = Textile(restricted=True,lite=False,noimage=False).textile(\
             self.content, rel='nofollow',html_type='xhtml')
+        RecentCommentLog.new(self.user,self.dis)
         super(Comment,self).put()
         
     @classmethod
@@ -339,5 +350,22 @@ class Comment(db.Model):
     def get_by_dis(cls,dis,page=1):
         return Comment.all().filter('dis =',dis)
         
+class RecentCommentLog(db.Model):
+    user = db.ReferenceProperty(User)
+    dis = db.ReferenceProperty(Discussion)
+    last_comment = db.DateTimeProperty(auto_now = True)
+    
+    @classmethod
+    def new(cls,user,dis):
+        rcl = RecentCommentLog.all().filter('user =',user).filter('dis =',dis).get()
+        if rcl is None:
+            rcl = RecentCommentLog(user = user,dis = dis)
+        rcl.put()
+        
+    @classmethod
+    def get_recent_comment(cls,user):
+        tmp = RecentCommentLog.all().filter('user =',user).order('-last_comment').fetch(10)
+        return [t.dis for t in tmp]
+    
 if __name__=='__main__':
     pass

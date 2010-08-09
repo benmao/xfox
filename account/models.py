@@ -13,6 +13,7 @@ from google.appengine.ext import db
 from util.base import  *
 from util.decorator import *
 import datetime
+from dash.models import Counter
 
 class User(db.Model):
     name = db.StringProperty(required=True,indexed=True)
@@ -36,13 +37,20 @@ class User(db.Model):
     photo = db.StringProperty()
     
     comment_sort = db.BooleanProperty(default=False)
+    user_id = db.StringProperty()
     
     def put(self):
-        self.name_lower = self.name.lower()
-        self.email = self.email.lower()
+        if not self.is_saved():
+            self.name_lower = self.name.lower()
+            self.email = self.email.lower()
+            self.user_id = Counter.get_max("user").value
         super(User,self).put()
+        
     
     #classmethod
+    @classmethod
+    def get_user_by_name(cls,name):
+        return User.all().filter("name_lower =",name.lower()).get()
     
     @classmethod
     def check_name(cls,name):

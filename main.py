@@ -12,6 +12,8 @@ from google.appengine.ext.webapp import util
 from util.handler import PublicHandler,PublicWithSidebarHandler
 from util.decorator import requires_login
 from discussion.models import Tag,Discussion
+from dash.models import Counter
+from account.models import User
 import settings
 
 class MainHandler(PublicWithSidebarHandler):
@@ -22,10 +24,8 @@ class MainHandler(PublicWithSidebarHandler):
     
 class UpdateHandler(PublicHandler):
     def get(self):
-        diss = Discussion.all()
-        for dis in diss:
-            dis.last_comment = dis.created
-            dis.put()
+        pass
+            
 class NotFoundHandler(PublicHandler):
     def get(self):
         self.error(404)

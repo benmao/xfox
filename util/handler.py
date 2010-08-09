@@ -14,6 +14,8 @@ from django.http import parse_cookie
 from account.models import Session
 from google.appengine.api import users
 from discussion.models import Tag
+import re
+from dash.models import Counter
 
 webapp.template.register_template_library('util.filter')
 
@@ -40,6 +42,7 @@ class PublicHandler(webapp.RequestHandler):
             self.user = Session.get_user_by_session(self.session_key)
         self.template_value['user']=self.user
         
+        user_agent = self.request.headers.get("User-Agent",'')
         
         
     def is_ajax(self):
@@ -72,6 +75,9 @@ class PublicWithSidebarHandler(PublicHandler):
     def initialize(self,request,response):
         PublicHandler.initialize(self,request,response)
         self.template_value['tags']=Tag.get_all()
+        self.template_value['count_user'] = Counter.get_count("user").value
+        self.template_value['count_discussion'] = Counter.get_count("discussion").value
+        self.template_value['count_comment'] = Counter.get_count("comment").value
     
 class AdminHandler(webapp.RequestHandler):
     def initialize(self,request,response):
