@@ -9,7 +9,7 @@ Copyright (c) 2010 http://sa3.org All rights reserved.
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 from util.handler import PublicHandler,PublicWithSidebarHandler
-from discussion.models import Tag,Discussion,Comment
+from discussion.models import Tag,Discussion,Comment,Bookmark
 import settings
 from util.decorator import requires_login
 from util.paging import PagedQuery
@@ -38,6 +38,8 @@ class DiscussionHandler(PublicWithSidebarHandler):
         if dis is None:
             return self.error(404)
         self.template_value['dis']=dis
+        bookmark = Bookmark.get_bookmark(self.user,dis) if self.user else None
+        self.template_value['bookmark'] = bookmark
         comments = Comment.get_by_dis(dis)
         self.template_value['comments'] = comments if comments.count()>0 else None
         self.render("dis.html")
@@ -111,6 +113,22 @@ class PostCommentHandler(PublicWithSidebarHandler):
         comment =Comment.new(self.user,dis,content)
         self.redirect(comment.url)
         
+class BookmarkHandler(PublicHandler):
+    @requires_login
+    def get(self):
+        action = self.request.get("action")
+        key = self.request.get("key")
+        dis = Discussion.get_by_key_name(key)
+        if dis is None:
+            return self.error(404)
+        if not action in ['un','do']:
+            return self.error(404)
+        if action =='un':
+            Bookmark.un_bookmark(self.user,dis)
+        else:
+            Bookmark.do_bookmark(self.user,dis)
+        self.redirect(dis.url)
+        
 class NotFoundHandler(PublicHandler):
     def get(self):
         self.error(404)
@@ -123,6 +141,7 @@ def main():
                                                           ('/c/',PostCommentHandler),
                                                           ('/p/(?P<slug>[a-z0-9-]{2,})/',PostDisscussionHandler),
                                                           ('/p/(?P<slug>[a-z0-9-]{2,})/(?P<key>[a-z0-9]+)/',EditDisscussionHandler),
+                                                          ('/b/?',BookmarkHandler),
                                                           ('/(?P<slug>[a-z0-9-]{2,})/', TagHandler),
                                                           ('/(?P<slug>[a-z0-9-]{2,})/(?P<key>[a-z0-9]+)/',DiscussionHandler),
                                                           ('/.*',NotFoundHandler),

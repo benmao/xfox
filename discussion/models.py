@@ -223,12 +223,12 @@ class Discussion(db.Model):
     @classmethod
     def get_by_tag(cls,tag):
         diss = Discussion.all().filter('tag =',tag).order('-last_comment')
-        return PagedQuery(diss,2)
+        return PagedQuery(diss,20)
             
 class Bookmark(db.Model):
     user = db.ReferenceProperty(User)
     dis = db.ReferenceProperty(Discussion)
-    created = db.DateTimeProperty(auto_now_add = True)
+    created = db.DateTimeProperty(auto_now = True)
     is_bookmarked = db.BooleanProperty(default = True)
     
     #
@@ -237,15 +237,15 @@ class Bookmark(db.Model):
     dis_url = db.StringProperty()
     
     def put(self):
-        if not self.is_saved:
+        if not self.is_saved():
             self.user.count_bookmarks +=1
             self.user.put()
             self.dis.count_bookmark +=1
             self.dis.put()
         
-            self.user_name = user.name
-            self.dis_title = dis.title
-            self.dis_url = dis.url
+            self.user_name = self.user.name
+            self.dis_title = self.dis.title
+            self.dis_url = self.dis.url
         super(Bookmark,self).put()
         
         
@@ -265,6 +265,10 @@ class Bookmark(db.Model):
     @classmethod
     def check_bookmarked(cls,user,dis):
         return Bookmark.all().filter('user =',user).filter('dis =',dis).get()
+    
+    @classmethod
+    def get_bookmark(cls,user,dis):
+        return Bookmark.all().filter('user =',user).filter('dis =',dis).filter('is_bookmarked =',True).get()
     
     @classmethod
     def do_bookmark(cls,user,dis):

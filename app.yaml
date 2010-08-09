@@ -32,6 +32,9 @@ handlers:
 - url: /c/.*
   script: discussion/views.py
   
+- url: /b/.*
+  script: discussion/views.py
+
 - url: /test.*
   script: gaeunit.py
   

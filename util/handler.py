@@ -40,6 +40,8 @@ class PublicHandler(webapp.RequestHandler):
             self.user = Session.get_user_by_session(self.session_key)
         self.template_value['user']=self.user
         
+        
+        
     def is_ajax(self):
         '''
         http://code.djangoproject.com/attachment/ticket/6616/is_ajax.diff

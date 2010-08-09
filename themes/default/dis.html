@@ -6,7 +6,15 @@
 {%block body %}
     	<section id="content" class="w680">
         	<header class="box radius">
-            	<h2><a href="/{{dis.tag_slug}}/">{{dis.tag_title|escape}}</a> &gt; <a href="{{dis.url}}">{{dis.title|escape}}</a></h2>
+            	<h2><a href="/{{dis.tag_slug}}/">{{dis.tag_title|escape}}</a> &gt; <a href="{{dis.url}}">{{dis.title|escape}}</a>
+                {% if user %}
+                {% if bookmark %}
+                <a href="/b/?key={{dis.key.name}}&action=un" class="bookmarked"><span>*</span></a>
+                {% else %}
+                 <a href="/b/?key={{dis.key.name}}&action=do" class="bookmark"><span>*</span></a>
+                {% endif %}
+                {% endif %}
+                </h2>
             </header>
             
             <!-- content -->

@@ -380,3 +380,31 @@ textarea:focus {
 	margin-right:10px;
 	float:right
 }
+
+.bookmarked,
+.bookmarking,
+.bookmark {
+	float:right;
+	display: block;
+	height: 22px;
+	width: 22px;
+	margin: 2px 4px 0 4px;
+}
+
+.bookmarked span,
+.bookmarking span,
+.bookmark span {
+	display:none;
+}
+
+.bookmark {
+	background: url('/static/images/star_sprite.png') top center no-repeat;
+}
+
+.bookmarked {
+	background: url('/static/images/star_sprite.png') center center no-repeat;
+}
+
+.bookmarking {
+	background: url('/static/images/star_sprite.png') bottom center no-repeat;
+}
