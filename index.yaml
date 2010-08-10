@@ -52,6 +52,13 @@ indexes:
   - name: created
     direction: desc
 
+- kind: Mention
+  properties:
+  - name: is_read
+  - name: user
+  - name: created
+    direction: desc
+
 - kind: RecentCommentLog
   properties:
   - name: user

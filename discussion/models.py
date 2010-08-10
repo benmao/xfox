@@ -8,7 +8,7 @@ Copyright (c) 2010 http://sa3.org All rights reserved.
 from google.appengine.ext import db
 from util.decorator import *
 from util.base import *
-from account.models import User
+from account.models import User,Mention
 import datetime
 from dash.models import Counter
 from util.textile import Textile
@@ -181,9 +181,11 @@ class Discussion(db.Model):
         if not self.is_saved():
             self.tag.count_discussion +=1
             self.tag.put()
+            
         #hander format
         self.content_formated = Textile(restricted=True,lite=False,noimage=False).textile(\
             self.content, rel='nofollow',html_type='xhtml')
+        
         self.tag_slug = self.tag.key().name()
         self.tag_title = self.tag.title
         self.slug = self.key().name()
@@ -343,6 +345,8 @@ class Comment(db.Model):
             self.slug = self.key().name()
         self.content_formated = Textile(restricted=True,lite=False,noimage=False).textile(\
             self.content, rel='nofollow',html_type='xhtml')
+        params = {'source_url':self.dis_slug,'source_user':self.user_name}
+        self.content_formated=replace_mention(self.content_formated,params)
         RecentCommentLog.new(self.user,self.dis)
         super(Comment,self).put()
         

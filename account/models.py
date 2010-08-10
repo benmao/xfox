@@ -101,6 +101,21 @@ class Session(db.Model):
 class Role(db.Model):
     pass
 
+class Mention(db.Model):
+    user = db.ReferenceProperty(User)
+    created = db.DateTimeProperty(auto_now_add=True)
+    is_read = db.BooleanProperty(default=False)
+    source_url = db.StringProperty()
+    source_user = db.StringProperty()
+    
+    @classmethod
+    def new(cls,user,source_url,source_user):
+        mention = Mention(user = user,source_url=source_url,source_user=source_user)
+        mention.put()
+        
+    @classmethod
+    def get_mention_by_user(cls,user):
+        return Mention.all().filter('user =',user).filter('is_read =',False).order('-created').fetch(10)
     
 if __name__=='__main__':
     pass

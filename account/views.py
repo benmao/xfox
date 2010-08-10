@@ -11,9 +11,10 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 from  util.handler import PublicHandler,PublicWithSidebarHandler
 import settings
-from account.models import User
+from account.models import User,Mention
 from util.base import *
 from discussion.models import Discussion,Comment,Bookmark,RecentCommentLog
+from util.decorator import requires_login
 
 class SignUpHandler(PublicHandler):
     def get(self):
@@ -77,6 +78,12 @@ class UserProfileHandler(PublicWithSidebarHandler):
         self.template_value['recent_comment'] = RecentCommentLog.get_recent_comment(u)
         self.template_value['recent_bookmark']= Bookmark.get_recent_bookmark(u)
         self.render('user.html')
+        
+class UserMentionHandler(PublicWithSidebarHandler):
+    @requires_login
+    def get(self):
+        self.template_value['mentions']= Mention.get_mention_by_user(self.user)
+        self.render('mention.html')
 
 class NotFoundHandler(PublicHandler):
     def get(self):
@@ -89,7 +96,8 @@ def main():
                                                      [('/a/signup/',SignUpHandler),
                                                       ('/a/signin/',SignInHandler),
                                                       ('/a/signout/',SignOutHandler),
-                                                      ('/u/(?P<name>[a-z0-9]{3,16})/',UserProfileHandler),
+                                                      ('/a/mention/',UserMentionHandler),
+                                                      ('/u/(?P<name>[a-z0-9A-Z]{3,16})/',UserProfileHandler),
                                                       
                                                       ('/.*',NotFoundHandler),
                                                          ],

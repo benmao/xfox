@@ -10,7 +10,8 @@ import time
 import string
 import md5
 import re
-
+from google.appengine.api.labs import taskqueue
+import logging
 
 def add(x,y):
     return x+y
@@ -91,6 +92,27 @@ def filter_url(url):
     url = re.sub(r'\W+',' ',url)
     url = url.strip()
     return url.replace(' ','-')
-     
+
+def re_mention(value):
+    return re.findall(r'@([a-zA-Z0-9]{3,16}\.?)',value)
+
+def joinstr(*values):
+    return ''.join(values)
+
+def replace_mention(value,params):
+    mentions = re_mention(value)
+    if len(mentions)>0:
+        mentions = set(mentions)
+        num = 0
+        for mention in mentions:
+            if num >5:
+                break  #limit 5 mentions
+            if mention.endswith('.'):
+                continue #should be email
+            value = value.replace(joinstr("@",mention),'@<a href="/u/%s/" >%s</a>' % (mention,mention))
+            params['user']=mention
+            taskqueue.add(url ="/t/u/mention/",params=params)
+            num +=1
+    return value
 if __name__=='__main__':
-    pass
+    print replace_mention("@benben")

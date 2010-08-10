@@ -43,6 +43,10 @@ handlers:
 - url: /g/.*
   script: gs/views.py
 
+- url: /t/u/.*
+  script: task/user.py
+  login: admin
+  
 - url: /test.*
   script: gaeunit.py
   

@@ -13,6 +13,7 @@ from discussion.models import Tag,Discussion,Comment,Bookmark
 import settings
 from util.decorator import requires_login
 from util.paging import PagedQuery
+from google.appengine.api.labs import taskqueue
 
 class TagHandler(PublicWithSidebarHandler):
     def get(self,slug):
