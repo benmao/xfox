@@ -228,6 +228,14 @@ class Discussion(db.Model):
     @classmethod
     def get_recent_dis(cls,user):
         return Discussion.all().filter('user =',user).order('-created').fetch(10)
+    
+    @classmethod
+    def get_feed(cls):
+        return Discussion.all().order('-created').fetch(10)
+    
+    @classmethod
+    def get_feed_by_tag(cls,tag):
+        return Discussion.all().filter('tag =',tag).order('-created').fetch(10)
             
 class Bookmark(db.Model):
     user = db.ReferenceProperty(User)

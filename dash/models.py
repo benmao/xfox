@@ -16,7 +16,7 @@ class Setting(db.Model):
     
     domain = db.StringProperty()
     timedelta = db.FloatProperty(default =8.0)
-    version = "0.0.6"
+    version = "0.0.7"
     
     @delmem("setting") 
     def put(self):

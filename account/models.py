@@ -45,8 +45,6 @@ class User(db.Model):
             self.user_id = Counter.get_max("user").value
         super(User,self).put()
         
-    
-    #classmethod
     @classmethod
     def get_user_by_name(cls,name):
         return User.all().filter("name_lower =",name.lower()).get()
@@ -99,6 +97,10 @@ class Session(db.Model):
             session = Session.get_by_key_name(session_key)
             return None if session is None else session.user
         return _get_user_by_session(session_key)
+    
+class Role(db.Model):
+    pass
+
     
 if __name__=='__main__':
     pass

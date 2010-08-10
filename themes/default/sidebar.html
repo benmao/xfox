@@ -22,7 +22,7 @@
     
     <section class="box radius">
         <h3 class="line1">论坛运行状况</h3>
-        <dl>
+        <dl class="line1">
             <dt>注册会员</dt>
             <dd>{{count_user}}<sub>36</sub></dd>
             <dt>主题</dt>
@@ -30,5 +30,11 @@
             <dt>评论</dt>
             <dd>{{count_comment}}<sub>36</sub></dd>
         </dl>
+        
+        {% if tag %}
+        <a href="/f/{{tag.key.name}}/" class="feed"><span>RSS订阅{{tag.title}}更新</span></a>
+        {% else %}
+        <a href="/f/" class="feed">RSS订阅更新</a>
+        {% endif %}
     </section>
 </section>

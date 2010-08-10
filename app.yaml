@@ -37,6 +37,9 @@ handlers:
 - url: /b/.*
   script: discussion/views.py
   
+- url: /f/.*
+  script: discussion/views.py
+  
 - url: /g/.*
   script: gs/views.py
 

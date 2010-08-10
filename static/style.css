@@ -418,15 +418,15 @@ textarea:focus {
 }
 
 .bookmark {
-	background: url('static/images/star_sprite.png') top center no-repeat;
+	background: url('/static/images/star_sprite.png') top center no-repeat;
 }
 
 .bookmarked {
-	background: url('static/images/star_sprite.png') center center no-repeat;
+	background: url('/static/images/star_sprite.png') center center no-repeat;
 }
 
 .bookmark {
-	background: url('static/images/star_sprite.png') bottom center no-repeat;
+	background: url('/static/images/star_sprite.png') bottom center no-repeat;
 }
 
 .list{
@@ -437,4 +437,14 @@ textarea:focus {
 .list td{
 	border-bottom:1px dashed #39F;
 	padding:3px 3px 3px 0;
+}
+
+.feed{
+	border-top:1px dashed #39F;
+	display:block;
+	width:100%;
+}
+
+.feed span{
+	margin:5px 10px;
 }

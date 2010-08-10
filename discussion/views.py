@@ -129,6 +129,25 @@ class BookmarkHandler(PublicHandler):
             Bookmark.do_bookmark(self.user,dis)
         self.redirect(dis.url)
         
+class FeedIndexHandler(PublicHandler):
+    def get(self):
+        diss = Discussion.get_feed()
+        self.template_value['diss']=diss
+        self.template_value['lastupdated']=diss[0].created
+        self.render('rss.xml')
+        
+        
+class FeedTagHandler(PublicHandler):
+    def get(self,key):
+        tag = Tag.get_by_key_name(key)
+        if tag is None:
+            return self.error(404)
+        diss = Discussion.get_feed_by_tag(tag)
+        self.template_value['diss']=diss
+        self.template_value['lastupdated']=diss[0].created
+        self.render('rss.xml')
+        
+                
 class NotFoundHandler(PublicHandler):
     def get(self):
         self.error(404)
@@ -142,6 +161,8 @@ def main():
                                                           ('/p/(?P<slug>[a-z0-9-]{2,})/',PostDisscussionHandler),
                                                           ('/p/(?P<slug>[a-z0-9-]{2,})/(?P<key>[a-z0-9]+)/',EditDisscussionHandler),
                                                           ('/b/?',BookmarkHandler),
+                                                          ('/f/',FeedIndexHandler),
+                                                          ('/f/(?P<key>[a-z0-9-]{2,})/',FeedTagHandler),
                                                           ('/(?P<slug>[a-z0-9-]{2,})/', TagHandler),
                                                           ('/(?P<slug>[a-z0-9-]{2,})/(?P<key>[a-z0-9]+)/',DiscussionHandler),
                                                           ('/.*',NotFoundHandler),
