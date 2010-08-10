@@ -46,6 +46,12 @@ indexes:
   - name: created
     direction: desc
 
+- kind: GSFile
+  properties:
+  - name: user
+  - name: created
+    direction: desc
+
 - kind: RecentCommentLog
   properties:
   - name: user

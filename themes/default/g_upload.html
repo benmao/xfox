@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{%block head %}
+<title>{{setting.title}} > Index</title>
+{% endblock %}
+
+{%block body %}
+    	<section id="content" class="w680">
+			<section class="box radius">
+                <h3>图片上传</h3>
+                <form method="post" action="/g/upload/" enctype="multipart/form-data">
+            	<p>
+                <label for="file">选择图片文件</label>
+                <input type="file"  name="file" class="input_box" />
+            	</p>
+
+                <p>
+    
+                    <input type="submit" value="上传" class="button radius" />
+                </p>
+                </form>
+    		</section>
+        </section>
+     <!--sidebar include -->
+     {% include "sidebar.html" %}
+{% endblock %}

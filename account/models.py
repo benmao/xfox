@@ -38,7 +38,6 @@ class User(db.Model):
     
     comment_sort = db.BooleanProperty(default=False)
     user_id = db.StringProperty()
-    
     def put(self):
         if not self.is_saved():
             self.name_lower = self.name.lower()

@@ -25,7 +25,7 @@ class MainHandler(PublicWithSidebarHandler):
 class UpdateHandler(PublicHandler):
     def get(self):
         pass
-            
+    
 class NotFoundHandler(PublicHandler):
     def get(self):
         self.error(404)

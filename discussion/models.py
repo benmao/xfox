@@ -326,6 +326,7 @@ class Comment(db.Model):
         if not self.is_saved():
             self.user.count_comments +=1
             self.user.put()
+            
             self.dis.count_comment +=1
             self.dis.last_comment_by = self.user.name
             self.dis.put()
@@ -346,6 +347,7 @@ class Comment(db.Model):
         comment = Comment(key_name =key_name,user=user,dis = dis ,content=content,f=f)
         comment.put()
         return comment
+    
     @classmethod
     def get_by_dis(cls,dis,page=1):
         return Comment.all().filter('dis =',dis)

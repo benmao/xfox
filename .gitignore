@@ -1,3 +1,4 @@
+boto/*
 *.pyc
 *.pyo
 app.yaml

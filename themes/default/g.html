@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{%block head %}
+<title>{{setting.title}} > Index</title>
+{% endblock %}
+
+{%block body %}
+    	<section id="content" class="w680">
+			<section class="box radius">
+                <h3>图片列表|<a href="/g/upload/">上传</a></h3>
+                <table class="list">
+                	<tr>
+                    	<td>地址</td>
+                        <td>大小</td>
+                        <td>类型</td>
+                        <td>操作</td>
+                    </tr>
+                    {% for gs in gss %}
+                    <tr>
+                    	<td><a href="{{gs.url}}">{{gs.url}}</a></td>
+                        <td>{{gs.size}}</td>
+                        <td>{{gs.mime}}</td>
+                        <td><a href="#">复制</a></td>
+                    </tr>
+ 					{% endfor %}
+                </table>
+                
+    		</section>
+        </section>
+     <!--sidebar include -->
+     {% include "sidebar.html" %}
+{% endblock %}
