@@ -1,4 +1,5 @@
 boto/*
+util/markdown/*
 *.pyc
 *.pyo
 app.yaml

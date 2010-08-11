@@ -15,7 +15,7 @@ from discussion.models import Tag,Discussion
 from dash.models import Counter
 from account.models import User
 import settings
-
+from util.wsgi import webapp_add_wsgi_middleware
 class MainHandler(PublicWithSidebarHandler):
 
     #@requires_login
@@ -37,13 +37,13 @@ class NotFoundHandler(PublicHandler):
         self.error(404)
         
 def main():
-    application = webapp.WSGIApplication([
+    application = webapp.WSGIApplication ([
                                         ('/', MainHandler),
                                         ('/e/',UpdateHandler),
                                         ('/.*',NotFoundHandler),
                                         ],
                                          debug=settings.DEBUG)
-    util.run_wsgi_app(application)
-
+#    util.run_wsgi_app(application)
+    util.run_wsgi_app(webapp_add_wsgi_middleware(application))
 if __name__ == '__main__':
     main()

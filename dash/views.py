@@ -89,7 +89,7 @@ class TagNewHandler(AdminHandler):
         description = self.request.get("description")
         category = self.request.get("category")
         roles = self.request.get("role[]",allow_multiple=True)
-        #default roles is Guest
+        #default role is Guest
         if not roles:
             roles = ['G']
         Tag.new(slug,title,key_words,description,category,roles)

@@ -15,6 +15,7 @@ from account.models import User,Mention,UserFollow
 from util.base import *
 from discussion.models import Discussion,Comment,Bookmark,RecentCommentLog,DiscussionFollow
 from util.decorator import requires_login
+from util.wsgi import webapp_add_wsgi_middleware
 
 class SignUpHandler(PublicHandler):
     def get(self):
@@ -124,7 +125,7 @@ def main():
                                                       ('/.*',NotFoundHandler),
                                                          ],
                                          debug=settings.DEBUG)
-    util.run_wsgi_app(application)
+    util.run_wsgi_app(webapp_add_wsgi_middleware(application))
 
 if __name__ == '__main__':
     main()

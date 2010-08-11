@@ -16,6 +16,7 @@ from util.paging import PagedQuery
 from google.appengine.api.labs import taskqueue
 from dash.counter import ShardCount
 from util.acl import check_roles
+from util.wsgi  import webapp_add_wsgi_middleware
 
 class TagHandler(PublicWithSidebarHandler):
     def get(self,slug):
@@ -73,6 +74,10 @@ class PostDisscussionHandler(PublicHandler):
         tag = Tag.get_tag_by_slug(slug)
         if tag is None:
             return self.error(404)
+        
+        if not check_roles(self.role,tag.role):
+            return self.error(403)
+    
         title = self.request.get("title").strip()
         content = self.request.get("content")
         if len(title)>0 and len(content)>0:
@@ -89,6 +94,9 @@ class EditDisscussionHandler(PublicHandler):
         dis = Discussion.get_discussion_by_key(slug,key)
         if dis is None:
             return self.error(404)
+        if not check_roles(self.role,dis.tag.role):
+            return self.error(403)
+        
         if dis.user_name != self.user.name :
             return self.error(403) #shoud be 403 :)
         self.template_value['dis']=dis
@@ -171,18 +179,18 @@ class NotFoundHandler(PublicHandler):
         
 def main():
     application = webapp.WSGIApplication([
-                                                          ('/c/',PostCommentHandler),
-                                                          ('/p/(?P<slug>[a-z0-9-]{2,})/',PostDisscussionHandler),
-                                                          ('/p/(?P<slug>[a-z0-9-]{2,})/(?P<key>[a-z0-9]+)/',EditDisscussionHandler),
+                                                          ('/c/?',PostCommentHandler),
+                                                          ('/p/(?P<slug>[a-z0-9-]{2,})/?',PostDisscussionHandler),
+                                                          ('/p/(?P<slug>[a-z0-9-]{2,})/(?P<key>[a-z0-9]+)/?',EditDisscussionHandler),
                                                           ('/b/?',BookmarkHandler),
-                                                          ('/f/',FeedIndexHandler),
-                                                          ('/f/(?P<key>[a-z0-9-]{2,})/',FeedTagHandler),
-                                                          ('/(?P<slug>[a-z0-9-]{2,})/', TagHandler),
-                                                          ('/(?P<slug>[a-z0-9-]{2,})/(?P<key>[a-z0-9]+)/',DiscussionHandler),
+                                                          ('/f/?',FeedIndexHandler),
+                                                          ('/f/(?P<key>[a-z0-9-]{2,})/?',FeedTagHandler),
+                                                          ('/(?P<slug>[a-z0-9-]{2,})/?', TagHandler),
+                                                          ('/(?P<slug>[a-z0-9-]{2,})/(?P<key>[a-z0-9]+)/?',DiscussionHandler),
                                                           ('/.*',NotFoundHandler),
                                                           ],
                                          debug=settings.DEBUG)
-    util.run_wsgi_app(application)
+    util.run_wsgi_app(webapp_add_wsgi_middleware(application))
 
 if __name__ == '__main__':
     main()

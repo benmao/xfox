@@ -54,6 +54,10 @@ handlers:
 - url: /test.*
   script: gaeunit.py
   
+- url: /stats.*
+  script: $PYTHON_LIB/google/appengine/ext/appstats/ui.py
+  
+  
 - url: /[a-z0-9-]{2,}.*
   script: discussion/views.py
 

@@ -12,6 +12,7 @@ from google.appengine.ext.webapp import util
 from util.handler import PublicHandler,PublicWithSidebarHandler
 from util.decorator import requires_login
 from gs.models import GSFile
+from util.wsgi import webapp_add_wsgi_middleware
 
 class GsFileIndexHandler(PublicWithSidebarHandler):
     @requires_login
@@ -47,7 +48,7 @@ def main():
                                         ('/g/upload/',GsUploadHandler),
                                         ],
                                          debug=settings.DEBUG)
-    util.run_wsgi_app(application)
+    util.run_wsgi_app(webapp_add_wsgi_middleware(application))
 
 if __name__=='__main__':
     main()

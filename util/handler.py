@@ -16,6 +16,7 @@ from google.appengine.api import users
 from discussion.models import Tag
 import re
 from dash.models import Counter
+from util.wsgi import RequestHandler
 
 webapp.template.register_template_library('util.filter')
 
@@ -47,6 +48,9 @@ class PublicHandler(webapp.RequestHandler):
         
         user_agent = self.request.headers.get("User-Agent",'')
         
+        #handler not endswith /
+        if not self.request.path.endswith("/"):
+            return self.redirect(self.request.path+"/",True)
         
     def is_ajax(self):
         '''
@@ -64,9 +68,6 @@ class PublicHandler(webapp.RequestHandler):
         self.response.out.write(template.render(path, self.template_value))
         
     def error(self,code):
-        #handler not endswith /
-        if not self.request.path.endswith("/"):
-            return self.redirect(self.request.path+"/",True)
         
         self.response.set_status(code)
         if code ==404:
