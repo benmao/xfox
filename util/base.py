@@ -103,6 +103,8 @@ def replace_mention(value,params):
     mentions = re_mention(value)
     if len(mentions)>0:
         mentions = set(mentions)
+        mentions = list(mentions)
+        mentions.sort(key = lambda m : len(m),reverse = True)
         num = 0
         for mention in mentions:
             if num >5:
