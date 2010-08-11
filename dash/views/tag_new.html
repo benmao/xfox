@@ -35,10 +35,28 @@
 		<option value="{{cat.key}}">{{cat.title}}</option>
     	{% endfor %}
 		</select> 
-
-	</li>
-    {% endif %}  
-</ul>
+    {% endif %} 
+     </li>
+    <li>
+    <table class="CheckBoxGrid">
+    <thead>
+    <tr>
+    <th style="padding: 0px;"><a href="#">用户组</a></th>
+    <td class="Alt" style="padding: 0px;"><a href="#">View</a></td>
+    </tr></thead>
+    <tbody>
+    {% for role in roles %}
+    <tr>
+    <th style="padding: 0px;"><a href="#">{{role.name}}</a></th>
+    <td class="Alt"><input type="checkbox"  value="{{role.key}}" name="role[]" {% if role.checked%} checked="checked" {% endif %} /></td>
+    </tr>
+    {% endfor %}
+    </tr>
+    
+    </tbody></table>
+    
+    </li>
+</ul>	
 <input value="Save" class="Button" type="submit">
 </form>
 

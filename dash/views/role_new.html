@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{% if role %}Modify {% else %}Add{% endif %} Role</h1>
+<form id="Form_User" method="post" action="/d/role/new/" class="User">
+<ul>
+   <li>
+    <label for="name">Name</label>
+	<input id="name" name="name" value="{%if role %}{{role.name}}{% endif %}" class="InputBox" type="text">   
+	</li>
+
+ 	<li>
+    <label for="description">Description</label>
+    <textarea id="description" name="description" rows="6" cols="100" class="TextBox">{%if role %}{{role.description}}{% endif %}</textarea>   
+    </li>
+</ul>
+<input value="Save" class="Button" type="submit">
+</form>
+
+{% endblock %}

@@ -15,6 +15,7 @@ from util.decorator import requires_login
 from util.paging import PagedQuery
 from google.appengine.api.labs import taskqueue
 from dash.counter import ShardCount
+from util.acl import check_roles
 
 class TagHandler(PublicWithSidebarHandler):
     def get(self,slug):
@@ -22,6 +23,11 @@ class TagHandler(PublicWithSidebarHandler):
         tag = Tag.get_tag_by_slug(slug)
         if tag is None:
             return self.error(404)
+        
+        #check ACL
+        if not check_roles(self.role,tag.role):
+            return self.error(403)
+        
         self.template_value['tag']=tag
        
         diss = Discussion.get_by_tag(tag)
@@ -39,6 +45,11 @@ class DiscussionHandler(PublicWithSidebarHandler):
         dis = Discussion.get_discussion_by_key(slug,key)
         if dis is None:
             return self.error(404)
+        
+        #check ACL
+        if not check_roles(self.role,dis.tag.role):
+            return self.error(403)
+        
         self.template_value['disviews']=ShardCount.get_increment_count("disviews:"+key,"disviews")
         self.template_value['dis']=dis
         bookmark = Bookmark.get_bookmark(self.user,dis) if self.user else None

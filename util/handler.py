@@ -38,9 +38,12 @@ class PublicHandler(webapp.RequestHandler):
         logging.info("session_key:%s" % (self.session_key))
         
         self.user = None
+        self.role = ['G'] #Guest User
         if not self.session_key is None and len(self.session_key)==32:
             self.user = Session.get_user_by_session(self.session_key)
+            self.role = self.user.role
         self.template_value['user']=self.user
+        self.template_value['role']=self.role
         
         user_agent = self.request.headers.get("User-Agent",'')
         

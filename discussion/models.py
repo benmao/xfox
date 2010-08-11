@@ -83,6 +83,7 @@ class Tag(db.Model):
     allow_comment = db.BooleanProperty(default =True)
     is_draft = db.BooleanProperty(default =False)
     
+    role = db.StringListProperty()
     @delmem("tags")
     def put(self):
         if not self.is_saved(): #create
@@ -122,7 +123,7 @@ class Tag(db.Model):
         return Tag.get_by_key_name(slug)
     
     @classmethod
-    def new(cls,slug,title,key_words,description,category):
+    def new(cls,slug,title,key_words,description,category,role):
         '''
         Notice:http://code.google.com/intl/en/appengine/docs/python/datastore/keysandentitygroups.html
         '''
@@ -134,6 +135,7 @@ class Tag(db.Model):
         tag.key_words=key_words
         tag.description=description
         tag.category = Category.get(category)
+        tag.role = role
         tag.put()
         return tag
     

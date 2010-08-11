@@ -39,11 +39,14 @@ class User(db.Model):
     comment_sort = db.BooleanProperty(default=False)
     user_id = db.StringProperty()
     
+    role = db.StringListProperty()
     def put(self):
         if not self.is_saved():
             self.name_lower = self.name.lower()
             self.email = self.email.lower()
             self.user_id = Counter.get_max("user").value
+            self.role.append("M")
+            self.role.append("G")
         super(User,self).put()
     
     
@@ -161,8 +164,6 @@ class Session(db.Model):
             return None if session is None else session.user
         return _get_user_by_session(session_key)
     
-class Role(db.Model):
-    pass
 
 class Mention(db.Model):
     user = db.ReferenceProperty(User)
@@ -179,6 +180,21 @@ class Mention(db.Model):
     @classmethod
     def get_mention_by_user(cls,user):
         return Mention.all().filter('user =',user).filter('is_read =',False).order('-created').fetch(10)
+    
+class Role(db.Model):
+    name = db.StringProperty(required=True)
+    description = db.StringProperty()
+    k = db.StringProperty()
+    
+    @classmethod
+    def new(cls,name,description):
+        role = Role.all().filter('name =',name).get()
+        if role is None:
+            role = Role(k=Counter.get_max("role").value, name = name)
+        role.name = name
+        role.description = description
+        role.put()
+        
     
 if __name__=='__main__':
     pass

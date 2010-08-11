@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Manager Role</h1>
+<div class="FilterMenu">
+   <a href="/d/role/new/" class="Popup SmallButton">Add Role</a>
+</div>
+<table id="Category" class="AltColumns">
+   <thead>
+      <tr>
+         <th>Name</th>
+         <th class="Alt">k</th>
+         <th>Options</th></tr>
+   </thead>
+   <tbody>
+   {% for role in roles %}
+   <tr class="Alt">
+      <td><strong>{{role.name}}</strong></td>
+      <td class="Alt">{{role.k}}</td>
+	  <td><a href="/d/role/new/?key={{role.key}}" >Edit</a></td>
+   </tr>
+  	{% endfor %}
+   </tbody>
+
+</table>
+
+{% endblock %}

@@ -24,7 +24,10 @@ class MainHandler(PublicWithSidebarHandler):
     
 class UpdateHandler(PublicHandler):
     def get(self):
-        pass
+        users = User.all()
+        for user in users:
+            user.role = ['M','G']
+            user.put()
     
 class NotFoundHandler(PublicHandler):
     def get(self):
