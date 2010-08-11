@@ -8,11 +8,12 @@ Copyright (c) 2010 http://sa3.org All rights reserved.
 from google.appengine.ext import db
 from util.decorator import *
 from util.base import *
-from account.models import User,Mention
+from account.models import User,Mention,UserFollow
 import datetime
 from dash.models import Counter
 from util.textile import Textile
 from util.paging import PagedQuery
+from google.appengine.api.labs import taskqueue
 
 class Category(db.Model):
     '''
@@ -181,7 +182,7 @@ class Discussion(db.Model):
         if not self.is_saved():
             self.tag.count_discussion +=1
             self.tag.put()
-            
+            taskqueue.add( url ='/t/d/follow/' ,params = {'dis':self.key()}) 
         #hander format
         self.content_formated = Textile(restricted=True,lite=False,noimage=False).textile(\
             self.content, rel='nofollow',html_type='xhtml')
@@ -380,6 +381,24 @@ class RecentCommentLog(db.Model):
     def get_recent_comment(cls,user):
         tmp = RecentCommentLog.all().filter('user =',user).order('-last_comment').fetch(10)
         return [t.dis for t in tmp]
+    
+class DiscussionFollow(db.Model):
+    dis = db.ReferenceProperty(Discussion)
+    user= db.ReferenceProperty(User)
+    created = db.DateTimeProperty(auto_now_add = True)
+    is_read = db.BooleanProperty(default = False)
+    
+    @classmethod
+    def new(cls,dis):
+        obj = Discussion.get(dis)
+        followers = UserFollow.get_follower(obj.user)
+        for follower in followers:
+            disf = DiscussionFollow(dis=obj,user = follower)
+            disf.put()
+    
+    @classmethod
+    def get_dis_by_user(cls,user):
+        return [df.dis for df in DiscussionFollow.all().filter("user =",user).filter("is_read =",False).order('-created').fetch(100)]
     
 if __name__=='__main__':
     pass

@@ -19,6 +19,8 @@ def mem(key, time=3600):
                 data = fxn(*args, **kwargs)
                 logging.info("get data from db,key:%s" % key)
                 memcache.set(key, data, time)
+            else:
+                logging.info("get data from memcache :%s" % key)
             return data
         return wrapper
     return decorator

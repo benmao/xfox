@@ -11,9 +11,9 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 from  util.handler import PublicHandler,PublicWithSidebarHandler
 import settings
-from account.models import User,Mention
+from account.models import User,Mention,UserFollow
 from util.base import *
-from discussion.models import Discussion,Comment,Bookmark,RecentCommentLog
+from discussion.models import Discussion,Comment,Bookmark,RecentCommentLog,DiscussionFollow
 from util.decorator import requires_login
 
 class SignUpHandler(PublicHandler):
@@ -74,6 +74,7 @@ class UserProfileHandler(PublicWithSidebarHandler):
         if u is None:
             return self.error(404)
         self.template_value['u']=u
+        self.template_value['is_following']=UserFollow.is_following(self.user,name)
         self.template_value['recent_dis']= Discussion.get_recent_dis(u)
         self.template_value['recent_comment'] = RecentCommentLog.get_recent_comment(u)
         self.template_value['recent_bookmark']= Bookmark.get_recent_bookmark(u)
@@ -84,7 +85,25 @@ class UserMentionHandler(PublicWithSidebarHandler):
     def get(self):
         self.template_value['mentions']= Mention.get_mention_by_user(self.user)
         self.render('mention.html')
-
+        
+class UserFollowIndexHandler(PublicWithSidebarHandler):
+    @requires_login
+    def get(self):
+        self.template_value['diss'] = DiscussionFollow.get_dis_by_user(self.user)
+        self.render("follow.html")
+        
+class UserFollowHandler(PublicWithSidebarHandler):
+    @requires_login
+    def get(self,name):
+        UserFollow.add_follow(self.user,name)
+        self.redirect("/u/%s/" % name)
+        
+class UserUnFollowHandler(PublicWithSidebarHandler):
+    @requires_login
+    def get(self,name):
+        UserFollow.unfollow(self.user,name)
+        self.redirect("/u/%s/" % name)
+        
 class NotFoundHandler(PublicHandler):
     def get(self):
         self.error(404)
@@ -97,6 +116,9 @@ def main():
                                                       ('/a/signin/',SignInHandler),
                                                       ('/a/signout/',SignOutHandler),
                                                       ('/a/mention/',UserMentionHandler),
+                                                      ('/a/follow/', UserFollowIndexHandler),
+                                                      ('/a/follow/(?P<name>[a-z0-9A-Z]{3,16})/',UserFollowHandler),
+                                                      ('/a/unfollow/(?P<name>[a-z0-9A-Z]{3,16})/',UserUnFollowHandler),
                                                       ('/u/(?P<name>[a-z0-9A-Z]{3,16})/',UserProfileHandler),
                                                       
                                                       ('/.*',NotFoundHandler),

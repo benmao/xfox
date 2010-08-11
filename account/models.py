@@ -38,13 +38,15 @@ class User(db.Model):
     
     comment_sort = db.BooleanProperty(default=False)
     user_id = db.StringProperty()
+    
     def put(self):
         if not self.is_saved():
             self.name_lower = self.name.lower()
             self.email = self.email.lower()
             self.user_id = Counter.get_max("user").value
         super(User,self).put()
-        
+    
+    
     @classmethod
     def get_user_by_name(cls,name):
         return User.all().filter("name_lower =",name.lower()).get()
@@ -74,6 +76,67 @@ class User(db.Model):
             session = Session.new(user,30) #30days
             return user,session
         return None,None
+    
+        
+class UserFollow(db.Model):
+    user = db.ReferenceProperty(User)
+    following = db.ListProperty(db.Key)
+    following_name = db.StringListProperty()
+    
+    @classmethod
+    def add_follow(cls,user,name):
+        name = name.lower()
+        if user.name_lower == name:
+            return False
+        follow = User.get_user_by_name(name)
+        if follow is None:
+            return False
+        user_follow = UserFollow.get_userfollow(user)
+        if name in user_follow.following_name:
+            return False
+        user_follow.following.append(follow.key())
+        user_follow.following_name.append(name)
+        user_follow.put()
+        return True
+    
+    @classmethod
+    def unfollow(cls,user,name):
+        name = name.lower()
+        follow = User.get_user_by_name(name)
+        if follow is None:
+            return False
+        user_follow = UserFollow.get_userfollow(user)
+        if name in user_follow.following_name:
+            user_follow.following.remove(follow.key())
+            user_follow.following_name.remove(name)
+            user_follow.put()
+            return True
+        return False
+
+    @classmethod
+    def get_userfollow(cls,user):
+        user_follow = UserFollow.all().filter('user =',user).get()
+        if user_follow is None:
+            user_follow = UserFollow(user=user)
+            user_follow.following=[]
+            user_follow.following_name=[]
+        return user_follow
+        
+    @classmethod
+    def get_following(cls,user):
+        return UserFollow.get_userfollow(user).following
+    
+    @classmethod
+    def get_following_name(cls,user):
+        return UserFollow.get_userfollow(user).following_name
+    
+    @classmethod
+    def is_following(cls,user,name):
+        return name.lower() in UserFollow.get_following_name(user)
+    
+    @classmethod
+    def get_follower(cls,user):
+        return [uf.user for uf in UserFollow.all().filter('following =',user.key()).fetch(100)]
     
 class Session(db.Model):
     user = db.ReferenceProperty(User)

@@ -901,7 +901,7 @@ class Textile(object):
 
     def code(self, text):
         text = self.doSpecial(text, '<code>', '</code>', self.fCode)
-        text = self.doSpecial(text, '@', '@', self.fCode)
+        #text = self.doSpecial(text, '@', '@', self.fCode)
         text = self.doSpecial(text, '<pre>', '</pre>', self.fPre)
         return text
 

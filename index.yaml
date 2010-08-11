@@ -46,6 +46,13 @@ indexes:
   - name: created
     direction: desc
 
+- kind: DiscussionFollow
+  properties:
+  - name: is_read
+  - name: user
+  - name: created
+    direction: desc
+
 - kind: GSFile
   properties:
   - name: user

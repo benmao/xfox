@@ -14,6 +14,7 @@ import settings
 from util.decorator import requires_login
 from util.paging import PagedQuery
 from google.appengine.api.labs import taskqueue
+from dash.counter import ShardCount
 
 class TagHandler(PublicWithSidebarHandler):
     def get(self,slug):
@@ -38,6 +39,7 @@ class DiscussionHandler(PublicWithSidebarHandler):
         dis = Discussion.get_discussion_by_key(slug,key)
         if dis is None:
             return self.error(404)
+        self.template_value['disviews']=ShardCount.get_increment_count("disviews:"+key,"disviews")
         self.template_value['dis']=dis
         bookmark = Bookmark.get_bookmark(self.user,dis) if self.user else None
         self.template_value['bookmark'] = bookmark

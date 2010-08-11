@@ -6,7 +6,13 @@
 {%block body %}
     	<section id="content" class="w680">
         	<section class="box radius" id="user">
-            	<h3 class="line1">用户介绍</h3>
+            	<h3 class="line1">用户介绍|
+                {% if is_following %}
+                <a href="/a/unfollow/{{u.name_lower}}/">Un Follow</a>
+                {% else %}
+                <a href="/a/follow/{{u.name_lower}}/">Follow</a>
+                {% endif %}
+                </h3>
             	<p> {{u.name}} 是xFox的第<strong>{{u.user_id}}<sub>36</sub></strong>个成员。</p>
             </section>
             
