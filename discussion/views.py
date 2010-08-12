@@ -15,7 +15,7 @@ from util.decorator import requires_login
 from util.paging import PagedQuery
 from google.appengine.api.labs import taskqueue
 from dash.counter import ShardCount
-from util.acl import check_roles
+from util.acl import check_roles,check_roles_feed
 from util.wsgi  import webapp_add_wsgi_middleware
 
 class TagHandler(PublicWithSidebarHandler):
@@ -26,8 +26,7 @@ class TagHandler(PublicWithSidebarHandler):
             return self.error(404)
         
         #check ACL
-        if not check_roles(self.role,tag.role):
-            return self.error(403)
+        check_roles(self,tag.role)
         
         self.template_value['tag']=tag
        
@@ -48,9 +47,8 @@ class DiscussionHandler(PublicWithSidebarHandler):
             return self.error(404)
         
         #check ACL
-        if not check_roles(self.role,dis.tag.role):
-            return self.error(403)
-        
+        check_roles(self,dis.role)
+
         self.template_value['disviews']=ShardCount.get_increment_count("disviews:"+key,"disviews")
         self.template_value['dis']=dis
         bookmark = Bookmark.get_bookmark(self.user,dis) if self.user else None
@@ -66,6 +64,10 @@ class PostDisscussionHandler(PublicHandler):
         tag = Tag.get_tag_by_slug(slug)
         if tag is None:
             return self.error(404)
+        
+        #check ACL
+        check_roles(self,tag.role)
+        
         self.template_value['tag']=tag
         self.render('p.html')
         
@@ -75,9 +77,10 @@ class PostDisscussionHandler(PublicHandler):
         if tag is None:
             return self.error(404)
         
-        if not check_roles(self.role,tag.role):
-            return self.error(403)
+        #check ACL
+        check_roles(self,tag.role)
     
+        
         title = self.request.get("title").strip()
         content = self.request.get("content")
         if len(title)>0 and len(content)>0:
@@ -94,8 +97,9 @@ class EditDisscussionHandler(PublicHandler):
         dis = Discussion.get_discussion_by_key(slug,key)
         if dis is None:
             return self.error(404)
-        if not check_roles(self.role,dis.tag.role):
-            return self.error(403)
+        
+        #check ACL
+        check_roles(self,dis.role)
         
         if dis.user_name != self.user.name :
             return self.error(403) #shoud be 403 :)
@@ -164,6 +168,11 @@ class FeedTagHandler(PublicHandler):
         tag = Tag.get_by_key_name(key)
         if tag is None:
             return self.error(404)
+        
+        #check feed ACL
+        if not check_roles_feed(self,tag.role):
+            return self.error(403)
+    
         diss = Discussion.get_feed_by_tag(tag)
         self.template_value['diss']=diss
         self.template_value['lastupdated']=diss[0].created

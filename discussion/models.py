@@ -180,6 +180,7 @@ class Discussion(db.Model):
     f = db.StringProperty() #format type
     is_closed = db.BooleanProperty(default = False)
     
+    role = db.StringListProperty()
     def put(self):
         if not self.is_saved():
             self.tag.count_discussion +=1
@@ -188,7 +189,7 @@ class Discussion(db.Model):
         #hander format
         self.content_formated = Textile(restricted=True,lite=False,noimage=False).textile(\
             self.content, rel='nofollow',html_type='xhtml')
-        
+        self.role = self.tag.role
         self.tag_slug = self.tag.key().name()
         self.tag_title = self.tag.title
         self.slug = self.key().name()
@@ -236,7 +237,7 @@ class Discussion(db.Model):
     
     @classmethod
     def get_feed(cls):
-        return Discussion.all().order('-created').fetch(10)
+        return Discussion.all().filter('role =','G').order('-created').fetch(10)
     
     @classmethod
     def get_feed_by_tag(cls,tag):

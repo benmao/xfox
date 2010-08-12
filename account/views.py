@@ -48,6 +48,8 @@ class SignUpHandler(PublicHandler):
         
 class SignInHandler(PublicHandler):
     def get(self):
+        if not self.user is None: #have logined
+            self.redirect("/")
         self.template_value['go'] = self.request.get("go")
         self.render("signin.html")
     
@@ -105,6 +107,10 @@ class UserUnFollowHandler(PublicWithSidebarHandler):
         UserFollow.unfollow(self.user,name)
         self.redirect("/u/%s/" % name)
         
+class UserNotAllowedHandler(PublicHandler):
+    def get(self):
+        self.render("not_allow.html")
+        
 class NotFoundHandler(PublicHandler):
     def get(self):
         self.error(404)
@@ -121,6 +127,7 @@ def main():
                                                       ('/a/follow/(?P<name>[a-z0-9A-Z]{3,16})/',UserFollowHandler),
                                                       ('/a/unfollow/(?P<name>[a-z0-9A-Z]{3,16})/',UserUnFollowHandler),
                                                       ('/u/(?P<name>[a-z0-9A-Z]{3,16})/',UserProfileHandler),
+                                                      ('/a/notallowed/',UserNotAllowedHandler),
                                                       
                                                       ('/.*',NotFoundHandler),
                                                          ],

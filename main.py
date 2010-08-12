@@ -24,10 +24,10 @@ class MainHandler(PublicWithSidebarHandler):
     
 class UpdateHandler(PublicHandler):
     def get(self):
-        users = User.all()
-        for user in users:
-            user.role = ['M','G']
-            user.put()
+        for dis in Discussion.all():
+            dis.role = dis.tag.role
+            dis.put()
+            
     
 class NotFoundHandler(PublicHandler):
     def get(self):

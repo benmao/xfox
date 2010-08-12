@@ -68,12 +68,12 @@ class PublicHandler(webapp.RequestHandler):
         self.response.out.write(template.render(path, self.template_value))
         
     def error(self,code):
-        
         self.response.set_status(code)
         if code ==404:
             self.render("404.html")
         elif code ==403:
             self.render("403.html")
+    
             
 class PublicWithSidebarHandler(PublicHandler):
     def initialize(self,request,response):

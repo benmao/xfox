@@ -29,6 +29,12 @@ indexes:
 
 - kind: Discussion
   properties:
+  - name: role
+  - name: created
+    direction: desc
+
+- kind: Discussion
+  properties:
   - name: tag
   - name: created
     direction: desc
