@@ -25,8 +25,7 @@ class MainHandler(PublicWithSidebarHandler):
 class UpdateHandler(PublicHandler):
     def get(self):
         #update dis_comments
-        for dis in Discussion.all():
-            
+        pass
             
     
 class NotFoundHandler(PublicHandler):
