@@ -17,6 +17,7 @@ from discussion.models import Tag
 import re
 from dash.models import Counter
 from util.wsgi import RequestHandler
+from util.decorator import mem
 
 webapp.template.register_template_library('util.filter')
 
@@ -79,9 +80,22 @@ class PublicWithSidebarHandler(PublicHandler):
     def initialize(self,request,response):
         PublicHandler.initialize(self,request,response)
         self.template_value['tags']=Tag.get_all()
-        self.template_value['count_user'] = Counter.get_count("user").value
-        self.template_value['count_discussion'] = Counter.get_count("discussion").value
-        self.template_value['count_comment'] = Counter.get_count("comment").value
+        
+        @mem('count_user',600)
+        def count_user():
+            return Counter.get_count("user").value
+        @mem('count_discussion',600)
+        def count_discussion():
+            return Counter.get_count("discussion").value
+        @mem("count_comment",600)
+        def count_comment():
+            return Counter.get_count("comment").value
+        
+        self.template_value['count_user'] = count_user()
+        self.template_value['count_discussion'] = count_discussion()
+        self.template_value['count_comment'] = count_comment()
+        
+
     
 class AdminHandler(webapp.RequestHandler):
     def initialize(self,request,response):

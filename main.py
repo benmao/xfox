@@ -24,9 +24,9 @@ class MainHandler(PublicWithSidebarHandler):
     
 class UpdateHandler(PublicHandler):
     def get(self):
+        #update dis_comments
         for dis in Discussion.all():
-            dis.role = dis.tag.role
-            dis.put()
+            
             
     
 class NotFoundHandler(PublicHandler):

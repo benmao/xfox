@@ -188,9 +188,10 @@ class Discussion(db.Model):
     edit_number = db.IntegerProperty(default=1)
     
     last_comment_by = db.StringProperty()
-    last_comment = db.DateTimeProperty(auto_now=True)
+    last_comment = db.DateTimeProperty(auto_now_add=True)
    
     count_bookmark=db.IntegerProperty(default=0)
+    count_comment = db.IntegerProperty(default=0)
     
     source = db.StringProperty(required=False)
     is_draft = db.BooleanProperty(default =False)
@@ -363,8 +364,10 @@ class Comment(db.Model):
     def put(self):
         if not self.is_saved():
             ShardCount.get_increment_count("usercomments:"+self.user.name,"usercomments")
-            ShardCount.get_increment_count("discomments:"+self.dis.key().name(),"discomments")
+            #ShardCount.get_increment_count("discomments:"+self.dis.key().name(),"discomments")
+            self.dis.count_comment+=1
             self.dis.last_comment_by = self.user.name
+            self.dis.last_comment = datetime.datetime.now()
             self.dis.put()
             self.user_name = self.user.name
             self.dis_slug = self.dis.url
