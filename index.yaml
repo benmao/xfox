@@ -87,3 +87,8 @@ indexes:
   properties:
   - name: key_name
   - name: exp_date
+
+- kind: ShardCount
+  properties:
+  - name: name
+  - name: count

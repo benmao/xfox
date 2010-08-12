@@ -10,6 +10,7 @@ ROLE= {
     'M':['Member','Member User'],
     'A':['Administrator','Administrator'],
     'G':['Guest','Guest'],
+    'N':['Nobody','Nobody'],
 }
 
 def get_roles():

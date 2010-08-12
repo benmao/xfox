@@ -7,7 +7,7 @@ Copyright (c) 2010 http://sa3.org All rights reserved.
 """
 
 from google.appengine.ext import db
-from util.decorator import mem
+from util.decorator import mem,delmem
 from google.appengine.api import memcache
 import random
 
@@ -25,13 +25,43 @@ class ShardCount(db.Model):
     
     @classmethod
     def get_count(cls,name):
-        @mem(name,60)
+        @mem(name,60*10)
         def _get_count(name):
             total = 0
             for counter in  ShardCount.all().filter('name =',name):
                 total +=counter.count
             return total
         return _get_count(name)
+    
+    @classmethod
+    def set_count(cls,name,num):
+        @delmem(name)
+        def _set_count(name,num):
+            sharecounts = ShardCount.all().filter('name =',name).fetch(30)
+            for sharecount in sharecounts:
+                sharecount.count =0
+                sharecount.put()
+                
+            if sharecounts :
+                sharecounts[0].count = num
+                sharecounts[0].put()
+        return _set_count(name,num)
+
+    @classmethod
+    def decrement(cls,name,num=1):
+        t = num
+        def txn(num):
+            sharecounts = ShardCount.all().filter('name =',name).order('count').fetch(30)
+            for sharecount in sharecounts:
+                if sharecount.count >= num:
+                    sharecount.count -= num
+                    sharecount.put()
+                    return 
+                num -= sharecount.count
+                sharecount.count = 0
+                sharecount.put()
+        txn(num)
+        memcache.decr(name,t)
     
     @classmethod
     def increment(cls,name,model_type,num=1):
@@ -48,6 +78,7 @@ class ShardCount(db.Model):
             counter.put()
         db.run_in_transaction(txn)
         memcache.incr(name,num)
+        
 
 if __name__=='__main__':
     pass

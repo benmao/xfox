@@ -53,8 +53,8 @@ class DiscussionHandler(PublicWithSidebarHandler):
         self.template_value['dis']=dis
         bookmark = Bookmark.get_bookmark(self.user,dis) if self.user else None
         self.template_value['bookmark'] = bookmark
-        comments = Comment.get_by_dis(dis)
-        self.template_value['comments'] = comments if comments.count()>0 else None
+        comments = Comment.get_by_dis(dis).fetch_page(1)
+        self.template_value['comments'] = comments
         self.render("dis.html")
         
 class PostDisscussionHandler(PublicHandler):

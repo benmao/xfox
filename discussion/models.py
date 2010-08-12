@@ -15,6 +15,7 @@ from util.textile import Textile
 from util.paging import PagedQuery
 import markdown
 from google.appengine.api.labs import taskqueue
+from dash.counter import ShardCount
 
 def get_textile(value):
     return Textile(restricted = True,lite=False,noimage=False).textile(value,rel='nofollow',html_type='xhtml')
@@ -96,11 +97,14 @@ class Tag(db.Model):
     is_draft = db.BooleanProperty(default =False)
     
     role = db.StringListProperty()
+    
     @delmem("tags")
     def put(self):
         if not self.is_saved(): #create
             self.category.count_tag +=1
             self.category.put() #add category tag count
+        else:
+            memcache.delete("tag:%s" % self.key().name()) #delete memcache
         super(Tag,self).put()
         
     def delete(self):
@@ -127,12 +131,11 @@ class Tag(db.Model):
         return Tag.all().filter("is_draft =",True)
     
     @classmethod
-    def check_slug(cls,slug):
-        return Tag.get_by_key_name(slug)
-    
-    @classmethod
     def get_tag_by_slug(cls,slug):
-        return Tag.get_by_key_name(slug)
+        @mem("tag:%s" % slug)
+        def _x(slug):
+            return Tag.get_by_key_name(slug)
+        return _x(slug)
     
     @classmethod
     def new(cls,slug,title,key_words,description,category,role):
@@ -140,7 +143,9 @@ class Tag(db.Model):
         Notice:http://code.google.com/intl/en/appengine/docs/python/datastore/keysandentitygroups.html
         '''
         slug = filter_url(slug)
-        tag = Tag.check_slug(slug)
+        if len(slug)<2:
+            return None
+        tag = Tag.get_by_key_name(slug)
         if  tag is None:
             tag = Tag(key_name = slug)
         tag.title=title
@@ -179,11 +184,12 @@ class Discussion(db.Model):
     user_name = db.StringProperty()
     
     created = db.DateTimeProperty(auto_now_add=True)
-    last_updated = db.DateTimeProperty(auto_now=True) 
+    last_updated = db.DateTimeProperty(auto_now_add = True) #update 
+    edit_number = db.IntegerProperty(default=1)
+    
     last_comment_by = db.StringProperty()
     last_comment = db.DateTimeProperty(auto_now=True)
    
-    count_comment =db.IntegerProperty(default=0)
     count_bookmark=db.IntegerProperty(default=0)
     
     source = db.StringProperty(required=False)
@@ -193,11 +199,20 @@ class Discussion(db.Model):
     is_closed = db.BooleanProperty(default = False)
     
     role = db.StringListProperty()
+    
+    @delmem("feeddiscussion")
     def put(self):
         if not self.is_saved():
-            self.tag.count_discussion +=1
-            self.tag.put()
+            ShardCount.get_increment_count("tagcount:"+self.tag.key().name(),"tagcount")
             taskqueue.add( url ='/t/d/follow/' ,params = {'dis':self.key()}) 
+        else:
+            self.last_updated = datetime.datetime.now() #update
+            if self.edit_number:
+                self.edit_number+=1
+            else:
+                self.edit_number=1
+            memcache.delete("dis:"+self.key().name())
+                
         #hander format
         self.content_formated = FORMAT_METHOD.get(self.f,get_markdown)(self.content)
         self.role = self.tag.role
@@ -206,12 +221,14 @@ class Discussion(db.Model):
         self.slug = self.key().name()
         self.user_name = self.user.name
         super(Discussion,self).put()
-
     
     def delete(self):
-        self.tag.count_discussion -=1
-        self.tag.put()
         super(Discussion,self).delete()
+        
+    def nobody(self):
+        ShardCount.decrement("tagcount:"+self.tag.key().name())
+        self.is_closed = True
+        self.put()
         
     @property
     def url(self):
@@ -219,9 +236,12 @@ class Discussion(db.Model):
     
     @classmethod
     def get_discussion_by_key(cls,tag_slug,key):
-        return Discussion.get_by_key_name(key)
-       # return Discussion.all().filter('key_name =',key).get()
-    
+        @mem("dis:"+key)
+        def _x(tag_slug,key):
+            dis = Discussion.get_by_key_name(key)
+            return dis if dis and dis.tag_slug == tag_slug else None
+        return _x(tag_slug,key)
+        
     @classmethod
     def is_exist(cls,key):
         return not Discussion.get_by_key_name(key) is None
@@ -231,9 +251,7 @@ class Discussion(db.Model):
         key_name = Counter.get_max('discussion').value
         while Discussion.is_exist(key_name):
             key_name = Counter.get_max('discussion').value
-        dis = Discussion(key_name = key_name,title=title,content=content,tag=tag)
-        dis.f = f
-        dis.user = user
+        dis = Discussion(key_name = key_name,title=title,content=content,tag=tag,f=f,user = user)
         dis.put()
         return dis
     
@@ -241,14 +259,15 @@ class Discussion(db.Model):
     def get_by_tag(cls,tag):
         diss = Discussion.all().filter('tag =',tag).order('-last_comment')
         return PagedQuery(diss,20)
-    
+        
     @classmethod
     def get_recent_dis(cls,user):
         return Discussion.all().filter('user =',user).order('-created').fetch(10)
     
     @classmethod
+    @mem("feeddiscussion")
     def get_feed(cls):
-        return Discussion.all().filter('role =','G').order('-created').fetch(10)
+        return Discussion.all().filter('role =','G').order('-created').fetch(20)
     
     @classmethod
     def get_feed_by_tag(cls,tag):
@@ -258,7 +277,6 @@ class Bookmark(db.Model):
     user = db.ReferenceProperty(User)
     dis = db.ReferenceProperty(Discussion)
     created = db.DateTimeProperty(auto_now = True)
-    is_bookmarked = db.BooleanProperty(default = True)
     
     #
     user_name = db.StringProperty()
@@ -267,15 +285,17 @@ class Bookmark(db.Model):
     
     def put(self):
         if not self.is_saved():
-            self.user.count_bookmarks +=1
-            self.user.put()
-            self.dis.count_bookmark +=1
-            self.dis.put()
-        
+            ShardCount.get_increment_count("userbookmark:"+self.user.name,"userbookmark")
+            ShardCount.get_increment_count("disbookmark:"+self.dis.key().name(),"disbookmark")
             self.user_name = self.user.name
             self.dis_title = self.dis.title
             self.dis_url = self.dis.url
         super(Bookmark,self).put()
+        
+    def delete(self):
+        ShardCount.decrement("userbookmark:"+self.user_name)
+        ShardCount.decrement("disbookmark:"+self.dis.key().name())
+        super(Bookmark,self).delete()
         
         
     @classmethod
@@ -297,7 +317,7 @@ class Bookmark(db.Model):
     
     @classmethod
     def get_bookmark(cls,user,dis):
-        return Bookmark.all().filter('user =',user).filter('dis =',dis).filter('is_bookmarked =',True).get()
+        return Bookmark.all().filter('user =',user).filter('dis =',dis).get()
     
     @classmethod
     def do_bookmark(cls,user,dis):
@@ -305,19 +325,12 @@ class Bookmark(db.Model):
         if bookmark is None:
             b = Bookmark(user =user,dis = dis)
             b.put()
-            return (True,b)
-        elif bookmark.is_bookmarked:
-            return (False,None)
-        bookmark.is_bookmarked = True
-        bookmark.put()
-        return (True,bookmark)
     
     @classmethod
     def un_bookmark(cls,user,dis):
         bookmark = Bookmark.check_bookmarked(user,dis)
         if not bookmark is None:
-            bookmark.is_bookmarked = False
-            bookmark.put()
+            bookmark.delete()
             
     @classmethod
     def get_recent_bookmark(cls,user):
@@ -349,10 +362,8 @@ class Comment(db.Model):
 
     def put(self):
         if not self.is_saved():
-            self.user.count_comments +=1
-            self.user.put()
-            
-            self.dis.count_comment +=1
+            ShardCount.get_increment_count("usercomments:"+self.user.name,"usercomments")
+            ShardCount.get_increment_count("discomments:"+self.dis.key().name(),"discomments")
             self.dis.last_comment_by = self.user.name
             self.dis.put()
             self.user_name = self.user.name
@@ -375,8 +386,8 @@ class Comment(db.Model):
         return comment
     
     @classmethod
-    def get_by_dis(cls,dis,page=1):
-        return Comment.all().filter('dis =',dis).order('created')
+    def get_by_dis(cls,dis):
+        return PagedQuery(Comment.all().filter('dis =',dis).order('created'),100)
         
 class RecentCommentLog(db.Model):
     user = db.ReferenceProperty(User)

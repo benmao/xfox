@@ -181,20 +181,6 @@ class Mention(db.Model):
     def get_mention_by_user(cls,user):
         return Mention.all().filter('user =',user).filter('is_read =',False).order('-created').fetch(10)
     
-class Role(db.Model):
-    name = db.StringProperty(required=True)
-    description = db.StringProperty()
-    k = db.StringProperty()
-    
-    @classmethod
-    def new(cls,name,description):
-        role = Role.all().filter('name =',name).get()
-        if role is None:
-            role = Role(k=Counter.get_max("role").value, name = name)
-        role.name = name
-        role.description = description
-        role.put()
-        
     
 if __name__=='__main__':
     pass
