@@ -13,7 +13,19 @@ import datetime
 from dash.models import Counter
 from util.textile import Textile
 from util.paging import PagedQuery
+import markdown
 from google.appengine.api.labs import taskqueue
+
+def get_textile(value):
+    return Textile(restricted = True,lite=False,noimage=False).textile(value,rel='nofollow',html_type='xhtml')
+
+def get_markdown(value):
+    return markdown.Markdown(safe_mode="escape").convert(value)
+
+FORMAT_METHOD = {
+    'T':get_textile,
+    'M':get_markdown,
+    }
 
 class Category(db.Model):
     '''
@@ -187,8 +199,7 @@ class Discussion(db.Model):
             self.tag.put()
             taskqueue.add( url ='/t/d/follow/' ,params = {'dis':self.key()}) 
         #hander format
-        self.content_formated = Textile(restricted=True,lite=False,noimage=False).textile(\
-            self.content, rel='nofollow',html_type='xhtml')
+        self.content_formated = FORMAT_METHOD.get(self.f,get_markdown)(self.content)
         self.role = self.tag.role
         self.tag_slug = self.tag.key().name()
         self.tag_title = self.tag.title
@@ -347,15 +358,14 @@ class Comment(db.Model):
             self.user_name = self.user.name
             self.dis_slug = self.dis.url
             self.slug = self.key().name()
-        self.content_formated = Textile(restricted=True,lite=False,noimage=False).textile(\
-            self.content, rel='nofollow',html_type='xhtml')
+        self.content_formated= FORMAT_METHOD.get(self.f,get_markdown)(self.content)
         params = {'source_url':self.dis_slug,'source_user':self.user_name}
         self.content_formated=replace_mention(self.content_formated,params)
         RecentCommentLog.new(self.user,self.dis)
         super(Comment,self).put()
         
     @classmethod
-    def new(cls,user,dis,content,f='T'):
+    def new(cls,user,dis,content,f='M'):
         key_name = Counter.get_max('comment').value
         while Comment.get_by_key_name(key_name):
             key_name = Counter.get_max('comment').value

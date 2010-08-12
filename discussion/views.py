@@ -84,7 +84,7 @@ class PostDisscussionHandler(PublicHandler):
         title = self.request.get("title").strip()
         content = self.request.get("content")
         if len(title)>0 and len(content)>0:
-            dis =Discussion.new(tag,title,content,self.user)
+            dis =Discussion.new(tag,title,content,self.user,f='M')
             self.redirect(dis.url)
         self.template_value['error']=u"不要忘记标题或内容哦"
         self.template_value['title']=title
@@ -118,6 +118,7 @@ class EditDisscussionHandler(PublicHandler):
                 return self.error(403)
             dis.title = title
             dis.content = content
+            dis.f = 'M'
             dis.put()
             self.redirect(dis.url)
         self.template_value['error']=u"不要忘记标题或内容哦"

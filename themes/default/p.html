@@ -15,12 +15,13 @@
             <label for="content">内容</label>
             <textarea class="input_box radius" cols="100" rows="6" name="content" id="content" >{% if content %}{{content}}{% endif %}</textarea>
             </p>
+            <p>
+            </p>
             {% if error %}
             <p>{{error}}</p>
             {% else %}
             <p style="visibility:hidden">dd</p>
             {% endif %}
-       
             <p>
             <input type="submit" value="提交" class="button radius" />
             </p>
