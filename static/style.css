@@ -425,7 +425,7 @@ textarea:focus {
 	background: url('/static/images/star_sprite.png') center center no-repeat;
 }
 
-.bookmark {
+.bookmarking {
 	background: url('/static/images/star_sprite.png') bottom center no-repeat;
 }
 
@@ -440,7 +440,6 @@ textarea:focus {
 }
 
 .feed{
-	border-top:1px dashed #39F;
 	display:block;
 	width:100%;
 }

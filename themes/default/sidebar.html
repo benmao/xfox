@@ -15,22 +15,12 @@
         <h3>讨论区</h3>
         <ul>
         	{% for tag in tags %}
-            <li><strong><a href="{{tag.url}}">{{tag.title}}</a></strong>{{tag.count_discussion}}</li>
+            <a href="{{tag.url}}">{{tag.title}}</a>
             {% endfor %}
         </ul>
     </section>
     
     <section class="box radius">
-        <h3 class="line1">论坛运行状况</h3>
-        <dl>
-            <dt>注册会员</dt>
-            <dd>{{count_user}}<sub>36</sub></dd>
-            <dt>主题</dt>
-            <dd>{{count_discussion}}<sub>36</sub></dd>
-            <dt>评论</dt>
-            <dd>{{count_comment}}<sub>36</sub></dd>
-        </dl>
-        
         {% if tag %}
         <a href="/f/{{tag.key.name}}/" class="feed"><span>RSS订阅{{tag.title}}更新</span></a>
         {% else %}

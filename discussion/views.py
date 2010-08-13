@@ -11,7 +11,7 @@ from google.appengine.ext.webapp import util
 from util.handler import PublicHandler,PublicWithSidebarHandler
 from discussion.models import Tag,Discussion,Comment,Bookmark
 import settings
-from util.decorator import requires_login
+from util.decorator import requires_login,json_requires_login
 from util.paging import PagedQuery
 from google.appengine.api.labs import taskqueue
 from dash.counter import ShardCount
@@ -143,6 +143,7 @@ class PostCommentHandler(PublicWithSidebarHandler):
 class BookmarkHandler(PublicHandler):
     @requires_login
     def get(self):
+        
         action = self.request.get("action")
         key = self.request.get("key")
         dis = Discussion.get_by_key_name(key)
@@ -155,6 +156,22 @@ class BookmarkHandler(PublicHandler):
         else:
             Bookmark.do_bookmark(self.user,dis)
         self.redirect(dis.url)
+        
+    @json_requires_login
+    def post(self):
+        action = self.request.get("action")
+        key = self.request.get("key")
+        dis = Discussion.get_by_key_name(key)
+        funcs = {'un':Bookmark.un_bookmark,
+                     'do':Bookmark.do_bookmark,
+                     }
+        result = {'un':'bookmark',
+                      'do':'bookmarked'
+                      }
+        if not dis is None and action in ['un','do']:
+            funcs.get(action)(self.user,dis)
+            return self.json({'result':result[action]})
+        return self.json({'error':"No handler"})
         
 class FeedIndexHandler(PublicHandler):
     def get(self):

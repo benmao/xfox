@@ -20,6 +20,11 @@ def random_str(length=6):
     strs = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
     return ''.join(random.sample(strs,length))
 
+def get_md5(str):
+    m = md5.new()
+    m.update(str)
+    return m.hexdigest()
+
 def random_md5(str):
     m = md5.new()
     m.update(str)

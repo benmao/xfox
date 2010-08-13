@@ -4,3 +4,4 @@ markdown/*
 *.pyo
 app.yaml
 bbs.wpr
+*~

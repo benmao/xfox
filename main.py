@@ -12,6 +12,7 @@ from google.appengine.ext.webapp import util
 from util.handler import PublicHandler,PublicWithSidebarHandler
 from util.decorator import requires_login
 from discussion.models import Tag,Discussion
+from util.base import *
 from dash.models import Counter
 from account.models import User
 import settings
@@ -24,9 +25,10 @@ class MainHandler(PublicWithSidebarHandler):
     
 class UpdateHandler(PublicHandler):
     def get(self):
-        #update dis_comments
-        pass
-            
+        for user in User.all():
+            user.email_md5 =  get_md5(user.email)
+            user.put()
+        
     
 class NotFoundHandler(PublicHandler):
     def get(self):

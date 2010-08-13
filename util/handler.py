@@ -18,6 +18,7 @@ import re
 from dash.models import Counter
 from util.wsgi import RequestHandler
 from util.decorator import mem
+from django.utils import simplejson
 
 webapp.template.register_template_library('util.filter')
 
@@ -68,6 +69,11 @@ class PublicHandler(webapp.RequestHandler):
         path = os.path.join(os.path.dirname(__file__), r'../',template_file)
         self.response.out.write(template.render(path, self.template_value))
         
+    def json(self,data):
+        self.response.headers['Content-Type']='application/json'
+        self.response.out.write(simplejson.dumps(data))
+        
+        
     def error(self,code):
         self.response.set_status(code)
         if code ==404:
@@ -81,22 +87,6 @@ class PublicWithSidebarHandler(PublicHandler):
         PublicHandler.initialize(self,request,response)
         self.template_value['tags']=Tag.get_all()
         
-        @mem('count_user',600)
-        def count_user():
-            return Counter.get_count("user").value
-        @mem('count_discussion',600)
-        def count_discussion():
-            return Counter.get_count("discussion").value
-        @mem("count_comment",600)
-        def count_comment():
-            return Counter.get_count("comment").value
-        
-        self.template_value['count_user'] = count_user()
-        self.template_value['count_discussion'] = count_discussion()
-        self.template_value['count_comment'] = count_comment()
-        
-
-    
 class AdminHandler(webapp.RequestHandler):
     def initialize(self,request,response):
         webapp.RequestHandler.initialize(self,request,response)

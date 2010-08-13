@@ -43,5 +43,14 @@ def requires_login(method):
         return self.redirect("/a/signin/?go=%s" % self.request.url)
     return wrapper
 
+
+def json_requires_login(method):
+    @wraps(method)
+    def wrapper(self, *args, **kwargs):
+        if not self.user is None:
+            return method(self,*args,**kwargs)
+        return self.json({"error":"Need Login"})
+    return wrapper
+
 if __name__=='__main__':
     pass

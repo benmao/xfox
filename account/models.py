@@ -20,6 +20,7 @@ class User(db.Model):
     pwd = db.StringProperty(required = True)
     secret_key =db.StringProperty(required = True)
     email = db.StringProperty(required = True)
+    email_md5=db.StringProperty()
     
     about = db.StringProperty()
     name_lower = db.StringProperty()
@@ -44,6 +45,7 @@ class User(db.Model):
         if not self.is_saved():
             self.name_lower = self.name.lower()
             self.email = self.email.lower()
+            self.email_md5 = get_md5(self.email)
             self.user_id = Counter.get_max("user").value
             self.role.append("M")
             self.role.append("G")
