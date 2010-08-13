@@ -51,8 +51,11 @@ class PublicHandler(webapp.RequestHandler):
         user_agent = self.request.headers.get("User-Agent",'')
         
         #handler not endswith /
+        
         if not self.request.path.endswith("/"):
             return self.redirect(self.request.path+"/",True)
+        
+        self.p = self.request.path.lower() #path
         
     def is_ajax(self):
         '''

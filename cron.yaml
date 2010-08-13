@@ -3,3 +3,6 @@ cron:
   url: /s/s/memcache/
   schedule: every 10 minutes
 
+- description: collect user visit
+  url: /t/u/logs/
+  schedule: every 1 minutes

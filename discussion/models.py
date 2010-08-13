@@ -237,7 +237,7 @@ class Discussion(db.Model):
     
     @classmethod
     def get_discussion_by_key(cls,tag_slug,key):
-        @mem("dis:"+key)
+        @mem("dis:%s:%s"%(tag_slug,key))
         def _x(tag_slug,key):
             dis = Discussion.get_by_key_name(key)
             return dis if dis and dis.tag_slug == tag_slug else None
@@ -408,6 +408,20 @@ class RecentCommentLog(db.Model):
     def get_recent_comment(cls,user):
         tmp = RecentCommentLog.all().filter('user =',user).order('-last_comment').fetch(10)
         return [t.dis for t in tmp]
+
+class DiscussionVisitLog(db.Model):
+    user_name = db.StringProperty()
+    tag_key = db.StringProperty()
+    dis_key = db.StringProperty()
+    created  = db.DateTimeProperty(auto_now_add = True)
+    
+    @classmethod
+    def new(cls,user_name,tag_key,dis_key):
+        key_name = "%s:%s:%s" % (user_name,tag_key,dis_key)
+        dvl = DiscussionVisitLog.get_by_key_name(key_name)
+        if dvl is None:
+            dvl = DiscussionVisitLog(key_name = key_name,user_name = user_name,tag_key=tag_key,dis_key=dis_key)
+            dvl.put()
     
 class DiscussionFollow(db.Model):
     dis = db.ReferenceProperty(Discussion)

@@ -17,6 +17,7 @@ from google.appengine.api.labs import taskqueue
 from dash.counter import ShardCount
 from util.acl import check_roles,check_roles_feed
 from util.wsgi  import webapp_add_wsgi_middleware
+from google.appengine.api import memcache
 
 class TagHandler(PublicWithSidebarHandler):
     def get(self,slug):
@@ -48,7 +49,16 @@ class DiscussionHandler(PublicWithSidebarHandler):
         
         #check ACL
         check_roles(self,dis.role)
-
+        
+        #handler visit log
+        if not self.user is None:
+            key = "%s%s" %(self.user.name_lower,self.p)
+            logs = memcache.get(":visitlogs:")
+            if logs is None:
+                logs = set([])
+            logs.add(key)
+            memcache.set(":visitlogs:",logs,3600)
+        
         self.template_value['disviews']=ShardCount.get_increment_count("disviews:"+key,"disviews")
         self.template_value['dis']=dis
         bookmark = Bookmark.get_bookmark(self.user,dis) if self.user else None

@@ -11,6 +11,9 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 import logging
 from account.models import Mention,User
+from discussion.models import DiscussionVisitLog
+from google.appengine.api import memcache
+
 class UserMentionHandler(TaskHandler):
     def get(self):
         pass
@@ -25,9 +28,20 @@ class UserMentionHandler(TaskHandler):
         if not user is None:
             Mention.new(user,source_url,source_user)
             
+class DiscussionVisitLogHandler(TaskHandler):
+    def get(self):
+        logs = memcache.get(":visitlogs:",set([]))
+        for log in logs: #log like ben/asf-sdf/sdfsf/
+            user_name,tag_key,dis_key = log.split('/')[0:3]
+            DiscussionVisitLog.new(user_name,tag_key,dis_key)
+        logging.info("write %s log" % len(logs))
+        memcache.set(":visitlogs:",set([]),3600)
+        
 def main():
     application = webapp.WSGIApplication([
                                         ('/t/u/mention/', UserMentionHandler),
+                                        ('/t/u/logs/',DiscussionVisitLogHandler),
+                                        
                                         ],
                                          debug=settings.DEBUG)
     util.run_wsgi_app(application)
