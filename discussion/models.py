@@ -294,8 +294,8 @@ class Bookmark(db.Model):
         super(Bookmark,self).put()
         
     def delete(self):
-        ShardCount.decrement("userbookmark:"+self.user_name)
-        ShardCount.decrement("disbookmark:"+self.dis.key().name())
+        #ShardCount.decrement("userbookmark:"+self.user_name)
+        #ShardCount.decrement("disbookmark:"+self.dis.key().name())
         super(Bookmark,self).delete()
         
         

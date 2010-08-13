@@ -30,7 +30,9 @@ class UserMentionHandler(TaskHandler):
             
 class DiscussionVisitLogHandler(TaskHandler):
     def get(self):
-        logs = memcache.get(":visitlogs:",set([]))
+        logs = memcache.get(":visitlogs:")
+        if logs is None:
+            return
         for log in logs: #log like ben/asf-sdf/sdfsf/
             user_name,tag_key,dis_key = log.split('/')[0:3]
             DiscussionVisitLog.new(user_name,tag_key,dis_key)
