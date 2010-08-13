@@ -19,8 +19,9 @@ class UserMentionHandler(TaskHandler):
         source_url = self.request.get("source_url")
         source_user = self.request.get("source_user")
         user_name = self.request.get("user")
-        
+        logging.info("bbb"+user_name)
         user = User.get_user_by_name(user_name)
+        logging.info("aaa"+user.name)
         if not user is None:
             Mention.new(user,source_url,source_user)
             

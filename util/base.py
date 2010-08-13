@@ -98,28 +98,16 @@ def filter_url(url):
     url = url.strip()
     return url.replace(' ','-')
 
-def re_mention(value):
-    return re.findall(r'@([a-zA-Z0-9]{3,16}\.?)',value)
 
 def joinstr(*values):
     return ''.join(values)
 
 def replace_mention(value,params):
-    mentions = re_mention(value)
-    if len(mentions)>0:
-        mentions = set(mentions)
-        mentions = list(mentions)
-        mentions.sort(key = lambda m : len(m),reverse = True)
-        num = 0
-        for mention in mentions:
-            if num >5:
-                break  #limit 5 mentions
-            if mention.endswith('.'):
-                continue #should be email
-            value = value.replace(joinstr("@",mention),'@<a href="/u/%s/" >%s</a>' % (mention,mention))
-            params['user']=mention
-            taskqueue.add(url ="/t/u/mention/",params=params)
-            num +=1
+    mentions = re.findall(r'<a href="/u/([a-z0-9]{3,16})/">[a-zA-Z0-9]{3,16}</a>',value)
+    for mention in mentions[0:5]: #limit 5
+        params['user']=mention
+        taskqueue.add(url ="/t/u/mention/",params=params)
     return value
+
 if __name__=='__main__':
     print replace_mention("@benben")
