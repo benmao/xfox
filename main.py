@@ -13,10 +13,12 @@ from util.handler import PublicHandler,PublicWithSidebarHandler
 from util.decorator import requires_login
 from discussion.models import Tag,Discussion
 from util.base import *
-from dash.models import Counter
+from dash.models import Counter,MemcacheStatus
 from account.models import User
 import settings
 from util.wsgi import webapp_add_wsgi_middleware
+from google.appengine.api import memcache
+
 class MainHandler(PublicWithSidebarHandler):
 
     #@requires_login
@@ -29,6 +31,13 @@ class UpdateHandler(PublicHandler):
             user.email_md5 =  get_md5(user.email)
             user.put()
         
+class MemcacheHandler(PublicHandler):
+    def get(self):
+        mems = MemcacheStatus.get_recent_24()
+        self.template_value['mem'] = memcache.get_stats()
+        self.template_value['rates']=','.join([str(obj.hits*100.0/(obj.hits+obj.misses))for obj in mems ])
+        self.render("mem.html")
+       
     
 class NotFoundHandler(PublicHandler):
     def get(self):
@@ -41,6 +50,7 @@ def main():
     application = webapp.WSGIApplication ([
                                         ('/', MainHandler),
                                         ('/e/',UpdateHandler),
+                                        ('/s/mem/',MemcacheHandler),
                                         ('/.*',NotFoundHandler),
                                         ],
                                          debug=settings.DEBUG)

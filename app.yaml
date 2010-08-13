@@ -50,6 +50,10 @@ handlers:
 - url: /t/d/.*
   script: task/dis.py
   login: admin
+
+- url: /s/s/.*
+  script: task/system.py
+  login: admin
   
 - url: /test.*
   script: gaeunit.py

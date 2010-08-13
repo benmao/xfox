@@ -335,7 +335,7 @@ class Bookmark(db.Model):
             
     @classmethod
     def get_recent_bookmark(cls,user):
-        tmp = Bookmark.all().filter("user =",user).filter("is_bookmarked =",True).fetch(10)
+        tmp = Bookmark.all().filter("user =",user).order('created').fetch(10)
         return [t.dis for t in tmp]
       
 class Comment(db.Model):

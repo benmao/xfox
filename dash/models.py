@@ -66,5 +66,21 @@ class Counter(db.Model):
         obj.put()
         return obj
        
+class MemcacheStatus(db.Model):
+    hits = db.IntegerProperty(default=0)
+    misses = db.IntegerProperty(default=0)
+    items = db.IntegerProperty(default=0)
+    bytes = db.IntegerProperty(default=0)
+    created = db.DateTimeProperty(auto_now_add=True)
+    
+    @classmethod
+    def new(cls,hits,misses,items,bytes):
+        obj = MemcacheStatus(hits = hits,misses = misses,items = items,bytes = bytes)
+        obj.put()
+        
+    @classmethod
+    def get_recent_24(cls):
+        return MemcacheStatus.all().order('-created').fetch(24*6)
+        
 if __name__=='__main__':
     pass

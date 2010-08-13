@@ -1,0 +1,5 @@
+cron:
+- description: collect memcache status
+  url: /s/s/memcache/
+  schedule: every 10 minutes
+
