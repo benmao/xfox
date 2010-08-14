@@ -109,5 +109,9 @@ def replace_mention(value,params):
         taskqueue.add(url ="/t/u/mention/",params=params)
     return value
 
+def  escape(value):
+    from django.utils.html import escape
+    return escape(value)
+
 if __name__=='__main__':
     print replace_mention("@benben")

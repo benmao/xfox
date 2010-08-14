@@ -10,16 +10,17 @@
 	<![endif]-->
     <script src="/static/jquery-1.4.2.min.js"> </script>
     <script src="/static/bookmark.js"></script>
+	<script scr="/static/mention.js"></script>
 </head>
 <body>
 	<header id="header">
 		<menu class="w960 clear" id="nav">
 			<h1 id="logo"><a title="xFox" href="/"><span>xFox</span></a></h1>
             <ul>
-            	<li><a href="/g/">图片</a></li>
             	{% if user %}
                 <li><a href="/u/{{user.name}}/">{{user.name}}</a></li>
                 <li><a href="/a/follow/">Follow</a></li>
+				<li><a href="/g/">图片</a></li>
                 <li><a href="/a/mention/">提醒</a></li>
                 <li><a href="/a/signout/">登出</a></li>
                 {% else %}

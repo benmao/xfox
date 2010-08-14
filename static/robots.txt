@@ -1,3 +1,5 @@
 User-Agent: *
 Allow: /
 Disallow: /a/  
+Disallow: /d/
+Disallow: /g/

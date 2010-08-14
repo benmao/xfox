@@ -183,6 +183,11 @@ class Mention(db.Model):
     def get_mention_by_user(cls,user):
         return Mention.all().filter('user =',user).filter('is_read =',False).order('-created').fetch(10)
     
+    @classmethod
+    def set_read(cls,key):
+        mention = Mention.get(key)
+        mention.is_read = True
+        mention.put()
     
 if __name__=='__main__':
     pass

@@ -22,6 +22,16 @@ ROLE= {
     'G':['Guest','Guest'],
 }
 
+#xFox Setting
+
+class Setting():
+    title = "xFox"
+    description = u"xFox -变异的狐狸"
+    key_words = u"xFox"
+    
+    domain = "http://xfox.appspot.com"
+    timedelta = 0.8
+    version = "0.1.2"
 
 if __name__=='__main__':
     pass

@@ -1,0 +1,325 @@
+* {	
+	margin:0;
+	padding:0;
+}
+
+a,
+a:link,
+a:visited,
+a:active {
+   text-decoration: none;
+   color: #1e79a7;
+}
+a:hover {
+   text-decoration: none;
+   color: #ff0084;
+}
+
+sub {
+	font-size:9px;
+	color:#999;
+}
+
+/* header */
+#header {
+	background:#38abe3;
+	padding:0;
+	height:45px;
+}
+
+#logo{
+	font-weight: bold;
+	float: left;
+	line-height:27px;
+}
+#logo span {
+	font-size: 24px;
+	color:#E4F7FE;
+	text-shadow:0 1px 0 #2595ba;
+}
+#logo a:hover span {
+	color:#f3fcff;
+}
+
+#nav {
+	list-style: none;
+	text-align: right;
+	padding: 10px;
+}
+
+#nav li {
+	line-height:27px;
+	display: inline;
+}
+
+#nav a{
+	margin-left:10px;
+	height: 28px;
+}
+
+/* body */
+#body {
+	text-align:left;
+	margin:15px auto 0;
+}
+
+#content {
+	float:left;
+	margin: 0 0 40px;
+}
+
+#side-bar {
+	float:right;
+}
+
+
+
+.w960 {
+	clear:both;
+	width:960px;
+	margin:0 auto;
+}
+
+.w680 {
+	width:680px;
+}
+
+.w250{
+	width:250px;
+}
+
+.w350 {
+	width:350px;
+	margin:0 auto;
+}
+
+/* box */
+.box {
+	background:#c4e1ff;
+	border:1px solid #c4e1ff;
+	margin: 0 0 15px 0;
+}
+.box div .dot {
+	background:#9ECD62;
+}
+.box .inner {
+}
+
+.box h2{
+	font-size:120%;
+	font-weight:bold;
+	padding:5px 10px 0 10px;
+}
+
+.box h3{
+	font-size:100%;
+	font-weight:bold;
+	padding:5px 10px 0 10px;
+}
+
+.box p {
+	margin:0 10px;
+	padding:5px 0;
+}
+
+/* 上边角 */
+.box .rnd_top * {
+	display:block;
+	background:#FFFFFF;
+	overflow:hidden;
+}
+.box .rnd_top * * {
+	background:#DE650A;
+}
+.box {
+	position:relative;
+}
+.box .rnd_top .west {
+	position:absolute;
+	height:2px;
+	left:-1px;
+	top:-1px;
+	width:2px;
+}
+.box .rnd_top .west .dot {
+	position:relative;
+	height:1px;
+	left:1px;
+	top:1px;
+	width:1px;
+}
+.box .rnd_top .east {
+	position:absolute;
+	height:2px;
+	right:-1px;
+	top:-1px;
+	width:2px;
+}
+.box .rnd_top .east .dot {
+	position:relative;
+	height:1px;
+	left:0pt;
+	top:1px;
+	width:1px;
+}
+
+/* 下边角 */
+.box .rnd_bot * {
+	display:block;
+	background:#FFFFFF;
+	overflow:hidden;
+}
+.box .rnd_bot * * {
+	background:#DE650A;
+}
+.box .rnd_bot .west {
+	position:absolute;
+	bottom:-1px !important;
+	bottom:-2px;
+	height:2px;
+	left:-1px;
+	width:2px;
+}
+.box .rnd_bot .west .dot {
+	position:relative;
+	height:1px;
+	left:1px;
+	top:0pt;
+	width:1px;
+}
+.box .rnd_bot .east {
+	position:absolute;
+	bottom:-1px !important;
+	bottom:-2px;
+	height:2px;
+	right:-1px;
+	width:2px;
+}
+.box .rnd_bot .east .dot {
+	position:relative;
+	height:1px;
+	left:0pt;
+	top:0pt;
+	width:1px;
+}
+
+.list{
+	padding:5px 10px;
+	width:100%
+}
+
+.list td{
+	border-bottom:1px dashed #39F;
+	padding:3px 3px 3px 0;
+}
+
+.list .author {
+	width:50px;
+}
+
+.list .date{
+	width:138px;
+	text-align:right;
+}
+
+.big_button{
+	text-align: center;
+	display: block;
+	cursor: pointer;
+	margin: 0 0 10px;
+	font-size: 15px;
+	font-weight: bold;
+	padding: 8px 0;
+	color: #02475A;
+	text-shadow: 0 1px 0 #fff;
+	border: 1px solid #999;
+}
+
+.feed{
+	display:block;
+	width:100%;
+}
+
+.feed span{
+	margin:5px 10px;
+}
+
+.prev {
+	margin-left:10px;
+	float:left;
+}
+
+.next {
+	margin-right:10px;
+	float:right
+}
+
+/* Comments */
+.comment {
+	background:#f3fcff;
+}
+
+.comment .header{
+	margin:0 10px 0 10px;
+}
+
+.comment .header .time{
+	margin-left:20px;
+}
+
+.line {
+	border-bottom:1px dashed #DDDDDD;
+}
+
+/* Comment end */
+
+/* input box */
+.input_box{
+	width: 100%;
+	border: 1px solid #aaa;
+	color: #333;
+	font-size: 140%;
+}
+
+input:focus,
+textarea:focus {
+   background: #ffe;
+}
+
+.button {
+	border: 1px solid #999;
+	font-size:130%;
+}
+
+.clear{
+	clear:both;
+}
+
+/* bookmark */
+.bookmarked,
+.bookmarking,
+.bookmark {
+	float:right;
+	display: block;
+	height: 22px;
+	width: 22px;
+	margin: 2px 4px 0 4px;
+}
+
+.bookmarked span,
+.bookmarking span,
+.bookmark span {
+	display:none;
+}
+
+.bookmark {
+	background: url('/static/images/star_sprite.png') top center no-repeat;
+}
+
+.bookmarked {
+	background: url('/static/images/star_sprite.png') center center no-repeat;
+}
+
+.bookmarking {
+	background: url('/static/images/star_sprite.png') bottom center no-repeat;
+}

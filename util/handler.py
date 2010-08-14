@@ -9,7 +9,6 @@ import os
 import logging
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
-from dash.models import Setting
 from django.http import parse_cookie
 from account.models import Session
 from google.appengine.api import users
@@ -19,8 +18,19 @@ from dash.models import Counter
 from util.wsgi import RequestHandler
 from util.decorator import mem
 from django.utils import simplejson
+import settings
 
 webapp.template.register_template_library('util.filter')
+
+class FeedHandler(webapp.RequestHandler):
+    def initialize(self,request,response):
+        webapp.RequestHandler.initialize(self,request,response)
+        self.template_value = {}
+        
+    def render(self,template_file):
+        template_file = "themes/default/%s" % (template_file)
+        path = os.path.join(os.path.dirname(__file__), r'../',template_file)
+        self.response.out.write(template.render(path, self.template_value))
 
 class PublicHandler(webapp.RequestHandler):
     
@@ -30,8 +40,8 @@ class PublicHandler(webapp.RequestHandler):
         '''
         webapp.RequestHandler.initialize(self,request,response)
         
-        
-        self.setting = Setting.get_setting()
+    
+        self.setting = settings.Setting()
         self.template_value={'setting':self.setting}
         
         #handler xfox-session-key
@@ -47,11 +57,15 @@ class PublicHandler(webapp.RequestHandler):
             self.role = self.user.role
         self.template_value['user']=self.user
         self.template_value['role']=self.role
-        
+       
+        #handler os
+        self.os = 'default' #html5
         user_agent = self.request.headers.get("User-Agent",'')
-        
+        if "MSIE" in user_agent:
+            self.os = 'ie'
+            
         #handler not endswith /
-        
+        self.template_value['os']=self.os 
         if not self.request.path.endswith("/"):
             return self.redirect(self.request.path+"/",True)
         
@@ -68,7 +82,7 @@ class PublicHandler(webapp.RequestHandler):
         '''
         render template for desktop and mobile
         '''
-        template_file = "themes/default/%s" % (template_file)
+        template_file = "themes/%s/%s" % (self.os,template_file)
         path = os.path.join(os.path.dirname(__file__), r'../',template_file)
         self.response.out.write(template.render(path, self.template_value))
         

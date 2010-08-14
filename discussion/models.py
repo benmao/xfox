@@ -11,20 +11,16 @@ from util.base import *
 from account.models import User,Mention,UserFollow
 import datetime
 from dash.models import Counter
-from util.textile import Textile
 from util.paging import PagedQuery
 import markdown
 from google.appengine.api.labs import taskqueue
 from dash.counter import ShardCount
 
-def get_textile(value):
-    return Textile(restricted = True,lite=False,noimage=False).textile(value,rel='nofollow',html_type='xhtml')
 
 def get_markdown(value):
     return markdown.Markdown(safe_mode="escape").convert(value)
 
 FORMAT_METHOD = {
-    'T':get_textile,
     'M':get_markdown,
     }
 
@@ -212,10 +208,10 @@ class Discussion(db.Model):
                 self.edit_number+=1
             else:
                 self.edit_number=1
-            memcache.delete("dis:"+self.key().name())
-                
+            memcache.delete("dis:%s:%s"%(self.tag_slug,self.key().name()))
         #hander format
-        self.content_formated = FORMAT_METHOD.get(self.f,get_markdown)(self.content)
+        self.title=escape(self.title) 
+        self.content_formated = FORMAT_METHOD.get('M',get_markdown)(self.content)
         self.role = self.tag.role
         self.tag_slug = self.tag.key().name()
         self.tag_title = self.tag.title
@@ -264,7 +260,7 @@ class Discussion(db.Model):
     @classmethod
     def get_by_tag(cls,tag):
         diss = Discussion.all().filter('tag =',tag).order('-last_comment')
-        return PagedQuery(diss,20)
+        return PagedQuery(diss,10)
         
     @classmethod
     def get_recent_dis(cls,user):
@@ -377,7 +373,7 @@ class Comment(db.Model):
             self.user_name = self.user.name
             self.dis_slug = self.dis.url
             self.slug = self.key().name()
-        self.content_formated= FORMAT_METHOD.get(self.f,get_markdown)(self.content)
+        self.content_formated= FORMAT_METHOD.get('M',get_markdown)(self.content)
         params = {'source_url':self.dis_slug,'source_user':self.user_name}
         self.content_formated=replace_mention(self.content_formated,params)
         RecentCommentLog.new(self.user,self.dis)

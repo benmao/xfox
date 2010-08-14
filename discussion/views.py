@@ -8,7 +8,7 @@ Copyright (c) 2010 http://sa3.org All rights reserved.
 
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
-from util.handler import PublicHandler,PublicWithSidebarHandler
+from util.handler import PublicHandler,PublicWithSidebarHandler,FeedHandler
 from discussion.models import Tag,Discussion,Comment,Bookmark
 import settings
 from util.decorator import requires_login,json_requires_login
@@ -40,6 +40,7 @@ class TagHandler(PublicWithSidebarHandler):
         self.template_value['prev'] = prev
         self.template_value['next'] = tnext
         self.template_value['diss'] = diss.fetch_page(p)
+        self.template_value['f_tag'] = {'key':tag.key().name(),'title':tag.title,'show': 'G' in tag.role} #only Public tag have feed 
         self.render('tag.html')
 
 class DiscussionHandler(PublicWithSidebarHandler):
@@ -184,7 +185,7 @@ class BookmarkHandler(PublicHandler):
             return self.json({'result':result[action]})
         return self.json({'error':"No handler"})
         
-class FeedIndexHandler(PublicHandler):
+class FeedIndexHandler(FeedHandler):
     def get(self):
         diss = Discussion.get_feed()
         self.template_value['diss']=diss
@@ -192,7 +193,7 @@ class FeedIndexHandler(PublicHandler):
         self.render('rss.xml')
         
         
-class FeedTagHandler(PublicHandler):
+class FeedTagHandler(FeedHandler):
     def get(self,key):
         tag = Tag.get_by_key_name(key)
         if tag is None:

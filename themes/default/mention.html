@@ -19,7 +19,7 @@
                     	<td><a href="{{mention.source_url}}">{{mention.source_url}}</a></td>
                         <td><a href="/u/{{mention.source_user}}/">{{mention.source_user}}</a></td>
                         <td>{{mention.created|humdate}}</td>
-                        <td><a href="#">已阅</a></td>
+                        <td><a href="#{{mention.key}}" class="mentionhandler" >已阅</a></td>
                     </tr>
  					{% endfor %}
                 </table>
