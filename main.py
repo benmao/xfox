@@ -23,6 +23,7 @@ class MainHandler(PublicWithSidebarHandler):
 
     #@requires_login
     def get(self):
+        self.template_value['diss'] = Discussion.get_recent()
         self.render('index.html')
     
 class UpdateHandler(PublicHandler):

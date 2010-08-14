@@ -242,6 +242,11 @@ class Discussion(db.Model):
             dis = Discussion.get_by_key_name(key)
             return dis if dis and dis.tag_slug == tag_slug else None
         return _x(tag_slug,key)
+    
+    @classmethod
+    def get_recent(cls):
+        return Discussion.all().order('-last_comment').fetch(15)
+    
         
     @classmethod
     def is_exist(cls,key):

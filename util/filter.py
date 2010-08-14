@@ -19,7 +19,7 @@ register.filter(datetz)
 def humdate(value):
     tmp = datetime.datetime.now() -value
     if tmp.days > 0:
-        return datetz(value,"M d,Y H:i")
+        return datetz(value,"m-d H:i")
     if tmp.seconds < 60:
         return u"%s 秒前" % tmp.seconds
     if tmp.seconds <3600:
@@ -27,6 +27,17 @@ def humdate(value):
     return u"约%s小时前" % (tmp.seconds/3600)
 
 register.filter(humdate)
+
+def humpage(value):
+    '''
+    if page == 1 return ""
+    else return ?p = value
+    '''
+    if value == 1:
+        return ""
+    return "?p=%s" % value
+
+register.filter(humpage)
 
 if __name__=='__main__':
     pass

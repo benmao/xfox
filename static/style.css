@@ -439,6 +439,11 @@ textarea:focus {
 	padding:3px 3px 3px 0;
 }
 
+.list .date{
+	width:138px;
+	text-align:right;
+}
+
 .feed{
 	display:block;
 	width:100%;

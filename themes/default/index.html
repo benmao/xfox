@@ -5,28 +5,33 @@
 
 {%block body %}
     	<section id="content" class="w680">
-			<section class="box radius">
-                <h3>xFox介绍{{role}}</h3>
-                <p>xFox是托管在GAE的一个论坛，由<a href="http://sa3.org">ben</a>主导开发，为了和大家一起提高学习能力。xFox主要有以下特点：</p>
-                <p>* HTML5 <br />
-                   * 灵活的模板系统 <br />
-                   * 即将支持插件<br />
-                   * MVC<br />
-                   * ...<br />
-                   </p>
-    		</section>
-			<section class="box radius">
-                <h3>加入xFox开发</h3>
-                <p>因为目前只有我一个人开发，现在急需前台设计人员,测试人员以及文档设计人员，欢迎加入哦！</p>
-                <p>作者本人有着疯狂的代码简洁癖好，所以如果您发现哪里可以优化的地方，记得及时告诉作者哦。大家一起提高！作者联系邮箱：c##sa3.org</p>
-    		</section>
-            
-            <section class="box radius">
-            	<h3>xFox 贡献榜</h3>
-                <p><a href="http://kaix.in/daddy">dimlau</a></p>
-                <p>dofy</p>
-            </section>
-            
+		<section class = "box radius">
+			<h3>最近主题</h3>
+			<table class ="list">
+            	<tr>
+                    <td class="title">标题</th>
+                    <td class="author">最后回复</th>
+                    <td class="date">最后回复</th>
+                </tr>
+                {% for dis in diss %}
+                <tr>
+                    <td class="title"><a href="{{dis.url}}">{{dis.title}}</a>
+					[<a href="/{{dis.tag_slug}}/">{{dis.tag_title}}</a>]
+					{% if dis.count_comment %}(+{{dis.count_comment}}){% endif %}
+					</td>
+                    <td class="author">
+                    {% if dis.last_comment_by %}
+					<a href="/u/{{dis.last_comment_by}}/">{{dis.last_comment_by}}</a>
+					{% else %}
+					 <a href="/u/{{dis.user_name}}/">{{dis.user_name}}</a>
+					{% endif %}
+					</td>
+                    <td class="date">{{dis.last_comment|humdate}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+			
+		</section>
         </section>
      <!--sidebar include -->
      {% include "sidebar.html" %}
