@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{%block head %}
+<title>{{setting.title}} > Memcache</title>
+{% endblock %}
+
+{%block body %}
+<div id="content" class="w680">
+<!-- box start -->
+<div class="box"><div class="rnd_top"><div class="west"><div class="dot"></div></div><div class="east"><div class="dot"></div></div></div>
+<div class="inner">           
+<h3>Memcache命中率,当前Memcache大小:{{mem.bytes|filesizeformat}}</h3>
+<p><img src="http://chart.apis.google.com/chart?cht=ls&chs=360x150&chd=t:{{rates}}" alt="memcache" /></p>
+</div>
+<div class="rnd_bot"><div class="west"><div class="dot"></div></div><div class="east"><div class="dot"></div></div></div></div>
+<!-- box end -->
+</div>
+
+     <!--sidebar include -->
+     {% include "sidebar.html" %}
+{% endblock %}

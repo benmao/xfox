@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{%block head %}
+<title>{{setting.title}} > {{dis.tag_title}} > {{dis.title}}</title>
+{% endblock %}
+
+{%block body %}
+<div id="content" class="w680">
+<!--box start -->
+<div class="box"><div class="rnd_top"><div class="west"><div class="dot"></div></div><div class="east"><div class="dot"></div></div></div>
+<div class="inner">           
+	<h2><a href="/{{dis.tag_slug}}/">{{dis.tag_title}}</a> &gt; <a href="{{dis.url}}">{{dis.title}}</a>
+    {% if user %}
+    {% if bookmark %}
+    <a href="/b/?key={{dis.key.name}}&action=un" class="bookmarked" id="bookmark"><span>*</span></a>
+    {% else %}
+     <a href="/b/?key={{dis.key.name}}&action=do" class="bookmark" id="bookmark"><span>*</span></a>
+    {% endif %}
+    {% endif %}
+    </h2>
+</div>
+<div class="rnd_bot"><div class="west"><div class="dot"></div></div><div class="east"><div class="dot"></div></div></div></div>
+<!--box end -->
+
+<!-- box start -->
+<div class="box"><div class="rnd_top"><div class="west"><div class="dot"></div></div><div class="east"><div class="dot"></div></div></div>
+<div class="inner">           
+    <p class="line1"><a href="/u/{{dis.user_name}}/">{{dis.user_name}}</a> Post at <span>{{dis.created|humdate}}</span> {{disviews}} views{% ifequal user.name dis.user_name %}| <a href="/p/{{dis.tag_slug}}/{{dis.slug}}/">Edit</a>{% endifequal %}</p>
+    {{dis.content_formated}}
+</div>
+<div class="rnd_bot"><div class="west"><div class="dot"></div></div><div class="east"><div class="dot"></div></div></div></div>
+<!-- box end -->
+
+{% if comments %}
+<!-- box start -->
+<div class="box"><div class="rnd_top"><div class="west"><div class="dot"></div></div><div class="east"><div class="dot"></div></div></div>
+<div class="inner">           
+ <h3>讨论</h3>
+ {% for comment in comments %}
+<div class="comment line" id="r-{{comment.key.name}}">
+	<div class="header">
+    <strong><a href="/u/{{comment.user_name}}/">{{comment.user_name}}</a></strong><span class="gray time">{{comment.created|humdate}}</span>
+    </div>
+    {{comment.content_formated}}
+</div>
+{% endfor %}
+</div>
+<div class="rnd_bot"><div class="west"><div class="dot"></div></div><div class="east"><div class="dot"></div></div></div></div>
+<!-- box end -->
+{% endif %}
+
+
+{% if user %}
+<!-- box start -->
+<div class="box"><div class="rnd_top"><div class="west"><div class="dot"></div></div><div class="east"><div class="dot"></div></div></div>
+<div class="inner">           
+	<h3>添加评论吧</h3>
+    <form method="post" action="/c/" id="comment_form" >
+    <input type="hidden" name="key" value="{{dis.key.name}}" />
+    <p>
+        <textarea class="input_box" cols="100" rows="6" name="content" ></textarea>
+    </p>
+    <p>
+        <input type="submit" value="发表" class="button" />
+    </p>
+    </form>
+</div>
+<div class="rnd_bot"><div class="west"><div class="dot"></div></div><div class="east"><div class="dot"></div></div></div></div>
+<!-- box end -->
+{% endif %}
+</div>
+ <!--sidebar include -->
+ {% include "sidebar.html" %}
+{% endblock %}

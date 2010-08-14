@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{%block head %}
+<title>{{setting.title}} > Mention</title>
+{% endblock %}
+
+{%block body %}
+<div id="content" class="w680">
+<!-- box start -->
+<div class="box"><div class="rnd_top"><div class="west"><div class="dot"></div></div><div class="east"><div class="dot"></div></div></div>
+<div class="inner">           
+<h3>最近提醒</h3>
+<table class="list">
+	<tr>
+    	<td>帖子地址</td>
+        <td>来源</td>
+        <td>日期</td>
+        <td>操作</td>
+    </tr>
+    {% for mention in mentions %}
+    <tr>
+    	<td><a href="{{mention.source_url}}">{{mention.source_url}}</a></td>
+        <td><a href="/u/{{mention.source_user}}/">{{mention.source_user}}</a></td>
+        <td>{{mention.created|humdate}}</td>
+        <td><a href="#">已阅</a></td>
+    </tr>
+		{% endfor %}
+</table>
+</div>
+<div class="rnd_bot"><div class="west"><div class="dot"></div></div><div class="east"><div class="dot"></div></div></div></div>
+<!-- box end -->
+	
+</div>
+
+     <!--sidebar include -->
+     {% include "sidebar.html" %}
+{% endblock %}

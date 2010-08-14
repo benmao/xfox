@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{%block head %}
+<title>{{setting.title}} > {{u.name}}</title>
+{% endblock %}
+
+{%block body %}
+<div id="content" class="w680">
+
+<!-- box start -->
+<div class="box"><div class="rnd_top"><div class="west"><div class="dot"></div></div><div class="east"><div class="dot"></div></div></div>
+<div class="inner" id="user">           
+	<h3 class="line1">用户介绍|
+    {% if is_following %}
+    <a href="/a/unfollow/{{u.name_lower}}/">Un Follow</a>
+    {% else %}
+    <a href="/a/follow/{{u.name_lower}}/">Follow</a>
+    {% endif %}
+    </h3>
+	<p> {{u.name}} 是xFox的第<strong>{{u.user_id}}<sub>36</sub></strong>个成员。</p>
+</div>
+<div class="rnd_bot"><div class="west"><div class="dot"></div></div><div class="east"><div class="dot"></div></div></div></div>
+<!-- box end -->
+    
+{% if recent_dis %}
+<!-- box start -->
+<div class="box"><div class="rnd_top"><div class="west"><div class="dot"></div></div><div class="east"><div class="dot"></div></div></div>
+<div class="inner">           
+	<h3 class="line1">最近主题</h3>
+	<table class="list">
+    	<tr>
+            <td class="title">标题</th>
+            <td class="author">作者</th>
+            <td class="date">最后回复</th>
+        </tr>
+        {% for dis in recent_dis %}
+        <tr>
+            <td class="title"><a href="{{dis.url}}">{{dis.title}}</a>{% if dis.count_comment %}(+{{dis.count_comment}}){% endif %}</td>
+            <td class="author"><a href="/u/{{dis.user_name}}/">{{dis.user_name}}</a></td>
+            <td class="date">{{dis.last_comment|datetz:"Y-m-d H:i"}}</td>
+        </tr>
+        {% endfor %}
+		
+	</table>
+</div>
+<div class="rnd_bot"><div class="west"><div class="dot"></div></div><div class="east"><div class="dot"></div></div></div></div>
+<!-- box end -->
+{% endif %}
+{% if recent_comment %}
+
+<!-- box start -->
+<div class="box"><div class="rnd_top"><div class="west"><div class="dot"></div></div><div class="east"><div class="dot"></div></div></div>
+<div class="inner">           
+<h3 class="line1">最近评论</h3>
+<table class="list">
+	<tr>
+        <td class="title">标题</th>
+        <td class="author">作者</th>
+        <td class="date">最后回复</th>
+    </tr>
+    {% for dis in recent_comment %}
+    <tr>
+        <td class="title"><a href="{{dis.url}}">{{dis.title}}</a>{% if dis.count_comment %}(+{{dis.count_comment}}){% endif %}</td>
+        <td class="author"><a href="/u/{{dis.user_name}}/">{{dis.user_name}}</a></td>
+        <td class="date">{{dis.last_comment|datetz:"Y-m-d H:i"}}</td>
+    </tr>
+    {% endfor %}
+	
+</table>
+</div>
+<div class="rnd_bot"><div class="west"><div class="dot"></div></div><div class="east"><div class="dot"></div></div></div></div>
+<!-- box end -->
+{% endif %}
+{% if recent_bookmark %}
+
+<!-- box start -->
+<div class="box"><div class="rnd_top"><div class="west"><div class="dot"></div></div><div class="east"><div class="dot"></div></div></div>
+<div class="inner">           
+<h3 class="line1">最近收藏</h3>
+<table class="list">
+	<tr>
+        <td class="title">标题</th>
+        <td class="author">作者</th>
+        <td class="date">最后回复</th>
+    </tr>
+    {% for dis in recent_bookmark %}
+    <tr>
+        <td class="title"><a href="{{dis.url}}">{{dis.title}}</a>{% if dis.count_comment %}(+{{dis.count_comment}}){% endif %}</td>
+        <td class="author"><a href="/u/{{dis.user_name}}/">{{dis.user_name}}</a></td>
+        <td class="date">{{dis.last_comment|datetz:"Y-m-d H:i"}}</td>
+    </tr>
+    {% endfor %}
+	
+</table>
+</div>
+<div class="rnd_bot"><div class="west"><div class="dot"></div></div><div class="east"><div class="dot"></div></div></div></div>
+<!-- box end -->
+{% endif %}
+</div>
+     <!--sidebar include -->
+     {% include "sidebar.html" %}
+{% endblock %}

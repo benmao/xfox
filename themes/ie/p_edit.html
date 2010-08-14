@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{%block head %}
+<title>{{setting.title}} > 讨论</title>
+{% endblock %}
+{%block body %}
+<!-- box start -->
+<div class="box"><div class="rnd_top"><div class="west"><div class="dot"></div></div><div class="east"><div class="dot"></div></div></div>
+<div class="inner">           
+<div id="p_form">
+       <h3>修改 <a href="{{dis.url}}">{{dis.title}}</a></h3>
+    	<form method="post" class="radius" action="/p{{dis.url}}">
+        <input type="hidden" value="{{dis.key.name}}" name="key" />
+		<p>
+        <label for="title">标题</label>
+        <input type="text" class="input_box" maxlength="100" value="{{dis.title|escape}}" name="title" id="title">
+        </p>
+        <p>
+        <label for="content">内容</label>
+        <textarea class="input_box" cols="100" rows="6" name="content" id="content" >{{dis.content|escape}}</textarea>
+        </p>
+        {% if error %}
+        <p>{{error}}</p>
+        {% endif %}
+        <p>
+        <input type="submit" value="提交" class="button" />
+        </p>
+    </form>
+    </div>
+</div>
+<div class="rnd_bot"><div class="west"><div class="dot"></div></div><div class="east"><div class="dot"></div></div></div></div>
+<!-- box end -->
+
+{% endblock %}

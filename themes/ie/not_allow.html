@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{%block head %}
+<title>{{setting.title}} > 没有权限访问</title>
+{% endblock %}
+
+{%block body %}
+<div id="signup" class="w350">
+<h3>可能因为如下原因，您不能访问当前页面</h3>
+<p>1. 您的账号已经被Banned.</p>
+<p>2. 您的用户组没有权限访问当前页面，您当前的用户组为：{{role}}</p>
+<p>3. 当前主题因为违反论坛规定，已经被Banned.</p>
+</div>
+{% endblock %}

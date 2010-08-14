@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{%block head %}
+<title>{{setting.title}} > Gs</title>
+{% endblock %}
+
+{%block body %}
+<div id="content" class="w680">
+<!-- box start -->
+<div class="box"><div class="rnd_top"><div class="west"><div class="dot"></div></div><div class="east"><div class="dot"></div></div></div>
+<div class="inner">           
+<h3>图片列表|<a href="/g/upload/">上传</a></h3>
+<table class="list">
+	<tr>
+    	<td>地址</td>
+        <td>大小</td>
+        <td>类型</td>
+        <td>操作</td>
+    </tr>
+    {% for gs in gss %}
+    <tr>
+    	<td><a href="{{gs.url}}">{{gs.url}}</a></td>
+        <td>{{gs.size}}</td>
+        <td>{{gs.mime}}</td>
+        <td><a href="#">复制</a></td>
+    </tr>
+		{% endfor %}
+</table>
+</div>
+<div class="rnd_bot"><div class="west"><div class="dot"></div></div><div class="east"><div class="dot"></div></div></div></div>
+<!-- box end -->
+</div>
+
+     <!--sidebar include -->
+     {% include "sidebar.html" %}
+{% endblock %}

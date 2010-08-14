@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{%block head %}
+<title>{{setting.title}} > gs Upload</title>
+{% endblock %}
+
+{%block body %}
+<div id="content" class="w680">
+<!-- box start -->
+<div class="box"><div class="rnd_top"><div class="west"><div class="dot"></div></div><div class="east"><div class="dot"></div></div></div>
+<div class="inner">           
+<h3>图片上传</h3>
+<form method="post" action="/g/upload/" enctype="multipart/form-data">
+<p>
+<label for="file">选择图片文件</label>
+<input type="file"  name="file" class="input_box" />
+</p>
+
+<p>
+
+    <input type="submit" value="上传" class="button radius" />
+</p>
+</form>
+</div>
+<div class="rnd_bot"><div class="west"><div class="dot"></div></div><div class="east"><div class="dot"></div></div></div></div>
+<!-- box end -->
+	
+</div>
+
+     <!--sidebar include -->
+     {% include "sidebar.html" %}
+{% endblock %}

@@ -1,0 +1,96 @@
+<div id="side-bar" class="w250">
+	{% if tag %}
+    <a class="big_button" href="/p/{{tag.key.name}}/">发起讨论</a>
+	{% endif %}
+	
+	{% if not user %}
+	 <!-- box start -->
+		<div class="box">
+		<div class="rnd_top">
+			<div class="west">
+				<div class="dot"></div>
+			</div>
+			<div class="east">
+				<div class="dot"></div>
+			</div>
+		</div>
+
+		<div class="inner">            	
+		<h3>欢迎访问xFox!</h3>
+		<p>xFox是一个面向技术人员的交流社区，欢迎加入讨论!</p>
+        <p><a href="/a/signin/">登录</a>
+        <a href="/a/signup/">注册</a></p>
+		</div>
+
+		
+		<div class="rnd_bot">
+			<div class="west">
+				<div class="dot"></div>
+			</div>
+			<div class="east">
+				<div class="dot"></div>
+			</div>
+		</div>
+	</div>
+	 <!-- box end -->
+    {% endif %}
+	
+	<!-- box start -->
+		<div class="box">
+		<div class="rnd_top">
+			<div class="west">
+				<div class="dot"></div>
+			</div>
+			<div class="east">
+				<div class="dot"></div>
+			</div>
+		</div>
+		<div class="inner">            	
+		<h3>讨论区</h3>
+			<p>
+        	{% for tag in tags %}
+            <a href="{{tag.url}}">{{tag.title}}</a>
+            {% endfor %}
+			</p>
+		</div>
+
+		<div class="rnd_bot">
+			<div class="west">
+				<div class="dot"></div>
+			</div>
+			<div class="east">
+				<div class="dot"></div>
+			</div>
+		</div>
+	</div>
+	 <!-- box end -->
+	 
+	<!-- box start -->
+		<div class="box">
+		<div class="rnd_top">
+			<div class="west">
+				<div class="dot"></div>
+			</div>
+			<div class="east">
+				<div class="dot"></div>
+			</div>
+		</div>
+		<div class="inner">            	
+        {% if tag %}
+        <a href="/f/{{tag.key.name}}/" class="feed"><span>RSS订阅{{tag.title}}更新</span></a>
+        {% else %}
+        <a href="/f/" class="feed"><span>RSS订阅更新</span></a>
+        {% endif %}
+		</div>
+
+		<div class="rnd_bot">
+			<div class="west">
+				<div class="dot"></div>
+			</div>
+			<div class="east">
+				<div class="dot"></div>
+			</div>
+		</div>
+	</div>
+	 <!-- box end -->
+</div>
