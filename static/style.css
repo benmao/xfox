@@ -439,6 +439,10 @@ textarea:focus {
 	padding:3px 3px 3px 0;
 }
 
+.list .author {
+	width:50px;
+}
+
 .list .date{
 	width:138px;
 	text-align:right;

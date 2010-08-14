@@ -18,6 +18,7 @@ from dash.counter import ShardCount
 from util.acl import check_roles,check_roles_feed
 from util.wsgi  import webapp_add_wsgi_middleware
 from google.appengine.api import memcache
+import datetime
 
 class TagHandler(PublicWithSidebarHandler):
     def get(self,slug):
@@ -203,7 +204,7 @@ class FeedTagHandler(PublicHandler):
     
         diss = Discussion.get_feed_by_tag(tag)
         self.template_value['diss']=diss
-        self.template_value['lastupdated']=diss[0].created
+        self.template_value['lastupdated']= diss[0].created if len(diss)>0 else datetime.datetime.now()
         self.render('rss.xml')
         
                 
