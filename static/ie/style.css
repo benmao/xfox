@@ -3,6 +3,10 @@
 	padding:0;
 }
 
+body{
+	font-family: "Microsoft YaHei" ! important;
+}
+
 a,
 a:link,
 a:visited,
