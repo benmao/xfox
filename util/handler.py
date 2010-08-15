@@ -82,9 +82,12 @@ class PublicHandler(webapp.RequestHandler):
         '''
         render template for desktop and mobile
         '''
+        self.response.out.write(self.get_render(template_file))
+        
+    def get_render(self,template_file):
         template_file = "themes/%s/%s" % (self.os,template_file)
         path = os.path.join(os.path.dirname(__file__), r'../',template_file)
-        self.response.out.write(template.render(path, self.template_value))
+        return template.render(path, self.template_value)
         
     def json(self,data):
         self.response.headers['Content-Type']='application/json'

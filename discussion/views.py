@@ -19,6 +19,7 @@ from util.acl import check_roles,check_roles_feed
 from util.wsgi  import webapp_add_wsgi_middleware
 from google.appengine.api import memcache
 import datetime
+import logging
 
 class TagHandler(PublicWithSidebarHandler):
     def get(self,slug):
@@ -153,6 +154,24 @@ class PostCommentHandler(PublicWithSidebarHandler):
         comment =Comment.new(self.user,dis,content)
         self.redirect(comment.url)
         
+class PostCommentAjaxHandler(PublicHandler):
+    def get(self):
+        self.error(403)
+        
+    @requires_login
+    def post(self):
+        key = self.request.get("key")
+        content = self.request.get("content")
+        if not content.strip():
+            return self.json({'error':u"内容不能为空"})
+        dis = Discussion.get_by_key_name(key)
+        if dis is None:
+            return self.json({'error':u"不要非法提交哦"})
+        comment = Comment.new(self.user,dis,content)
+        self.template_value['comment']=comment
+        return self.json({'success':True,'comment':self.get_render("comment.html").decode('utf-8')})
+    
+    
 class BookmarkHandler(PublicHandler):
     @requires_login
     def get(self):
@@ -220,6 +239,7 @@ class NotFoundHandler(PublicHandler):
 def main():
     application = webapp.WSGIApplication([
                                                           ('/c/?',PostCommentHandler),
+                                                          ('/c/ajax/',PostCommentAjaxHandler),
                                                           ('/p/(?P<slug>[a-z0-9-]{2,})/?',PostDisscussionHandler),
                                                           ('/p/(?P<slug>[a-z0-9-]{2,})/(?P<key>[a-z0-9]+)/?',EditDisscussionHandler),
                                                           ('/b/?',BookmarkHandler),
