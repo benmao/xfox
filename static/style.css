@@ -416,7 +416,6 @@ textarea:focus {
 }
 
 .list .date{
-	width:138px;
 	text-align:right;
 }
 
@@ -429,3 +428,14 @@ textarea:focus {
 .feed span{
 	margin: 0 0 0 3px;
 }
+
+/* mention */
+a.mention,
+a.mention:link,
+a.mention:visited,
+a.mention:active,
+a.mention:hover{
+   text-decoration: none;
+   color: #ff0084;
+}
+

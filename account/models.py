@@ -188,6 +188,10 @@ class Mention(db.Model):
         mention = Mention.get(key)
         mention.is_read = True
         mention.put()
+
+    @classmethod
+    def check_mentin(cls,user):
+        return Mention.all().filter('user =',user).filter('is_read =',False).count()
     
 if __name__=='__main__':
     pass

@@ -96,6 +96,15 @@ class UserMentionReadHandler(PublicHandler):
         Mention.set_read(key)
         self.json({"result":True})
         
+class UserMentionCheckHandler(PublicHandler):
+    @requires_login
+    def get(self):
+        self.response.out.write(Mention.check_mentin(self.user))
+        
+    @json_requires_login
+    def post(self):
+        self.json({"count":Mention.check_mentin(self.user)})
+        
 class UserFollowIndexHandler(PublicWithSidebarHandler):
     @requires_login
     def get(self):
@@ -131,6 +140,7 @@ def main():
                                                       ('/a/signout/',SignOutHandler),
                                                       ('/a/mention/',UserMentionHandler),
                                                       ('/a/mention/read/',UserMentionReadHandler),
+                                                      ('/a/mention/check/',UserMentionCheckHandler),
                                                       ('/a/follow/', UserFollowIndexHandler),
                                                       ('/a/follow/(?P<name>[a-z0-9A-Z]{3,16})/',UserFollowHandler),
                                                       ('/a/unfollow/(?P<name>[a-z0-9A-Z]{3,16})/',UserUnFollowHandler),

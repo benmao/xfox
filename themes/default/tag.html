@@ -21,7 +21,7 @@
                 <tr>
                     <td class="title"><a href="{{dis.url}}">{{dis.title}}</a>{% if dis.count_comment %}(+{{dis.count_comment}}){% endif %}</td>
                     <td class="author"><a href="/u/{{dis.user_name}}/">{{dis.user_name}}</a></td>
-                    <td class="date">{{dis.last_comment|datetz:"Y-m-d H:i"}}</td>
+                    <td class="date">{{dis.last_comment|humdate}}</td>
                 </tr>
                 {% endfor %}
             </table>
