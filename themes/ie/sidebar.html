@@ -1,6 +1,6 @@
 <div id="side-bar" class="w250">
-	{% if tag %}
-    <a class="big_button" href="/p/{{tag.key.name}}/">发起讨论</a>
+	{% if f_tag %}
+    <a class="big_button" href="/p/{{f_tag.key}}/">发起讨论</a>
 	{% endif %}
 	
 	{% if not user %}

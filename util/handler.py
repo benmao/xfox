@@ -107,7 +107,7 @@ class PublicWithSidebarHandler(PublicHandler):
 class AdminHandler(webapp.RequestHandler):
     def initialize(self,request,response):
         webapp.RequestHandler.initialize(self,request,response)
-        self.setting = Setting.get_setting()
+        self.setting = settings.Setting()
         self.template_value={'setting':self.setting}
         
         #make ture login as admin

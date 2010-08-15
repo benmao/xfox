@@ -260,7 +260,7 @@ class Discussion(db.Model):
     @classmethod
     def get_by_tag(cls,tag):
         diss = Discussion.all().filter('tag =',tag).order('-last_comment')
-        return PagedQuery(diss,10)
+        return PagedQuery(diss,15)
         
     @classmethod
     def get_recent_dis(cls,user):

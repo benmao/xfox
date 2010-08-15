@@ -1,6 +1,6 @@
 <section id="side-bar" class="w250">
-	{% if tag %}
-    <a class="big_button radius" href="/p/{{tag.key.name}}/">发起讨论</a>
+	{% if f_tag %}
+    <a class="big_button radius" href="/p/{{f_tag.key}}/">发起讨论</a>
 	{% endif %}
 	{% if not user %}
 	<section class="box radius">
@@ -23,12 +23,12 @@
     <section class="box radius">
         {% if f_tag %}
 			{% if f_tag.show %}
-		        <a href="/f/{{f_tag.key}}/" class="feed"><span>RSS订阅{{f_tag.title}}更新</span></a>
+				<div class="feed"><a href="/f/{{f_tag.key}}/">订阅<span>{{f_tag.title}}</span></a></div>
 			{% else %}
 				<p>当前Tag不能订阅！</p>
 			{% endif %}
         {% else %}
-        <a href="/f/" class="feed"><span>RSS订阅更新</span></a>
+		<div class="feed"><a href="/f/">订阅<span>更新</span></a></div>
         {% endif %}
     </section>
 </section>

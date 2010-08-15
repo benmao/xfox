@@ -3,6 +3,10 @@
 	padding:0;
 }
 
+body{
+	font-family: "Microsoft YaHei" ! important;
+}
+
 header, footer, aside, nav, article,section {  
 	display: block;  
 }  
@@ -283,6 +287,9 @@ menu a{
 	background: #fff;
    	color: #474747;
 }
+.line {
+	border-bottom:1px dashed #DDDDDD;
+}
 
 .line1 {
 	border-bottom:1px dashed #39F;
@@ -412,11 +419,12 @@ textarea:focus {
 	text-align:right;
 }
 
-.feed{
-	display:block;
-	width:100%;
+.feed {
+	background:url(images/feed.png) no-repeat  left center;
+	margin:5px 10px;
+	padding: 0 0 0 20px;
 }
 
 .feed span{
-	margin:5px 10px;
+	margin: 0 0 0 3px;
 }

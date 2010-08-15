@@ -14,7 +14,7 @@ import settings
 from account.models import User,Mention,UserFollow
 from util.base import *
 from discussion.models import Discussion,Comment,Bookmark,RecentCommentLog,DiscussionFollow
-from util.decorator import requires_login
+from util.decorator import requires_login, json_requires_login
 from util.wsgi import webapp_add_wsgi_middleware
 
 class SignUpHandler(PublicHandler):
@@ -89,6 +89,13 @@ class UserMentionHandler(PublicWithSidebarHandler):
         self.template_value['mentions']= Mention.get_mention_by_user(self.user)
         self.render('mention.html')
         
+class UserMentionReadHandler(PublicHandler):
+    @json_requires_login
+    def post(self):
+        key = self.request.get("key")
+        Mention.set_read(key)
+        self.json({"result":True})
+        
 class UserFollowIndexHandler(PublicWithSidebarHandler):
     @requires_login
     def get(self):
@@ -123,6 +130,7 @@ def main():
                                                       ('/a/signin/',SignInHandler),
                                                       ('/a/signout/',SignOutHandler),
                                                       ('/a/mention/',UserMentionHandler),
+                                                      ('/a/mention/read/',UserMentionReadHandler),
                                                       ('/a/follow/', UserFollowIndexHandler),
                                                       ('/a/follow/(?P<name>[a-z0-9A-Z]{3,16})/',UserFollowHandler),
                                                       ('/a/unfollow/(?P<name>[a-z0-9A-Z]{3,16})/',UserUnFollowHandler),
