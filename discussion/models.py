@@ -441,6 +441,6 @@ class DiscussionFollow(db.Model):
     @classmethod
     def get_dis_by_user(cls,user):
         return [df.dis for df in DiscussionFollow.all().filter("user =",user).filter("is_read =",False).order('-created').fetch(100)]
-    
+
 if __name__=='__main__':
     pass

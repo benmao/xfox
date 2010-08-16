@@ -11,7 +11,7 @@ from google.appengine.ext.webapp import util
 
 from util.handler import PublicHandler,PublicWithSidebarHandler
 from util.decorator import requires_login
-from gs.models import GSFile
+from gs.models import GSFile,LatexImage
 from util.wsgi import webapp_add_wsgi_middleware
 
 class GsFileIndexHandler(PublicWithSidebarHandler):
@@ -41,11 +41,20 @@ class GsUploadHandler(PublicWithSidebarHandler):
         GSFile.new(name,mime,bf,self.user)
         self.redirect("/g/")
         
-
+class LatexImageHandler(PublicHandler):
+    def get(self,key):
+        latex = LatexImage.get_by_key_name(key)
+        if latex is None:
+            return self.error(404)
+        if latex.is_done:
+            return self.redirect(latex.url,True)
+        return self.error(404)
+        
 def main():
     application = webapp.WSGIApplication([
                                         ('/g/', GsFileIndexHandler),
                                         ('/g/upload/',GsUploadHandler),
+                                        ('/g/latex/(?P<key>[a-z0-9]{32})/',LatexImageHandler),
                                         ],
                                          debug=settings.DEBUG)
     util.run_wsgi_app(webapp_add_wsgi_middleware(application))

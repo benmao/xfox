@@ -21,9 +21,7 @@ def random_str(length=6):
     return ''.join(random.sample(strs,length))
 
 def get_md5(str):
-    m = md5.new()
-    m.update(str)
-    return m.hexdigest()
+    return md5.new(str).hexdigest()
 
 def random_md5(str):
     m = md5.new()
@@ -109,9 +107,18 @@ def replace_mention(value,params):
         taskqueue.add(url ="/t/u/mention/",params=params)
     return value
 
+def replace_latex(value):
+    md5_str = get_md5(value)
+    params = {'latex_str':value,'md5_str':md5_str}
+    taskqueue.add(url="/t/d/latex/",params=params)
+    return md5_str
+
 def  escape(value):
     from django.utils.html import escape
     return escape(value)
 
 if __name__=='__main__':
-    print replace_mention("@benben")
+    a = re.findall(r'\$\$(.+)\$\$',"$$\ddddddd$$")
+    b = a[0]
+    print b
+    print get_md5(b)

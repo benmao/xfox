@@ -12,6 +12,30 @@ from boto.gs.connection import GSConnection
 from dash.models import Counter
 from google.appengine.api import images
 import logging
+from google.appengine.api import urlfetch
+
+def save_image_to_gs(key_name,bf,png=False):
+    try:
+        conn = GSConnection(gs_access_key_id = settings.gs_access_key_id,gs_secret_access_key =settings.gs_secret_access_key)
+        bucket = conn.get_bucket(settings.bucket_name)
+        gs_file = bucket.new_key(key_name)
+        mime = ' image/png ' if png else  self.mime
+        gs_file.set_contents_from_string(bf,policy="public-read",headers={"Content-Type":mime})
+    except:
+        return False
+    return True
+
+def get_latex_img(value):
+    try:
+        url = "http://latex.codecogs.com/png.latex?%s" % value
+        logging.info(url)
+        result = urlfetch.fetch(url)
+        if result.status_code ==200:
+            return result.content
+        return None
+    except:
+        return None
+    
 
 class GSFile(db.Model):
     user = db.ReferenceProperty(User)
@@ -34,12 +58,6 @@ class GSFile(db.Model):
             self.user_name=self.user.name
             super(GSFile,self).put()
             
-    def save_to_gs(self,key_name,bf,png=False):
-        conn = GSConnection(gs_access_key_id = settings.gs_access_key_id,gs_secret_access_key =settings.gs_secret_access_key)
-        bucket = conn.get_bucket(settings.bucket_name)
-        gs_file = bucket.new_key(key_name)
-        mime = ' image/png ' if png else  self.mime
-        gs_file.set_contents_from_string(bf,policy="public-read",headers={"Content-Type":mime})
         
         
     @property
@@ -60,17 +78,44 @@ class GSFile(db.Model):
         gsfile.heigth= img.height
         gsfile.small_pic=key_name
 
-        if img.height > 450: #need resize
-            img.resize(width=500)
-            img.im_feeling_lucky()
-            gsfile.save_to_gs('s/'+key_name,img.execute_transforms(output_encoding=images.PNG),True)
+        if img.height > 1200: #need resize
+            img.resize(width=1200)
+            #img.im_feeling_lucky()
+            save_image_to_gs('s/'+key_name,img.execute_transforms(output_encoding=images.PNG),True)
             gsfile.small_pic='s/'+key_name
-        gsfile.save_to_gs(key_name,bf)
+        save_image_to_gs(key_name,bf)
         gsfile.put()
             
     @classmethod
     def get_gsfile_by_user(cls,user):
         return GSFile.all().filter('user =',user).order('-created')
+
+class LatexImage(db.Model):
+    
+    latex_str = db.TextProperty()    
+    created = db.DateTimeProperty(auto_now_add = True)
+    cname = db.StringProperty()
+    
+    is_done = db.BooleanProperty(default=False)
+    
+    @property
+    def url(self):
+        return "%s/latex/%s" %(self.cname,self.key().name())
+    
+    @classmethod
+    def new(cls,latex_str,md5_str):
+        latex = LatexImage.get_by_key_name(md5_str)
+        if latex is None:
+            latex = LatexImage(key_name = md5_str,latex_str=latex_str,cname = settings.cname)
+            latex.put()
+        if  not latex.is_done:
+            #handle get image
+            img = get_latex_img(latex_str)
+            if not img is None: #save image to db
+                if save_image_to_gs('latex/%s' % md5_str,img,True):
+                    latex.is_done=True
+                    latex.put()
+        return True
         
 if __name__=='__main__':
     pass

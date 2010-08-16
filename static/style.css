@@ -25,6 +25,11 @@ a:hover {
    color: #ff0084;
 }
 
+img {
+	border: 0;
+	max-width:600px;
+}
+
 sub {
 	font-size:9px;
 	color:#999;
