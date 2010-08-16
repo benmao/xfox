@@ -61,8 +61,8 @@ class PublicHandler(webapp.RequestHandler):
         #handler os
         self.os = 'default' #html5
         user_agent = self.request.headers.get("User-Agent",'')
-        if "MSIE" in user_agent:
-            self.os = 'ie'
+        #if "MSIE" in user_agent:
+            #self.os = 'ie'
             
         #handler not endswith /
         self.template_value['os']=self.os 
