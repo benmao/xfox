@@ -1,6 +1,6 @@
-<article class="comment line radius" id="r-{{comment.key.name}}">
-	<header>
-    <strong><a href="/u/{{comment.user_name}}/">{{comment.user_name}}</a></strong><time class="gray">{{comment.created|humdate}}</time>
-    </header>
+<div class="comment line radius" id="r-{{comment.key.name}}">
+	<div class="header">
+    <strong><a href="/u/{{comment.user_name}}/">{{comment.user_name}}</a></strong><span class="time">{{comment.created|humdate}}</span>
+    </div>
     {{comment.content_formated}}
-</article>
+</div>

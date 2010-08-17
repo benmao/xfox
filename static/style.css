@@ -209,13 +209,14 @@ sub {
 /* comment */
 .comment {
 	background:#f3fcff;
+	border-bottom:1px dashed #DDD;
 }
 
-.comment header{
+.comment .header{
 	margin:0 10px 0 10px;
 }
 
-.comment header time{
+.comment .header .time{
 	margin-left:20px;
 }
 
