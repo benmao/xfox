@@ -11,7 +11,7 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 from  util.handler import PublicHandler,PublicWithSidebarHandler
 import settings
-from account.models import User,Mention,UserFollow
+from account.models import User,Mention,UserFollow,Session
 from util.base import *
 from discussion.models import Discussion,Comment,Bookmark,RecentCommentLog,DiscussionFollow
 from util.decorator import requires_login, json_requires_login,openid_requires_login,https_requires
@@ -70,6 +70,8 @@ class SignInHandler(PublicHandler):
 class SignOutHandler(PublicHandler):
     def get(self):
         self.response.headers['Set-Cookie'] ='xfox-session-key=;ACSID=;path=/'
+        #Notice : need remove sessionid from Session DB.
+        Session.remove(self.session_key)
         self.redirect("/")
 
 class UserProfileHandler(PublicWithSidebarHandler):
@@ -190,6 +192,23 @@ class OpenIDSignUpHandler(PublicHandler):
         User.new_by_openid(openid_user.email(),name,openid_user.federated_identity(),openid_user.user_id())
         self.redirect("/a/openid/signin/")
         
+        
+class UserSettingHandler(PublicHandler):
+    @requires_login
+    def get(self):
+        self.render("setting.html")
+        
+class UserSettingPwdHandler(PublicHandler):
+    @requires_login
+    def post(self):
+        oldpwd = self.request.get("oldpwd")
+        pwd = self.request.get("pwd")
+        
+        result,info = User.update_pwd(self.user.email,oldpwd,pwd)
+        self.template_value['pwd_error']=info
+        self.render("setting.html")
+        
+            
 class UserNotAllowedHandler(PublicHandler):
     def get(self):
         self.render("not_allow.html")
@@ -213,6 +232,8 @@ def main():
                                                       ('/a/remind/',UserRemindHandler),
                                                       ('/a/follow/', UserFollowIndexHandler),
                                                       ('/a/followread/',UserFollowReadHandler),
+                                                      ('/a/setting/',UserSettingHandler),
+                                                      ('/a/setting/pwd/',UserSettingPwdHandler),
                                                       ('/a/follow/(?P<name>[a-z0-9A-Z]{3,16})/',UserFollowHandler),
                                                       ('/a/unfollow/(?P<name>[a-z0-9A-Z]{3,16})/',UserUnFollowHandler),
                                                       ('/u/(?P<name>[a-z0-9A-Z]{3,16})/',UserProfileHandler),

@@ -113,6 +113,22 @@ class User(db.Model):
         session = Session.new(user,30)
         return user,session
     
+    @classmethod
+    def update_pwd(cls,email,oldpwd,pwd):
+        user = User.all().filter("email =",email.lower()).get()
+        if user is None:
+            return False,u"用户不存在"
+        if not 'pwd' in user.login_type:
+            user.secret_key,user.pwd = encrypt_pwd(pwd) 
+            user.put()
+            return True,u'密码修改成功，下次登录请使用新密码'
+        if user.pwd != encrypt_pwd(oldpwd,user.secret_key)[1]:
+            return False,u"旧密码不正确"
+        user.secret_key,user.pwd = encrypt_pwd(pwd) 
+        user.put()
+        return True,u'密码修改成功，下次登录请使用新密码'
+        
+        
         
 class UserFollow(db.Model):
     user = db.ReferenceProperty(User)
@@ -197,6 +213,11 @@ class Session(db.Model):
             return None if session is None else session.user
         return _get_user_by_session(session_key)
     
+    @classmethod
+    def remove(cls,session_key):
+        session = Session.get_user_by_session(session_key)
+        session.delete()
+        
 
 class Mention(db.Model):
     user = db.ReferenceProperty(User)

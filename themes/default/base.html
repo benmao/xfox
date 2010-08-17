@@ -14,6 +14,7 @@
             <ul>
             	{% if user %}
                 <li><a href="/u/{{user.name}}/">{{user.name}}</a></li>
+				<li><a href="/a/setting/">设置</a>
                 <li><a href="/a/follow/" id="follow">Follow</a></li>
 				<li><a href="/g/">图片</a></li>
                 <li><a href="/a/mention/" id="mention">提醒</a></li>
@@ -30,10 +31,11 @@
     </div>
     
     <div id="footer" class="w960">
-    	<p class="gray"><a href="http://xfox.appspot.com">Powered by xFox</a>-{{setting.version}}</p>
+    	<p><a href="http://xfox.appspot.com">Powered by xFox</a>-{{setting.version}}</p>
     </div>
 </body>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>-->
+	<script src="/static/jquery-1.4.2.min.js"></script>
     <script src="/static/bookmark.js?{{setting.version}}"></script>
     <script src="/static/mention.js?{{setting.version}}"></script>
     <script src="/static/comment.js?{{setting.version}}"></script>
