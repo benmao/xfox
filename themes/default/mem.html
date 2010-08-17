@@ -4,14 +4,14 @@
 {% endblock %}
 
 {%block body %}
-    	<section id="content" class="w680">
-			<section class="box radius">
+    	<div id="content" class="w680">
+			<div class="box radius">
                 <h3>Memcache命中率,当前Memcache大小:{{mem.bytes|filesizeformat}}</h3>
 				<p><img src="http://chart.apis.google.com/chart?cht=ls&chs=360x150&chd=t:{{rates}}" alt="memcache" /></p>
-    		</section>
+    		</div>
             
             
-        </section>
+        </div>
      <!--sidebar include -->
      {% include "sidebar.html" %}
 {% endblock %}

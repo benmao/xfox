@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {%block head %}
-<title>{{setting.title}} > Index</title>
+<title>{{setting.title}} > xFox主页</title>
 {% endblock %}
 
 {%block body %}
-    	<section id="content" class="w680">
-		<section class = "box radius">
+    	<div id="content" class="w680">
+		<div class = "box radius">
 			<h3>最近主题</h3>
 			<table class ="list">
             	<tr>
@@ -31,8 +31,8 @@
                 {% endfor %}
             </table>
 			
-		</section>
-        </section>
+		</div>
+        </div>
      <!--sidebar include -->
      {% include "sidebar.html" %}
 {% endblock %}

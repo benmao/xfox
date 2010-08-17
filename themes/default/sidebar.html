@@ -1,26 +1,26 @@
-<section id="side-bar" class="w250">
+<div id="side-bar" class="w250">
 	{% if f_tag %}
     <a class="big_button radius" href="/p/{{f_tag.key}}/">发起讨论</a>
 	{% endif %}
 	{% if not user %}
-	<section class="box radius">
+	<div class="box radius">
         <h3>欢迎访问xFox!</h3>
         <p>xFox是一个面向技术人员的交流社区，欢迎加入讨论!</p>
         <p><a href="/a/signin/">登录</a>
         <a href="/a/signup/">注册</a></p>
-    </section>
+    </div>
     {% endif %}
 
-    <section class="box radius">
+    <div class="box radius">
         <h3>讨论区</h3>
 		<p>
         	{% for tag in tags %}
             <a href="{{tag.url}}">{{tag.title}}</a>
             {% endfor %}
 		</p>
-    </section>
+    </div>
     
-    <section class="box radius">
+    <div class="box radius">
         {% if f_tag %}
 			{% if f_tag.show %}
 				<div class="feed"><a href="/f/{{f_tag.key}}/">订阅<span>{{f_tag.title}}</span></a></div>
@@ -30,5 +30,5 @@
         {% else %}
 		<div class="feed"><a href="/f/">订阅<span>更新</span></a></div>
         {% endif %}
-    </section>
-</section>
+    </div>
+</div>

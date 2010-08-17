@@ -4,7 +4,7 @@
 {% endblock %}
 
 {%block body %}
-    <section id="p_form">
+    <div id="p_form">
            <h3>修改 <a href="{{dis.url}}">{{dis.title}}</a></h3>
         	<form method="post" class="radius" action="/p{{dis.url}}">
             <input type="hidden" value="{{dis.key.name}}" name="key" />
@@ -26,5 +26,5 @@
             <input type="submit" value="提交" class="button radius" />
             </p>
         </form>
-        </section>
+        </div>
 {% endblock %}

@@ -48,6 +48,7 @@ sub {
 	font-weight: bold;
 	float: left;
 	line-height:27px;
+	margin: 10px 0 0 0 ;
 }
 #logo span {
 	font-size: 24px;
@@ -57,18 +58,18 @@ sub {
 #logo a:hover span {
 	color:#f3fcff;
 }
-menu {
+#nav ul {
 	list-style: none;
 	text-align: right;
 	padding: 10px;
 }
 
-menu li {
+#nav li {
 	line-height:27px;
 	display: inline;
 }
 
-menu a{
+#nav a{
 	margin-left:10px;
 	height: 28px;
 }
@@ -86,21 +87,6 @@ menu a{
 
 #side-bar {
 	float:right;
-}
-
-/* content */
-#content header {
-	width:100%;
-	height:40px;
-}
-
-#content header ul{
-	list-style: none;
-}
-
-#content header ul li{
-	display: inline;
-	line-height:40px;
 }
 
 /*signup*/
@@ -154,37 +140,6 @@ menu a{
 	min-height:400px;
 }
 
-/* tag_list */
-
-.tag_list {
-	margin:10px 0;
-}
-
-
-.tag_list th,
-.tag_list td {
-	font-size:14px;
-	line-height:24px;
-}
-
-.tag_list .title{
-	width:auto;
-	text-align:left;
-}
-
-.tag_list .count{
-	width:55px;
-	text-align:right;
-	padding-right:5px;
-}
-
-.tag_list .author{
-	width:80px;
-}
-
-.tag_list .date{
-	width:120px;
-}
 
 .user strong{
 	margin:0 5px;
@@ -264,23 +219,7 @@ menu a{
 	margin-left:20px;
 }
 
-.block a,
-.block a:link,
-.block a:hover,
-.block a:active,
-.block a:visited{
-	border:1px solid #abdafb;
-	background:#bbe2f7;
-	display:inline;
-	font-weight:bold;
-	color:#1e79a7;
-	text-decoration:none;
-	padding:5px 10px;	
-}
 
-.block a:hover {
-	background: #f3fcff;
-}
 
 .discussion h2 span,
 .block a span{
@@ -294,7 +233,8 @@ menu a{
 	background: #fff;
    	color: #474747;
 }
-.line {
+
+.line2 {
 	border-bottom:1px dashed #DDDDDD;
 }
 

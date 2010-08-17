@@ -4,9 +4,9 @@
 {% endblock %}
 
 {%block body %}
-    	<section id="content" class="w680">
-        	<section class="box radius" id="user">
-            	<h3 class="line1">用户介绍|
+    	<div id="content" class="w680">
+        	<div class="box radius" id="user">
+            	<h3>用户介绍|
                 {% if is_following %}
                 <a href="/a/unfollow/{{u.name_lower}}/">Un Follow</a>
                 {% else %}
@@ -14,87 +14,72 @@
                 {% endif %}
                 </h3>
             	<p> {{u.name}} 是xFox的第<strong>{{u.user_id}}<sub>36</sub></strong>个成员。</p>
-            </section>
+            </div>
             
             {% if recent_dis %}
-            <section class="box radius">
-            	<h3 class="line1">最近主题</h3>
-                <table cellpadding="5px" cellspacing="0" border="0" width="100%" class ="tag_list">
-            	<tr>
-                	<th class="count gray">回复数</th>
-                    <th class="title gray">标题</th>
-                    <th class="author gray">作者</th>
-                    <th class="date gray">最后回复</th>
-                </tr>
-                {% for dis in recent_dis %}
-                <tr>
-                	{% if dis.count_comment %}
-                    <td class="count b green">{{dis.count_comment}}</td>               
-                    {% else %}
-	 				<td class="count b gray">0</td>    
-                    {% endif %}
-                    <td class="title"><a href="{{dis.url}}">{{dis.title}}</a></td>
-                    <td class="author"><a href="/u/{{dis.user_name}}/">{{dis.user_name}}</a></td>
-                    <td class="date gray">{{dis.last_comment|datetz:"Y-m-d H:i"}}</td>
-                </tr>
-                {% endfor %}
-            </table>
-            </section>
+            <div class="box radius">
+            	<h3 >最近主题</h3>
+	            <table class ="list">
+	                <tr>
+	                    <td class="title">标题</th>
+	                    <td class="author">作者</th>
+	                    <td class="date">最后回复</th>
+	                </tr>
+	                {% for dis in recent_dis %}
+	                <tr>
+	                    <td class="title"><a href="{{dis.url}}">{{dis.title}}</a>{% if dis.count_comment %}(+{{dis.count_comment}}){% endif %}</td>
+	                    <td class="author"><a href="/u/{{dis.user_name}}/">{{dis.user_name}}</a></td>
+	                    <td class="date">{{dis.last_comment|humdate}}</td>
+	                </tr>
+	                {% endfor %}
+	            </table>
+			
+            </div>
             {% endif %}
             
             {% if recent_comment %}
-            <section class="box radius">
-            	<h3 class="line1">最近评论</h3>
-                <table cellpadding="5px" cellspacing="0" border="0" width="100%" class ="tag_list">
-            	<tr>
-                	<th class="count gray">回复数</th>
-                    <th class="title gray">标题</th>
-                    <th class="author gray">作者</th>
-                    <th class="date gray">最后回复</th>
-                </tr>
-                {% for dis in recent_comment %}
-                <tr>
-                	{% if dis.count_comment %}
-                    <td class="count b green">{{dis.count_comment}}</td>               
-                    {% else %}
-	 				<td class="count b gray">0</td>    
-                    {% endif %}
-                    <td class="title"><a href="{{dis.url}}">{{dis.title}}</a></td>
-                    <td class="author"><a href="/u/{{dis.user_name}}/">{{dis.user_name}}</a></td>
-                    <td class="date gray">{{dis.last_comment|datetz:"Y-m-d H:i"}}</td>
-                </tr>
-                {% endfor %}
-            </table>
-            </section>
+            <div class="box radius">
+            	<h3>最近评论</h3>
+
+                <table class ="list">
+                    <tr>
+                        <td class="title">标题</th>
+                        <td class="author">作者</th>
+                        <td class="date">最后回复</th>
+                    </tr>
+                    {% for dis in recent_comment %}
+                    <tr>
+                        <td class="title"><a href="{{dis.url}}">{{dis.title}}</a>{% if dis.count_comment %}(+{{dis.count_comment}}){% endif %}</td>
+                        <td class="author"><a href="/u/{{dis.user_name}}/">{{dis.user_name}}</a></td>
+                        <td class="date">{{dis.last_comment|humdate}}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+								
+            </div>
             {% endif %}
 
             {% if recent_bookmark %}
-            <section class="box radius">
-            	<h3 class="line1">最近收藏</h3>
-                <table cellpadding="5px" cellspacing="0" border="0" width="100%" class ="tag_list">
-            	<tr>
-                	<th class="count gray">回复数</th>
-                    <th class="title gray">标题</th>
-                    <th class="author gray">作者</th>
-                    <th class="date gray">最后回复</th>
-                </tr>
-                {% for dis in recent_bookmark %}
-                <tr>
-                	{% if dis.count_comment %}
-                    <td class="count b green">{{dis.count_comment}}</td>               
-                    {% else %}
-	 				<td class="count b gray">0</td>    
-                    {% endif %}
-                    <td class="title"><a href="{{dis.url}}">{{dis.title}}</a></td>
-                    <td class="author"><a href="/u/{{dis.user_name}}/">{{dis.user_name}}</a></td>
-                    <td class="date gray">{{dis.last_comment|datetz:"Y-m-d H:i"}}</td>
-                </tr>
-                {% endfor %}
-            </table>
-            </section>
+            <div class="box radius">
+            	<h3>最近收藏</h3>
+                <table class ="list">
+                    <tr>
+                        <td class="title">标题</th>
+                        <td class="author">作者</th>
+                        <td class="date">最后回复</th>
+                    </tr>
+                     {% for dis in recent_bookmark %}
+                    <tr>
+                        <td class="title"><a href="{{dis.url}}">{{dis.title}}</a>{% if dis.count_comment %}(+{{dis.count_comment}}){% endif %}</td>
+                        <td class="author"><a href="/u/{{dis.user_name}}/">{{dis.user_name}}</a></td>
+                        <td class="date">{{dis.last_comment|humdate}}</td>
+                    </tr>
+                    {% endfor %}
+                </table>				
+				            </div>
             {% endif %}
 
-        </section>
+        </div>
      <!--sidebar include -->
      {% include "sidebar.html" %}
 {% endblock %}

@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {%block head %}
-<title>{{setting.title}} > Index</title>
+<title>{{setting.title}} > Upload</title>
 {% endblock %}
 
 {%block body %}
-    	<section id="content" class="w680">
-			<section class="box radius">
+    	<div id="content" class="w680">
+			<div class="box radius">
                 <h3>图片上传</h3>
                 <form method="post" action="/g/upload/" enctype="multipart/form-data">
             	<p>
@@ -18,8 +18,8 @@
                     <input type="submit" value="上传" class="button radius" />
                 </p>
                 </form>
-    		</section>
-        </section>
+    		</div>
+        </div>
      <!--sidebar include -->
      {% include "sidebar.html" %}
 {% endblock %}

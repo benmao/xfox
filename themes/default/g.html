@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {%block head %}
-<title>{{setting.title}} > Index</title>
+<title>{{setting.title}} > GS</title>
 {% endblock %}
 
 {%block body %}
-    	<section id="content" class="w680">
-			<section class="box radius">
+    	<div id="content" class="w680">
+			<div class="box radius">
                 <h3>图片列表|<a href="/g/upload/">上传</a></h3>
                 <table class="list">
                 	<tr>
@@ -24,8 +24,8 @@
  					{% endfor %}
                 </table>
                 
-    		</section>
-        </section>
+    		</div>
+        </div>
      <!--sidebar include -->
      {% include "sidebar.html" %}
 {% endblock %}
