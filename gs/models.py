@@ -83,8 +83,8 @@ class GSFile(db.Model):
             #img.im_feeling_lucky()
             save_image_to_gs('s/'+key_name,img.execute_transforms(output_encoding=images.PNG),True)
             gsfile.small_pic='s/'+key_name
-        save_image_to_gs(key_name,bf)
-        gsfile.put()
+        if save_image_to_gs(key_name,bf):
+            gsfile.put() 
             
     @classmethod
     def get_gsfile_by_user(cls,user):

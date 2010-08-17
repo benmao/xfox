@@ -19,11 +19,9 @@ from util.wsgi import webapp_add_wsgi_middleware
 from google.appengine.api import users
 
 class SignUpHandler(PublicHandler):
-    @https_requires
     def get(self):
         self.render("signup.html")
     
-    @https_requires
     def post(self):
         email = self.request.get("email").strip()
         name = self.request.get("name").strip()
@@ -50,14 +48,12 @@ class SignUpHandler(PublicHandler):
         self.redirect("/a/signin/")
         
 class SignInHandler(PublicHandler):
-    @https_requires
     def get(self):
         if not self.user is None: #have logined
             self.redirect("/")
         self.template_value['go'] = self.request.get("go")
         self.render("signin.html")
     
-    @https_requires
     def post(self):
         email = self.request.get("email").strip()
         pwd = self.request.get("pwd").strip()
