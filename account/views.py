@@ -69,7 +69,7 @@ class SignInHandler(PublicHandler):
         
 class SignOutHandler(PublicHandler):
     def get(self):
-        self.response.headers['Set-Cookie'] ='xfox-session-key="";path=/'
+        self.response.headers['Set-Cookie'] ='xfox-session-key="";ACSID="";path=/'
         self.redirect("/")
 
 class UserProfileHandler(PublicWithSidebarHandler):

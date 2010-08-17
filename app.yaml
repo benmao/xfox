@@ -16,6 +16,10 @@ handlers:
   static_files: static/robots.txt
   upload: static/robots.txt
 
+- url: /PIE.htc
+  static_files:  static/PIE.htc
+  upload:  static/PIE.htc
+  
 - url: /static
   static_dir: static
 
