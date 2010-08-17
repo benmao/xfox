@@ -3,13 +3,9 @@
 <head>
 <meta charset="utf-8">
 	{% block head %} {% endblock %}
-	<link rel="stylesheet" type="text/css" media="screen"  href="/static/style.css" />
+	<link rel="stylesheet" type="text/css" media="screen"  href="/static/style.css?{{setting.version}}" />
 	<link rel="stylesheet" type="text/css" media="screen" href="/static/gist/default.css" />
-    <script src="/static/jquery-1.4.2.min.js"> </script>
-    <script src="/static/bookmark.js"></script>
-	<script src="/static/mention.js"></script>
-	<script src="/static/comment.js"></script>
-	
+	<link rel="alternate" type="application/atom+xml" title="xFox" href="/f/" />
 </head>
 <body>
 	<div id="header">
@@ -37,4 +33,8 @@
     	<p class="gray"><a href="http://xfox.appspot.com">Powered by xFox</a>-{{setting.version}}</p>
     </div>
 </body>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script src="/static/bookmark.js?{{setting.version}}"></script>
+    <script src="/static/mention.js?{{setting.version}}"></script>
+    <script src="/static/comment.js?{{setting.version}}"></script>
 </html>
