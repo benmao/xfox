@@ -108,7 +108,7 @@ def replace_mention(value,params):
     return value
 
 def replace_latex(value):
-    value = value.replace(' ','') #remove space
+    value = re.sub(r'\s+','',value)
     md5_str = get_md5(value)
     params = {'latex_str':value,'md5_str':md5_str}
     taskqueue.add(url="/t/d/latex/",params=params)

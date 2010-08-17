@@ -106,10 +106,19 @@ class UserMentionCheckHandler(PublicHandler):
     def post(self):
         self.json({"count":Mention.check_mentin(self.user)})
         
+class UserRemindHandler(PublicHandler):
+    @requires_login
+    def get(self):
+        self.response.out.write("remind")
+        
+    @json_requires_login
+    def post(self):
+        self.json({'mention':Mention.check_mentin(self.user),'follow':DiscussionFollow.check_follow(self.user)})
+        
 class UserFollowIndexHandler(PublicWithSidebarHandler):
     @requires_login
     def get(self):
-        self.template_value['diss'] = DiscussionFollow.get_dis_by_user(self.user)
+        self.template_value['follows'] = DiscussionFollow.get_dis_by_user(self.user)
         self.render("follow.html")
         
 class UserFollowHandler(PublicWithSidebarHandler):
@@ -117,6 +126,13 @@ class UserFollowHandler(PublicWithSidebarHandler):
     def get(self,name):
         UserFollow.add_follow(self.user,name)
         self.redirect("/u/%s/" % name)
+        
+class UserFollowReadHandler(PublicHandler):
+    @json_requires_login
+    def post(self):
+        key = self.request.get("key")
+        DiscussionFollow.set_read(key)
+        return self.json({"result":True})
         
 class UserUnFollowHandler(PublicWithSidebarHandler):
     @requires_login
@@ -193,9 +209,9 @@ def main():
                                                       ('/a/openid/signout/',OpenIDSignOutHandler),
                                                       ('/a/openid/signup/',OpenIDSignUpHandler),
                                                       ('/a/mention/',UserMentionHandler),
-                                                      ('/a/mention/read/',UserMentionReadHandler),
-                                                      ('/a/mention/check/',UserMentionCheckHandler),
+                                                      ('/a/remind/',UserRemindHandler),
                                                       ('/a/follow/', UserFollowIndexHandler),
+                                                      ('/a/followread/',UserFollowReadHandler),
                                                       ('/a/follow/(?P<name>[a-z0-9A-Z]{3,16})/',UserFollowHandler),
                                                       ('/a/unfollow/(?P<name>[a-z0-9A-Z]{3,16})/',UserUnFollowHandler),
                                                       ('/u/(?P<name>[a-z0-9A-Z]{3,16})/',UserProfileHandler),

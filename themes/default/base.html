@@ -14,7 +14,7 @@
             <ul>
             	{% if user %}
                 <li><a href="/u/{{user.name}}/">{{user.name}}</a></li>
-                <li><a href="/a/follow/">Follow</a></li>
+                <li><a href="/a/follow/" id="follow">Follow</a></li>
 				<li><a href="/g/">图片</a></li>
                 <li><a href="/a/mention/" id="mention">提醒</a></li>
                 <li><a href="/a/signout/">登出</a></li>
@@ -37,4 +37,6 @@
     <script src="/static/bookmark.js?{{setting.version}}"></script>
     <script src="/static/mention.js?{{setting.version}}"></script>
     <script src="/static/comment.js?{{setting.version}}"></script>
+	<script src="/static/remind.js?{{setting.version}}"></script>
+	<script src="/static/follow.js?{{setting.version}}"></script>
 </html>

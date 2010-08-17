@@ -440,7 +440,21 @@ class DiscussionFollow(db.Model):
     
     @classmethod
     def get_dis_by_user(cls,user):
-        return [df.dis for df in DiscussionFollow.all().filter("user =",user).filter("is_read =",False).order('-created').fetch(100)]
+        return  DiscussionFollow.all().filter("user =",user).filter("is_read =",False).order("-created").fetch(30)
+        #return [df.dis for df in DiscussionFollow.all().filter("user =",user).filter("is_read =",False).order('-created').fetch(100)]
+        
+    @classmethod
+    def set_read(cls,key):
+        follow = DiscussionFollow.get(key)
+        if not follow is None:
+            follow.is_read = True
+            follow.put()
+            return True
+        return False
 
+    @classmethod
+    def check_follow(cls,user):
+        return DiscussionFollow.all().filter("user =",user).filter("is_read =",False).count()
+    
 if __name__=='__main__':
     pass
