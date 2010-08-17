@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{%block head %}
+<title>{{setting.title}} > Follow</title>
+{% endblock %}
+
+{%block body %}
+    	<div id="content" class="w680">
+    		<div class="box radius">
+    		    <h3>基本信息</h3>
+				<table cellpadding="0" cellspacing="5" border="0">
+					<tr>
+                        <td align="right" width="80">Email</td>
+                        <td align="left"  width="200">{{user.email}}</td>
+                    </tr>
+					<tr>
+						<td align="right" width="80">用户名</td>
+						<td align="left" width="200">{{user.name}}</td>
+					</tr>
+				</table>
+			</div>
+			
+			<div class="box radius">
+                <h3>密码设置</h3>
+				<form method="post" action="/a/setting/pwd/">
+					<table cellpadding="0" cellspacing="5" border="0">
+                    <tr>
+                        <td align="right" width="80">&bull;</td>
+                        <td align="left"  width="500">如果为OpenID注册，旧密码留空</td>
+                    </tr>
+				    {% if pwd_error %}
+                   <tr>
+                        <td align="right" width="80">&bull;</td>
+                        <td align="left"  width="500">{{pwd_error}}</td>
+                    </tr>
+					{% endif %}
+					<tr>
+                        <td align="right" width="80">旧密码</td>
+                        <td align="left" width="500"><input type="password" name="oldpwd" style="width:250px;" class="input_box"></td>
+                    </tr>
+                    <tr>
+                        <td align="right" width="80">新密码</td>
+                        <td align="left" width="500"><input type="password" name="pwd" style="width:250px;" class="input_box"></td>
+                    </tr>
+                    <tr>
+                        <td align="right" width="80"></td>
+                        <td align="left" width="500"><input type="submit" class="input_box" value="更改密码"></td>
+                    </tr>
+                </table>
+				</form>
+    		</div>
+        </div>
+     <!--sidebar include -->
+     {% include "sidebar.html" %}
+{% endblock %}
