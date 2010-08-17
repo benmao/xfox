@@ -14,12 +14,11 @@ from google.appengine.api import images
 import logging
 from google.appengine.api import urlfetch
 
-def save_image_to_gs(key_name,bf,png=False):
+def save_image_to_gs(key_name,bf,mime="image/png"):
     try:
         conn = GSConnection(gs_access_key_id = settings.gs_access_key_id,gs_secret_access_key =settings.gs_secret_access_key)
         bucket = conn.get_bucket(settings.bucket_name)
         gs_file = bucket.new_key(key_name)
-        mime = ' image/png ' if png else  self.mime
         gs_file.set_contents_from_string(bf,policy="public-read",headers={"Content-Type":mime})
     except:
         return False
@@ -78,12 +77,12 @@ class GSFile(db.Model):
         gsfile.heigth= img.height
         gsfile.small_pic=key_name
 
-        if img.height > 1200: #need resize
-            img.resize(width=1200)
+        if img.height > 800: #need resize
+            img.resize(width=800)
             #img.im_feeling_lucky()
-            save_image_to_gs('s/'+key_name,img.execute_transforms(output_encoding=images.PNG),True)
+            save_image_to_gs('s/'+key_name,img.execute_transforms(output_encoding=images.PNG))
             gsfile.small_pic='s/'+key_name
-        if save_image_to_gs(key_name,bf):
+        if save_image_to_gs(key_name,bf,gsfile.mime):
             gsfile.put() 
             
     @classmethod
@@ -112,7 +111,7 @@ class LatexImage(db.Model):
             #handle get image
             img = get_latex_img(latex_str)
             if not img is None: #save image to db
-                if save_image_to_gs('latex/%s' % md5_str,img,True):
+                if save_image_to_gs('latex/%s' % md5_str,img):
                     latex.is_done=True
                     latex.put()
         return True

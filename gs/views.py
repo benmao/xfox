@@ -37,7 +37,7 @@ class GsUploadHandler(PublicWithSidebarHandler):
             return self.redirect("/g/upload/")
         if len(bf) > 1024*1000:
             return self.redirect("/g/upload/")
-       
+    
         GSFile.new(name,mime,bf,self.user)
         self.redirect("/g/")
         
