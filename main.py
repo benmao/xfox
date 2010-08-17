@@ -29,9 +29,11 @@ class MainHandler(PublicWithSidebarHandler):
 class UpdateHandler(PublicHandler):
     def get(self):
         for user in User.all():
-            user.email_md5 =  get_md5(user.email)
+            user.login_type = ['pwd']
+            user.openid_id = []
+            user.identity = []
             user.put()
-        
+            
 class MemcacheHandler(PublicHandler):
     def get(self):
         mems = MemcacheStatus.get_recent_24()

@@ -33,5 +33,11 @@ class Setting():
     timedelta = 0.8
     version = "0.1.2"
 
+    
+#OpenID Provider
+OPENID = (
+    ('Gmail','gmail.com'),
+    ('MyOpenID','myopenid.com'),
+)
 if __name__=='__main__':
     pass

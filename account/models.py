@@ -17,8 +17,8 @@ from dash.models import Counter
 
 class User(db.Model):
     name = db.StringProperty(required=True,indexed=True)
-    pwd = db.StringProperty(required = True)
-    secret_key =db.StringProperty(required = True)
+    pwd = db.StringProperty()
+    secret_key =db.StringProperty()
     email = db.StringProperty(required = True)
     email_md5=db.StringProperty()
     
@@ -41,6 +41,11 @@ class User(db.Model):
     user_id = db.StringProperty()
     
     role = db.StringListProperty()
+    
+    identity = db.StringListProperty()
+    openid_id = db.StringListProperty()
+    login_type = db.StringListProperty()
+    
     def put(self):
         if not self.is_saved():
             self.name_lower = self.name.lower()
@@ -62,25 +67,51 @@ class User(db.Model):
     
     @classmethod
     def check_email(cls,email):
-        return User.all().filter("email =",email).get() is None
+        return User.all().filter("email =",email.lower()).get() is None
+    
+    @classmethod
+    def check_openid_id(cls,openid_id):
+        return User.all().filter("openid_id =",openid_id).get() is None
     
     @classmethod
     def new(cls,email,name,pwd):
         secret_key,pwd = encrypt_pwd(pwd) 
         user = cls(email =email,name=name,secret_key=secret_key,pwd = pwd)
+        user.login_type = ['pwd']
+        user.identity = []
+        user.openid_id = []
         user.put()
-        return (0,user)
+        return user
+    
+    @classmethod
+    def new_by_openid(cls,email,name,identity,openid_id):
+        user = User(email = email,name = name)
+        user.login_type.append('openid')
+        user.identity.append(identity)
+        user.openid_id.append(openid_id)
+        user.put()
+        return user
     
     @classmethod
     def login(cls,email,pwd):
         user = User.all().filter("email =",email).get()
         if user is None:
             return (None,None)
+        if not 'pwd' in user.login_type:
+            return (None,None)
         logging.info("pwd:%s   pwd2:%s" % (user.pwd,encrypt_pwd(pwd,user.secret_key)[1]))
         if user.pwd == encrypt_pwd(pwd,user.secret_key)[1]:
             session = Session.new(user,30) #30days
             return user,session
         return None,None
+    
+    @classmethod
+    def openid_login(cls,openid_id):
+        user = User.all().filter("openid_id =",openid_id).get()
+        if user is None:
+            return (None,None)
+        session = Session.new(user,30)
+        return user,session
     
         
 class UserFollow(db.Model):

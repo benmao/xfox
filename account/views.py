@@ -14,8 +14,9 @@ import settings
 from account.models import User,Mention,UserFollow
 from util.base import *
 from discussion.models import Discussion,Comment,Bookmark,RecentCommentLog,DiscussionFollow
-from util.decorator import requires_login, json_requires_login
+from util.decorator import requires_login, json_requires_login,openid_requires_login
 from util.wsgi import webapp_add_wsgi_middleware
+from google.appengine.api import users
 
 class SignUpHandler(PublicHandler):
     def get(self):
@@ -123,6 +124,56 @@ class UserUnFollowHandler(PublicWithSidebarHandler):
         UserFollow.unfollow(self.user,name)
         self.redirect("/u/%s/" % name)
         
+        
+class OpenIDSignInHandler(PublicHandler):
+    @openid_requires_login
+    def get(self):
+        go = self.request.get("go","/")
+        if not self.user is None:
+            self.redirect("/")
+        openid_user = users.get_current_user()
+        user,session = User.openid_login(openid_user.user_id())
+        if user and session:
+            d = datetime.datetime.now()+datetime.timedelta(days =30)
+            self.response.headers['Set-Cookie'] = "xfox-session-key=%s;path=/;expires=%s" % (session.key().name(),get_gmt(d))
+            return self.redirect(go)
+        #need reg
+        self.redirect("/a/openid/signup/")
+       
+class OpenIDSignOutHandler(PublicHandler):
+    def get(self):
+        go = self.request.get("go","/")
+        self.response.headers['Set-Cookie'] ='ACSID="";path=/'
+        self.redirect("/")
+        
+class OpenIDSignUpHandler(PublicHandler):
+    @openid_requires_login
+    def get(self):
+        openid_user = users.get_current_user()
+        self.template_value["name"] =""
+        return self.render("openid_signup.html")
+      
+    @openid_requires_login
+    def post(self):
+        openid_user = users.get_current_user()
+        self.template_value['openid_user']=openid_user
+        name = self.request.get("name")
+        self.template_value["name"]=name
+        if not User.check_email(openid_user.email()):
+            self.template_value['email_error'] = u"%s已经存在，请登录后绑定" % openid_user.email()
+            return self.render("openid_signup.html")
+        if not check_name(name):
+            self.template_value["name_error"] = u"%s不符合规定[a-z0-9]{3,16}" % name
+            return self.render("openid_signup.html")
+        if not User.check_name(name):
+            self.template_value["name_error"] = u"%s已经存在，请更换用户名" % name
+            return self.render("openid_signup.html")
+        if not User.check_openid_id(openid_user.user_id()):
+            self.template_value["id_error"] = u"此OpenID已经绑定过了，请直接登录"
+            return self.render("openid_signup.html")
+        User.new_by_openid(openid_user.email(),name,openid_user.federated_identity(),openid_user.user_id())
+        self.redirect("/a/openid/signin/")
+        
 class UserNotAllowedHandler(PublicHandler):
     def get(self):
         self.render("not_allow.html")
@@ -138,6 +189,9 @@ def main():
                                                      [('/a/signup/',SignUpHandler),
                                                       ('/a/signin/',SignInHandler),
                                                       ('/a/signout/',SignOutHandler),
+                                                      ('/a/openid/signin/',OpenIDSignInHandler),
+                                                      ('/a/openid/signout/',OpenIDSignOutHandler),
+                                                      ('/a/openid/signup/',OpenIDSignUpHandler),
                                                       ('/a/mention/',UserMentionHandler),
                                                       ('/a/mention/read/',UserMentionReadHandler),
                                                       ('/a/mention/check/',UserMentionCheckHandler),

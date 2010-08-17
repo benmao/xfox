@@ -9,6 +9,7 @@ import logging
 
 from google.appengine.api import memcache
 from functools import wraps
+from google.appengine.api import users
 
 #decorator for get data from memcache
 def mem(key, time=3600):
@@ -43,6 +44,14 @@ def requires_login(method):
         return self.redirect("/a/signin/?go=%s" % self.request.url)
     return wrapper
 
+def openid_requires_login(method):
+    @wraps(method)
+    def wrapper(self,*args,**kwargs):
+        if  users.get_current_user():
+            return method(self,*args,**kwargs)
+        return self.redirect("/_ah/login_required?go=%s" % self.request.url)
+    return wrapper
+            
 
 def json_requires_login(method):
     @wraps(method)

@@ -64,6 +64,9 @@ handlers:
   
 - url: /[a-z0-9-]{2,}.*
   script: discussion/views.py
+  
+- url: /_ah/login_required
+  script: account/do_openid_login.py
 
 - url: .*
   script: main.py

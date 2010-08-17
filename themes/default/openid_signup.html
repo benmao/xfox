@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{%block head %}
+<title>{{setting.title}} > 注册</title>
+{% endblock %}
+
+{%block body %}
+    	<section id="signup" class="w350">
+        	<h3>注册用户</h3>
+            <section class="box radius">
+            <form method="post" action="/a/openid/signup/">
+            {% if email_error %}
+			<p>{{email_error}}</p>
+			{% endif %}
+            <p>
+                <label for="name">用户名</label>
+                <input type="text" id="name" name="name" value="{{name}}" class="input_box" />
+            	{% if name_error %}
+                <p>{{name_error}}</p>
+                {% endif %}
+            </p>
+            <p>
+            	<input type="submit" value="注册" class="button radius" />
+            </p>
+            <p></p>
+            </form>
+            </section>
+        </section>
+{% endblock %}
