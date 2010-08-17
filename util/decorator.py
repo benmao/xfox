@@ -61,5 +61,14 @@ def json_requires_login(method):
         return self.json({"error":"Need Login"})
     return wrapper
 
+def https_requires(method):
+    @wraps(method)
+    def wrapper(self,*args,**kwargs):
+        if self.request.url.startswith("https://"):
+            return method(self,*args,**kwargs)
+        return self.redirect("https"+self.request.url[4:])
+    return wrapper
+        
+
 if __name__=='__main__':
     pass

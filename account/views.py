@@ -14,14 +14,16 @@ import settings
 from account.models import User,Mention,UserFollow
 from util.base import *
 from discussion.models import Discussion,Comment,Bookmark,RecentCommentLog,DiscussionFollow
-from util.decorator import requires_login, json_requires_login,openid_requires_login
+from util.decorator import requires_login, json_requires_login,openid_requires_login,https_requires
 from util.wsgi import webapp_add_wsgi_middleware
 from google.appengine.api import users
 
 class SignUpHandler(PublicHandler):
+    @https_requires
     def get(self):
         self.render("signup.html")
     
+    @https_requires
     def post(self):
         email = self.request.get("email").strip()
         name = self.request.get("name").strip()
@@ -48,12 +50,14 @@ class SignUpHandler(PublicHandler):
         self.redirect("/a/signin/")
         
 class SignInHandler(PublicHandler):
+    @https_requires
     def get(self):
         if not self.user is None: #have logined
             self.redirect("/")
         self.template_value['go'] = self.request.get("go")
         self.render("signin.html")
     
+    @https_requires
     def post(self):
         email = self.request.get("email").strip()
         pwd = self.request.get("pwd").strip()
@@ -69,7 +73,7 @@ class SignInHandler(PublicHandler):
         
 class SignOutHandler(PublicHandler):
     def get(self):
-        self.response.headers['Set-Cookie'] ='xfox-session-key="";ACSID="";path=/'
+        self.response.headers['Set-Cookie'] ='xfox-session-key=;ACSID=;path=/'
         self.redirect("/")
 
 class UserProfileHandler(PublicWithSidebarHandler):
@@ -209,6 +213,7 @@ def main():
                                                       ('/a/openid/signout/',OpenIDSignOutHandler),
                                                       ('/a/openid/signup/',OpenIDSignUpHandler),
                                                       ('/a/mention/',UserMentionHandler),
+                                                      ('/a/mention/read/',UserMentionReadHandler),
                                                       ('/a/remind/',UserRemindHandler),
                                                       ('/a/follow/', UserFollowIndexHandler),
                                                       ('/a/followread/',UserFollowReadHandler),
