@@ -98,8 +98,10 @@ class PostDisscussionHandler(PublicHandler):
         
         title = self.request.get("title").strip()
         content = self.request.get("content")
+        ip = self.request.remote_addr
+        user_agent =  escape(self.request.headers.get('User-Agent','Firefox'))
         if len(title)>0 and len(content)>0:
-            dis =Discussion.new(tag,title,content,self.user,f='M')
+            dis =Discussion.new(tag,title,content,self.user,f='M',ip=ip,user_agent=user_agent)
             self.redirect(dis.url)
         self.template_value['error']=u"不要忘记标题或内容哦"
         self.template_value['title']=title

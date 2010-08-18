@@ -197,6 +197,9 @@ class Discussion(db.Model):
     
     role = db.StringListProperty()
     
+    ip = db.StringProperty()
+    user_agent = db.StringProperty()
+    
     @delmem("feeddiscussion")
     def put(self):
         if not self.is_saved():
@@ -249,11 +252,11 @@ class Discussion(db.Model):
         return not Discussion.get_by_key_name(key) is None
     
     @classmethod
-    def new(self,tag,title,content,user,f='T'):
+    def new(self,tag,title,content,user,f='T',ip =ip,user_agent=user_agent):
         key_name = Counter.get_max('discussion').value
         while Discussion.is_exist(key_name):
             key_name = Counter.get_max('discussion').value
-        dis = Discussion(key_name = key_name,title=title,content=content,tag=tag,f=f,user = user)
+        dis = Discussion(key_name = key_name,title=title,content=content,tag=tag,f=f,user = user,ip=ip,user_agent=user_agent)
         dis.put()
         return dis
     
