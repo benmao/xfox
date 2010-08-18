@@ -120,6 +120,7 @@ class User(db.Model):
             return False,u"用户不存在"
         if not 'pwd' in user.login_type:
             user.secret_key,user.pwd = encrypt_pwd(pwd) 
+            user.login_type.append('pwd') #add 'pwd' login_type
             user.put()
             return True,u'密码修改成功，下次登录请使用新密码'
         if user.pwd != encrypt_pwd(oldpwd,user.secret_key)[1]:

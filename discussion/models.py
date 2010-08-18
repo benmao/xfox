@@ -358,6 +358,9 @@ class Comment(db.Model):
     is_draft = db.BooleanProperty(default = False)
     is_for_author = db.BooleanProperty(default = False)
     
+    ip = db.StringProperty()
+    user_agent = db.StringProperty()
+    
     @property
     def url(self):
         return "%s#r-%s" % (self.dis_slug,self.slug)
@@ -380,12 +383,12 @@ class Comment(db.Model):
         super(Comment,self).put()
         
     @classmethod
-    def new(cls,user,dis,content,f='M'):
+    def new(cls,user,dis,content,f='M',ip='127.0.0.1',user_agent='Firefox'):
         key_name = Counter.get_max('comment').value
         while Comment.get_by_key_name(key_name):
             key_name = Counter.get_max('comment').value
         
-        comment = Comment(key_name =key_name,user=user,dis = dis ,content=content,f=f)
+        comment = Comment(key_name =key_name,user=user,dis = dis ,content=content,f=f,ip=ip,user_agent=user_agent)
         comment.put()
         return comment
     
