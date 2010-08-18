@@ -174,7 +174,7 @@ class PostCommentAjaxHandler(PublicHandler):
             return self.json({'error':u"不要非法提交哦"})
         comment = Comment.new(self.user,dis,content,ip=ip,user_agent=user_agent)
         self.template_value['comment']=comment
-        return self.json({'success':True,'comment':self.get_render("comment.html").decode('utf-8')})
+        return self.json({'success':True,'comment':self.get_render("comment.html")})
     
     
 class BookmarkHandler(PublicHandler):

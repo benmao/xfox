@@ -19,7 +19,11 @@
             
             <!-- content -->
             <div class="box radius">
-            <p class="line1"><a href="/u/{{dis.user_name}}/">{{dis.user_name}}</a> Post at <time datetime="{{dis.created}}">{{dis.created|humdate}}</time> {{disviews}} views{% ifequal user.name dis.user_name %}| <a href="/p/{{dis.tag_slug}}/{{dis.slug}}/">Edit</a>{% endifequal %}</p>
+            <p class="line1"><a href="/u/{{dis.user_name}}/">{{dis.user_name}}</a> Post at <span class="time">{{dis.created|humdate}}</span> {{disviews}} views
+			{% ifequal user.name dis.user_name %}
+			|<a href="/p/{{dis.tag_slug}}/{{dis.slug}}/">编辑</a>
+			|<a href="#{{dis.key}}" class="closehandler">关闭讨论</a>
+			{% endifequal %}</p>
             {{dis.content_formated}}
             </div>
             
@@ -43,19 +47,25 @@
             {% endif %}
             
             {% if user %}
-            <div class="box radius clear" >
-            	<h3>添加评论吧</h3>
+			{% if dis.is_closed %}
+			<div class="box radius clear" id="comment_handler">
+				<p>评论已经被关闭啦，嘻嘻</p>
+			</div>
+			{% else %}
+            <div class="box radius clear" id="comment_handler" >
+                <h3>添加评论吧</h3>
                 <form method="post" action="/c/" id="comment_form" >
                 <input type="hidden" name="key" value="{{dis.key.name}}" />
                 <p>
                     <textarea class="input_box" cols="100" rows="6" name="content" ></textarea>
                 </p>
-				<p id="info"></p>
+                <p id="info"></p>
                 <p>
                     <input type="submit" value="发表" class="button radius" id="submit"/>
                 </p>
                 </form>
-            </div>
+            </div>			
+			{% endif %}
             {% endif %}
         </div>
      <!--sidebar include -->

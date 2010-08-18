@@ -93,6 +93,11 @@ class PublicHandler(webapp.RequestHandler):
         
     def json(self,data):
         self.response.headers['Content-Type']='application/json'
+        #handler utf-8
+        for key in data:
+            if isinstance(data[key],(str,unicode)):
+                data[key]=data[key].decode('utf-8')
+                
         self.response.out.write(simplejson.dumps(data))
         
         

@@ -213,12 +213,26 @@ class UserNotAllowedHandler(PublicHandler):
     def get(self):
         self.render("not_allow.html")
         
+class DiscussionCloseHandler(PublicHandler):
+    @json_requires_login
+    def post(self):
+        key = self.request.get("key")
+        dis = Discussion.get(key)
+        if dis is None:
+            return self.json({"error":u"请不要干坏事哈"})
+        if dis.user_name != self.user.name:
+            return self.json({"error":u"再干坏事就打PP"})
+        dis.is_closed = True
+        dis.put()
+        return self.json({"result":True})
+    
 class NotFoundHandler(PublicHandler):
     def get(self):
         self.error(404)
     
     def post(self):
         self.error(404)
+        
 def main():
     application = webapp.WSGIApplication(
                                                      [('/a/signup/',SignUpHandler),
@@ -232,6 +246,7 @@ def main():
                                                       ('/a/remind/',UserRemindHandler),
                                                       ('/a/follow/', UserFollowIndexHandler),
                                                       ('/a/followread/',UserFollowReadHandler),
+                                                      ('/a/discussion/close/',DiscussionCloseHandler),
                                                       ('/a/setting/',UserSettingHandler),
                                                       ('/a/setting/pwd/',UserSettingPwdHandler),
                                                       ('/a/follow/(?P<name>[a-z0-9A-Z]{3,16})/',UserFollowHandler),
