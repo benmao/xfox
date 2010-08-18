@@ -28,7 +28,10 @@ class MainHandler(PublicWithSidebarHandler):
     
 class UpdateHandler(PublicHandler):
     def get(self):
-        pass
+        for user in User.all():
+            user.openid_list = []
+            if 'openid' in user.login_type:
+                user.openid_list.append({user.openid_id:user.identity})
             
 class MemcacheHandler(PublicHandler):
     def get(self):

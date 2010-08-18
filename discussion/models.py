@@ -256,7 +256,7 @@ class Discussion(db.Model):
         key_name = Counter.get_max('discussion').value
         while Discussion.is_exist(key_name):
             key_name = Counter.get_max('discussion').value
-        dis = Discussion(key_name = key_name,title=title,content=content,tag=tag,f=f,user = user,ip=ip,user_agent=user)
+        dis = Discussion(key_name = key_name,title=title,content=content,tag=tag,f=f,user = user,ip=ip,user_agent=user_agent)
         dis.put()
         return dis
     
