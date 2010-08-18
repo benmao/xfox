@@ -69,7 +69,10 @@ class SignInHandler(PublicHandler):
         
 class SignOutHandler(PublicHandler):
     def get(self):
-        self.response.headers['Set-Cookie'] ='xfox-session-key=;ACSID=;path=/'
+        self.response.headers['Set-Cookie'] ='xfox-session-key=;path=/'
+        logging.info(self.user.logout_type)
+        if self.user.logout_type == "openid":
+            return self.redirect(users.create_logout_url("/"))
         #Notice : need remove sessionid from Session DB.
         #Session.remove(self.session_key)
         self.redirect("/")
@@ -151,7 +154,6 @@ class OpenIDSignInHandler(PublicHandler):
             self.redirect("/")
         openid_user = users.get_current_user()
         user,session = User.openid_login(openid_user.user_id())
-        logging.info(user,session)
         if user and session:
             d = datetime.datetime.now()+datetime.timedelta(days =30)
             self.response.headers['Set-Cookie'] = "xfox-session-key=%s;path=/;expires=%s" % (session.key().name(),get_gmt(d))

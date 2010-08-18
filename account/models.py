@@ -101,6 +101,7 @@ class User(db.Model):
             return (None,None)
         logging.info("pwd:%s   pwd2:%s" % (user.pwd,encrypt_pwd(pwd,user.secret_key)[1]))
         if user.pwd == encrypt_pwd(pwd,user.secret_key)[1]:
+            user.logout_type = 'pwd'
             session = Session.new(user,30) #30days
             return user,session
         return None,None
@@ -110,7 +111,9 @@ class User(db.Model):
         user = User.all().filter("openid_id =",openid_id).get()
         if user is None:
             return (None,None)
+        user.logout_type = 'openid'
         session = Session.new(user,30)
+       
         return user,session
     
     @classmethod
@@ -193,7 +196,12 @@ class UserFollow(db.Model):
     
 class Session(db.Model):
     user = db.ReferenceProperty(User)
+    logout_type = db.StringProperty(default="pwd")
     exp_date = db.DateTimeProperty()
+
+    def put(self):
+        self.logout_type=self.user.logout_type
+        super(Session,self).put()
     
     @classmethod
     def new(cls,user,exp_date =30):
@@ -211,7 +219,10 @@ class Session(db.Model):
         @mem(session_key,3600*24)
         def _get_user_by_session(session_key):
             session = Session.get_by_key_name(session_key)
-            return None if session is None else session.user
+            if session is None:
+                return None
+            session.user.logout_type = session.logout_type
+            return session.user
         return _get_user_by_session(session_key)
     
     @classmethod
