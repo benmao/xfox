@@ -11,7 +11,7 @@ from google.appengine.ext.webapp import util
 from dash.models import Counter
 from util.handler import PublicHandler,PublicWithSidebarHandler
 from util.decorator import requires_login
-from discussion.models import Tag,Discussion
+from discussion.models import Tag,Discussion,Comment,Bookmark
 from util.base import *
 from dash.models import Counter,MemcacheStatus
 from account.models import User
@@ -28,11 +28,7 @@ class MainHandler(PublicWithSidebarHandler):
     
 class UpdateHandler(PublicHandler):
     def get(self):
-        for user in User.all():
-            user.login_type = ['pwd']
-            user.openid_id = []
-            user.identity = []
-            user.put()
+        pass
             
 class MemcacheHandler(PublicHandler):
     def get(self):

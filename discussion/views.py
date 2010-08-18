@@ -172,6 +172,8 @@ class PostCommentAjaxHandler(PublicHandler):
         dis = Discussion.get_by_key_name(key)
         if dis is None:
             return self.json({'error':u"不要非法提交哦"})
+        if dis.is_closed:
+            return self.json({'error':u"评论已经关闭"})
         comment = Comment.new(self.user,dis,content,ip=ip,user_agent=user_agent)
         self.template_value['comment']=comment
         return self.json({'success':True,'comment':self.get_render("comment.html")})

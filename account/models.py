@@ -217,7 +217,8 @@ class Session(db.Model):
     @classmethod
     def remove(cls,session_key):
         session = Session.get_user_by_session(session_key)
-        session.delete()
+        session.exp_date = datetime.datetime.now()
+        session.put()
         
 
 class Mention(db.Model):

@@ -97,7 +97,6 @@ class PublicHandler(webapp.RequestHandler):
         for key in data:
             if isinstance(data[key],(str,unicode)):
                 data[key]=data[key].decode('utf-8')
-                
         self.response.out.write(simplejson.dumps(data))
         
         
