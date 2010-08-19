@@ -204,59 +204,57 @@ class Discussion(db.Model):
     def put(self):
         if not self.is_saved():
             ShardCount.get_increment_count("tagcount:"+self.tag.key().name(),"tagcount")
-            taskqueue.add( url ='/t/d/follow/' ,params = {'dis':self.key()}) 
+            taskqueue.add( url ='/t/d/follow/' ,params = {'dis':self.key()})
         else:
             self.last_updated = datetime.datetime.now() #update
             if self.edit_number:
                 self.edit_number+=1
             else:
                 self.edit_number=1
-            memcache.delete("dis:%s:%s"%(self.tag_slug,self.key().name()))
+            memcache.delete("dis:%s"%(self.key().name()))
         #hander format
         self.title=escape(self.title) 
         self.content_formated = FORMAT_METHOD.get('M',get_markdown)(self.content)
         self.role = self.tag.role
         self.tag_slug = self.tag.key().name()
         self.tag_title = self.tag.title
-        self.slug = self.key().name()
         self.user_name = self.user.name
         super(Discussion,self).put()
     
     def delete(self):
         super(Discussion,self).delete()
         
-    def nobody(self):
-        ShardCount.decrement("tagcount:"+self.tag.key().name())
-        self.is_closed = True
-        self.put()
         
     @property
     def url(self):
-        return "/%s/%s/" % (self.tag_slug,self.key().name())
+        return "/%s/%s/" % (self.tag_slug,self.slug)
     
     @classmethod
     def get_discussion_by_key(cls,tag_slug,key):
         @mem("dis:%s:%s"%(tag_slug,key))
         def _x(tag_slug,key):
-            dis = Discussion.get_by_key_name(key)
-            return dis if dis and dis.tag_slug == tag_slug else None
+            return  Discussion.get_by_key_name("%s:%s" %(tag_slug,key))
         return _x(tag_slug,key)
     
     @classmethod
     def get_recent(cls):
         return Discussion.all().order('-last_comment').fetch(15)
-    
         
     @classmethod
     def is_exist(cls,key):
         return not Discussion.get_by_key_name(key) is None
     
     @classmethod
-    def new(self,tag,title,content,user,f='T',ip =ip,user_agent=user_agent):
-        key_name = Counter.get_max('discussion').value
+    def new(self,tag,slug,title,content,user,f='T',ip =ip,user_agent=user_agent,):
+        slug = filter_url(slug)
+        if len(slug)==0:
+            slug = Counter.get_max(":%s:" % tag.key().name()).value
+        key_name = "%s:%s" % (tag.key().name(),slug)
         while Discussion.is_exist(key_name):
-            key_name = Counter.get_max('discussion').value
-        dis = Discussion(key_name = key_name,title=title,content=content,tag=tag,f=f,user = user,ip=ip,user_agent=user_agent)
+            slug = Counter.get_max(":%s:" % tag.key().name()).value
+            key_name = "%s:%s" % (tag.key().name(),slug)
+        
+        dis = Discussion(key_name = key_name,title=title,content=content,tag=tag,f=f,user = user,ip=ip,user_agent=user_agent,slug=slug)
         dis.put()
         return dis
     

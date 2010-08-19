@@ -100,8 +100,9 @@ class PostDisscussionHandler(PublicHandler):
         content = self.request.get("content")
         ip = self.request.remote_addr
         user_agent =  escape(self.request.headers.get('User-Agent','Firefox'))
+        slug = ""
         if len(title)>0 and len(content)>0:
-            dis =Discussion.new(tag,title,content,self.user,f='M',ip=ip,user_agent=user_agent)
+            dis =Discussion.new(tag,slug,title,content,self.user,f='M',ip=ip,user_agent=user_agent)
             self.redirect(dis.url)
         self.template_value['error']=u"不要忘记标题或内容哦"
         self.template_value['title']=title
@@ -164,6 +165,7 @@ class PostCommentAjaxHandler(PublicHandler):
     @requires_login
     def post(self):
         key = self.request.get("key")
+        logging.info(key)
         content = self.request.get("content")
         ip = self.request.remote_addr
         user_agent =  escape(self.request.headers.get('User-Agent','Firefox'))
@@ -253,7 +255,7 @@ def main():
                                                           ('/f/?',FeedIndexHandler),
                                                           ('/f/(?P<key>[a-z0-9-]{2,})/?',FeedTagHandler),
                                                           ('/(?P<slug>[a-z0-9-]{2,})/?', TagHandler),
-                                                          ('/(?P<slug>[a-z0-9-]{2,})/(?P<key>[a-z0-9]+)/?',DiscussionHandler),
+                                                          ('/(?P<slug>[a-z0-9-]{2,})/(?P<key>[a-z0-9-]+)/?',DiscussionHandler),
                                                           ('/.*',NotFoundHandler),
                                                           ],
                                          debug=settings.DEBUG)

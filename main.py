@@ -19,6 +19,25 @@ import settings
 from util.wsgi import webapp_add_wsgi_middleware
 from google.appengine.api import memcache
 
+def clone_entity(e, **extra_args):
+    """Clones an entity, adding or overriding constructor attributes.
+    
+    The cloned entity will have exactly the same property values as the original
+    entity, except where overridden. By default it will have no parent entity or
+    key name, unless supplied.
+    
+    Args:
+      e: The entity to clone
+      extra_args: Keyword arguments to override from the cloned entity and pass
+        to the constructor.
+    Returns:
+      A cloned, possibly modified, copy of entity e.
+    """
+    klass = e.__class__
+    props = dict((k, v.__get__(e, klass)) for k, v in klass.properties().iteritems())
+    props.update(extra_args)
+    return klass(**props)
+
 class MainHandler(PublicWithSidebarHandler):
 
     #@requires_login
@@ -28,10 +47,7 @@ class MainHandler(PublicWithSidebarHandler):
     
 class UpdateHandler(PublicHandler):
     def get(self):
-        for user in User.all().filter('login_type =','openid'):
-            user.openid_dict = {user.openid_id[0]:user.identity[0]}
-            user.put()
-            print user.openid_dict
+        pass
             
 class MemcacheHandler(PublicHandler):
     def get(self):

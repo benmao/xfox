@@ -62,6 +62,8 @@ class TagIndexHandler(AdminHandler):
         self.template_value['tags'] = Tag.get_all()
         self.render('tag.html')
         
+class A():
+    pass
 class TagNewHandler(AdminHandler):
     def get(self):
         self.template_value['cats']=Category.get_all()

@@ -68,6 +68,9 @@ handlers:
 - url: /stats.*
   script: $PYTHON_LIB/google/appengine/ext/appstats/ui.py
   
+- url: /remote_api
+  script: $PYTHON_LIB/google/appengine/ext/remote_api/handler.py
+  login: admin
   
 - url: /[a-z0-9-]{2,}.*
   script: discussion/views.py

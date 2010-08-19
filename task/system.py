@@ -17,6 +17,11 @@ class MemcacheHandler(AdminHandler):
         s = memcache.get_stats()
         MemcacheStatus.new(s['hits'],s['misses'],s['items'],s['bytes'])
         print "aaa"
+    
+class MemcacheRemove(AdminHandler):
+    def get(self):
+        print memcache.flush_all()
+        
 def main():
     application = webapp.WSGIApplication([
                                         ('/s/s/memcache/', MemcacheHandler),
