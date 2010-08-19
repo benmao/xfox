@@ -16,6 +16,8 @@
             <textarea class="input_box radius" cols="100" rows="6" name="content" id="content" >{% if content %}{{content}}{% endif %}</textarea>
             </p>
             <p>
+            <label for="slug">slug:[a-z0-9-]{1-10}，可以留空</label>
+			<input type="text" class="input_box radius" name="slug" id="check_slug">
             </p>
             {% if error %}
             <p>{{error}}</p>

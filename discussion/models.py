@@ -243,6 +243,10 @@ class Discussion(db.Model):
     @classmethod
     def is_exist(cls,key):
         return not Discussion.get_by_key_name(key) is None
+
+    @classmethod
+    def check_slug(cls,tag_slug,slug):
+        return not Discussion.get_by_key_name("%s:%s" %(tag_slug,slug)) is None
     
     @classmethod
     def new(self,tag,slug,title,content,user,f='T',ip =ip,user_agent=user_agent,):
@@ -288,16 +292,12 @@ class Bookmark(db.Model):
     
     def put(self):
         if not self.is_saved():
-            ShardCount.get_increment_count("userbookmark:"+self.user.name,"userbookmark")
-            ShardCount.get_increment_count("disbookmark:"+self.dis.key().name(),"disbookmark")
             self.user_name = self.user.name
             self.dis_title = self.dis.title
             self.dis_url = self.dis.url
         super(Bookmark,self).put()
         
     def delete(self):
-        #ShardCount.decrement("userbookmark:"+self.user_name)
-        #ShardCount.decrement("disbookmark:"+self.dis.key().name())
         super(Bookmark,self).delete()
         
         

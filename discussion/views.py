@@ -17,7 +17,7 @@ from google.appengine.api.labs import taskqueue
 from dash.counter import ShardCount
 from util.acl import check_roles,check_roles_feed
 from util.wsgi  import webapp_add_wsgi_middleware
-from util.base import escape
+from util.base import escape,filter_url
 from google.appengine.api import memcache
 import datetime
 import logging
@@ -100,7 +100,7 @@ class PostDisscussionHandler(PublicHandler):
         content = self.request.get("content")
         ip = self.request.remote_addr
         user_agent =  escape(self.request.headers.get('User-Agent','Firefox'))
-        slug = ""
+        slug = self.request.get("slug","")
         if len(title)>0 and len(content)>0:
             dis =Discussion.new(tag,slug,title,content,self.user,f='M',ip=ip,user_agent=user_agent)
             self.redirect(dis.url)
