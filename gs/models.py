@@ -13,6 +13,7 @@ from dash.models import Counter
 from google.appengine.api import images
 import logging
 from google.appengine.api import urlfetch
+from util.decorator import mem
 
 def save_image_to_gs(key_name,bf,mime="image/png"):
     try:
@@ -115,6 +116,18 @@ class LatexImage(db.Model):
                     latex.is_done=True
                     latex.put()
         return True
+    
+    @classmethod
+    def get_by_key(cls,key):
+        @mem("latex:%s" % key)
+        def _x(latex):
+            return latex
+        latex = LatexImage.get_by_key_name(key)
+        if latex and latex.is_done:
+            return _x(latex)
+        return None
+            
+    
         
 if __name__=='__main__':
     pass

@@ -43,7 +43,7 @@ class GsUploadHandler(PublicWithSidebarHandler):
         
 class LatexImageHandler(PublicHandler):
     def get(self,key):
-        latex = LatexImage.get_by_key_name(key)
+        latex = LatexImage.get_by_key(key)
         if latex is None:
             return self.error(404)
         if latex.is_done:
