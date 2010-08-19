@@ -14,6 +14,7 @@ from util.base import  *
 from util.decorator import *
 import datetime
 from dash.models import Counter
+from util.db import PickleProperty
 
 class User(db.Model):
     name = db.StringProperty(required=True,indexed=True)
@@ -45,6 +46,7 @@ class User(db.Model):
     identity = db.StringListProperty()
     openid_id = db.StringListProperty()
     login_type = db.StringListProperty()
+    openid_dict = PickleProperty() #dict for openid_id & identity
     
     def put(self):
         if not self.is_saved():
@@ -89,9 +91,37 @@ class User(db.Model):
         user.login_type.append('openid')
         user.identity.append(identity)
         user.openid_id.append(openid_id)
+        user.openid_dict = {openid_id:identity}
         user.put()
         return user
     
+    @classmethod
+    def add_openid(cls,name,identity,openid_id):
+        user = User.get_user_by_name(name)
+        if not User.check_openid_id(openid_id):
+            return False,u"此OpenID已经绑定过，点取消吧！哈哈哈"
+        if not 'openid' in user.login_type:
+            user.login_type.append('openid')
+        user.identity.append(identity)
+        user.openid_id.append(openid_id)
+        #make true openid_dict is not None
+        if user.openid_dict is None:
+            user.openid_dict = {}
+        user.openid_dict[openid_id] = identity
+        user.put()
+        return True,u"绑定成功"
+        
+    @classmethod
+    def remove_openid(cls,name,openid_id):
+        user = User.get_user_by_name(name)
+        logging.info("%s:%s" %(openid_id,user.openid_dict))
+        if not openid_id in user.openid_dict:
+            return
+        user.openid_id.remove(openid_id)
+        user.identity.remove(user.openid_dict[openid_id])
+        user.openid_dict.pop(openid_id)
+        user.put()
+        
     @classmethod
     def login(cls,email,pwd):
         user = User.all().filter("email =",email).get()

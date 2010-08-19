@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{%block head %}
+<title>{{setting.title}} > 取消OpenID</title>
+{% endblock %}
+
+{%block body %}
+    	<div class="w680">
+        	<h3>取消OpenID</h3>
+            <div class="box radius">
+            <form method="post" action="/a/openid/remove/">
+            <input type="hidden" value="{{openid_id}}" name="openid_id">
+            {% if error %}
+			<p>{{error}}</p>
+			{% else %}
+			<p>
+				您确认取消{{openid}}绑定到{{user.name}}吗?
+            </p>
+			{% endif %}
+            <p>
+            	<input type="submit" value="确定取消" class="button radius" /> <a href="/a/setting/">返回</a>
+            </p>
+            </form>
+            </div>
+        </div>
+{% endblock %}

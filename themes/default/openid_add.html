@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{%block head %}
+<title>{{setting.title}} > 绑定OpenID</title>
+{% endblock %}
+
+{%block body %}
+    	<div class="w680">
+        	<h3>绑定OpenID</h3>
+            <div class="box radius">
+            <form method="post" action="/a/openid/add/">
+            {% if error %}
+			<p>{{error}}</p>
+			{% else %}
+			<p>
+				您确认绑定{{openid_user.email}}&lt;{{openid_user.federated_identity}}&gt;到{{user.name}}吗?
+            </p>
+			{% endif %}
+            <p>
+            	<input type="submit" value="绑定" class="button radius" /> <a href="{{logout_url}}">取消</a>
+            </p>
+            </form>
+            </div>
+        </div>
+{% endblock %}

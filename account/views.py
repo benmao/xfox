@@ -17,6 +17,17 @@ from discussion.models import Discussion,Comment,Bookmark,RecentCommentLog,Discu
 from util.decorator import requires_login, json_requires_login,openid_requires_login,https_requires
 from util.wsgi import webapp_add_wsgi_middleware
 from google.appengine.api import users
+from google.appengine.api import memcache
+
+class A():
+    def __init__(self,key,value):
+        self.key = key
+        self.value = value
+
+def dict2obj(dic):
+    if dic is None:
+        return None
+    return [ A(key,value) for key,value in dic.items()]
 
 class SignUpHandler(PublicHandler):
     def get(self):
@@ -161,12 +172,8 @@ class OpenIDSignInHandler(PublicHandler):
         #need reg
         self.redirect("/a/openid/signup/")
        
-class OpenIDSignOutHandler(PublicHandler):
-    def get(self):
-        go = self.request.get("go","/")
-        self.response.headers['Set-Cookie'] ='ACSID="";path=/'
-        self.redirect("/")
         
+
 class OpenIDSignUpHandler(PublicHandler):
     @openid_requires_login
     def get(self):
@@ -195,10 +202,39 @@ class OpenIDSignUpHandler(PublicHandler):
         User.new_by_openid(openid_user.email(),name,openid_user.federated_identity(),openid_user.user_id())
         self.redirect("/a/openid/signin/")
         
+class OpenIDAddHandler(PublicHandler):
+    @openid_requires_login
+    @requires_login
+    def get(self):
+        openid_user = users.get_current_user()
+        self.template_value['openid_user'] = openid_user
+        self.template_value['logout_url'] = users.create_logout_url('/a/setting/')
+        self.render("openid_add.html")
+
+    @openid_requires_login
+    @requires_login
+    def post(self):
+        openid_user = users.get_current_user()
+        result,error=User.add_openid(self.user.name,openid_user.federated_identity(),openid_user.user_id())
+        if not result:
+            self.template_value['error']=error
+            self.template_value['logout_url'] = users.create_logout_url('/a/setting/')
+            return self.render("openid_add.html")
+        memcache.delete(self.session_key)
+        self.redirect("/a/setting/")
         
+class OpenIDRemoveHandler(PublicHandler):
+    @requires_login
+    def get(self):
+        openid_id = self.request.get("id")
+        User.remove_openid(self.user.name,openid_id)
+        memcache.delete(self.session_key) 
+        self.redirect("/a/setting/")
+            
 class UserSettingHandler(PublicHandler):
     @requires_login
     def get(self):
+        self.template_value['openids']= dict2obj(self.user.openid_dict)
         self.render("setting.html")
         
 class UserSettingPwdHandler(PublicHandler):
@@ -242,8 +278,9 @@ def main():
                                                       ('/a/signin/',SignInHandler),
                                                       ('/a/signout/',SignOutHandler),
                                                       ('/a/openid/signin/',OpenIDSignInHandler),
-                                                      ('/a/openid/signout/',OpenIDSignOutHandler),
                                                       ('/a/openid/signup/',OpenIDSignUpHandler),
+                                                      ('/a/openid/add/',OpenIDAddHandler),
+                                                      ('/a/openid/remove/',OpenIDRemoveHandler),
                                                       ('/a/mention/',UserMentionHandler),
                                                       ('/a/mention/read/',UserMentionReadHandler),
                                                       ('/a/remind/',UserRemindHandler),

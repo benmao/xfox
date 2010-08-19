@@ -39,5 +39,10 @@ def humpage(value):
 
 register.filter(humpage)
 
+def cut(value,length):
+    return value[0:length]
+
+register.filter(cut)
+
 if __name__=='__main__':
     pass
