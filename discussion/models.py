@@ -163,7 +163,7 @@ class Tag(db.Model):
             tag.is_draft = False
             tag.put()
             
-class Discussion(db.Model):
+class Discussion(db.Expando):
     tag = db.ReferenceProperty(Tag)
     tag_slug = db.StringProperty()
     tag_title = db.StringProperty()
@@ -202,6 +202,10 @@ class Discussion(db.Model):
     def put(self):
         if not self.is_saved():
             taskqueue.add( url ='/t/d/follow/' ,params = {'dis':self.key()})
+            self.role = self.tag.role
+            self.tag_slug = self.tag.key().name()
+            self.tag_title = self.tag.title
+            self.user_name = self.user.name
         else:
             self.last_updated = datetime.datetime.now() #update
             if self.edit_number:
@@ -212,15 +216,11 @@ class Discussion(db.Model):
         #hander format
         self.title=escape(self.title) 
         self.content_formated = FORMAT_METHOD.get('M',get_markdown)(self.content)
-        self.role = self.tag.role
-        self.tag_slug = self.tag.key().name()
-        self.tag_title = self.tag.title
-        self.user_name = self.user.name
+
         super(Discussion,self).put()
     
     def delete(self):
         super(Discussion,self).delete()
-        
         
     @property
     def url(self):

@@ -6,11 +6,10 @@ Created by ben on 2010/8/11 .
 Copyright (c) 2010 http://sa3.org All rights reserved. 
 """
 ROLE= {
-    'B':['Banned','Banned User'],
-    'M':['Member','Member User'],
-    'A':['Administrator','Administrator'],
-    'G':['Guest','Guest'],
-    'N':['Nobody','Nobody'],
+    'B':['Banned','Banned User',0],
+    'M':['Member','Member User',2],
+    'A':['Administrator','Administrator',3],
+    'G':['Guest','Guest',1],
 }
 
 def get_roles():
