@@ -93,6 +93,7 @@ class Tag(db.Model):
     is_draft = db.BooleanProperty(default =False)
     
     role = db.StringListProperty()
+    add_role = db.StringListProperty()
     
     @delmem("tags")
     def put(self):
@@ -129,7 +130,7 @@ class Tag(db.Model):
         return _x(slug)
     
     @classmethod
-    def new(cls,slug,title,key_words,description,category,role):
+    def new(cls,slug,title,key_words,description,category,role,add_role):
         '''
         Notice:http://code.google.com/intl/en/appengine/docs/python/datastore/keysandentitygroups.html
         '''
@@ -144,6 +145,7 @@ class Tag(db.Model):
         tag.description=description
         tag.category = Category.get(category)
         tag.role = role
+        tag.add_role = add_role
         tag.put()
         return tag
     
@@ -191,6 +193,7 @@ class Discussion(db.Model):
     is_closed = db.BooleanProperty(default = False)
     
     role = db.StringListProperty()
+   
     
     ip = db.StringProperty()
     user_agent = db.StringProperty()

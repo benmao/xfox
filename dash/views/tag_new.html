@@ -43,13 +43,15 @@
     <tr>
     <th style="padding: 0px;"><a href="#">用户组</a></th>
     <td class="Alt" style="padding: 0px;"><a href="#">View</a></td>
+	<td class="Alt" style="padding: 0px;"><a href="#">Add</a></td>
     </tr></thead>
     <tbody>
     {% for role in roles %}
     <tr>
     <th style="padding: 0px;"><a href="#">{{role.name}}</a></th>
-    <td class="Alt"><input type="checkbox"  value="{{role.key}}" name="role[]" {% if role.checked%} checked="checked" {% endif %} /></td>
-    </tr>
+    <td class="Alt"><input type="checkbox"  value="{{role.key}}" name="role[]" {% if role.view%} checked="checked" {% endif %} /></td>
+    <td class="Alt"><input type="checkbox"  value="{{role.key}}" name="add_role[]" {% if role.add%} checked="checked" {% endif %} ></td>
+	</tr>
     {% endfor %}
     </tr>
     

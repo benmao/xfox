@@ -22,6 +22,14 @@ import settings
 
 webapp.template.register_template_library('util.filter')
 
+
+class NotFound(Exception):
+    pass
+
+class Forbidden(Exception):
+    pass
+
+
 class FeedHandler(webapp.RequestHandler):
     def initialize(self,request,response):
         webapp.RequestHandler.initialize(self,request,response)
@@ -101,12 +109,27 @@ class PublicHandler(webapp.RequestHandler):
         
         
     def error(self,code):
+        self.response.clear()
         self.response.set_status(code)
         if code ==404:
             self.render("404.html")
         elif code ==403:
             self.render("403.html")
-    
+        elif code == 500:
+            self.render("500.html")
+            
+    def handle_exception(self, exception, debug_mode):
+        if isinstance(exception,NotFound):
+            return self.error(404)
+        elif isinstance(exception,Forbidden):
+            return self.error(403)
+        else:
+            self.error(500)
+            logging.exception(exception)
+            if debug_mode:
+                lines = ''.join(traceback.format_exception(*sys.exc_info()))
+                self.response.clear()
+                self.response.out.write('<pre>%s</pre>' % (cgi.escape(lines, quote=True)))
             
 class PublicWithSidebarHandler(PublicHandler):
     def initialize(self,request,response):

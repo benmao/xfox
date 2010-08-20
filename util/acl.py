@@ -16,11 +16,12 @@ ROLE= {
 def get_roles():
     return [(key,ROLE[key][0]) for key in ROLE]
 
+from util.handler import Forbidden
 def check_roles(handler,role):
     if len(set(handler.role) & set(role)) > 0:
         return # have perm
     if not handler.user is None:
-        return handler.redirect("/a/notallowed/")
+        raise Forbidden()
     handler.redirect("/a/signin/?go=%s" % handler.request.url)
     
 def check_roles_feed(handler,role):

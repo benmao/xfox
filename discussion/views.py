@@ -8,7 +8,7 @@ Copyright (c) 2010 http://sa3.org All rights reserved.
 
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
-from util.handler import PublicHandler,PublicWithSidebarHandler,FeedHandler
+from util.handler import PublicHandler,PublicWithSidebarHandler,FeedHandler,NotFound
 from discussion.models import Tag,Discussion,Comment,Bookmark
 import settings
 from util.decorator import requires_login,json_requires_login
@@ -27,8 +27,7 @@ class TagHandler(PublicWithSidebarHandler):
         p = int(self.request.get("p","1"))
         tag = Tag.get_tag_by_slug(slug)
         if tag is None:
-            return self.error(404)
-        
+            raise NotFound
         #check ACL
         check_roles(self,tag.role)
         
@@ -82,6 +81,7 @@ class PostDisscussionHandler(PublicHandler):
         
         #check ACL
         check_roles(self,tag.role)
+        check_roles(self,tag.add_role) #addrole
         
         self.template_value['tag']=tag
         self.render('p.html')
@@ -94,7 +94,7 @@ class PostDisscussionHandler(PublicHandler):
         
         #check ACL
         check_roles(self,tag.role)
-    
+        check_roles(self,tag.add_role)
         
         title = self.request.get("title").strip()
         content = self.request.get("content")

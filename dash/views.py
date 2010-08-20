@@ -77,7 +77,9 @@ class TagNewHandler(AdminHandler):
             obj = A()
             obj.key,obj.name = role
             if not tag is None and obj.key in tag.role:
-                obj.checked=True
+                obj.view=True
+            if not tag is None and obj.key in tag.add_role:
+                obj.add = True
             roles_list.append(obj)
         self.template_value['roles'] = roles_list
         self.template_value['tag']=tag
@@ -90,10 +92,11 @@ class TagNewHandler(AdminHandler):
         description = self.request.get("description")
         category = self.request.get("category")
         roles = self.request.get("role[]",allow_multiple=True)
+        add_roles = self.request.get("add_role[]",allow_multiple=True)
         #default role is Guest
         if not roles:
             roles = ['G']
-        Tag.new(slug,title,key_words,description,category,roles)
+        Tag.new(slug,title,key_words,description,category,roles,add_roles)
         self.redirect("/d/tag/")
         
 class TagOpertionHandler(AdminHandler):
