@@ -68,15 +68,17 @@ class ShardCount(db.Model):
         '''
         name  like  disviews:keyid:1
         '''
-        def txn():
-            index = random.randint(0,20)
-            key_name = '%s:%s' % (name,index)
-            counter = ShardCount.get_by_key_name(key_name)
-            if counter is None:
-                counter = ShardCount(key_name =key_name,name = name,model_type=model_type)
-            counter.count += num
-            counter.put()
-        db.run_in_transaction(txn)
+        lock_key  = "counter_lock:%s" % name
+        if memcache.add(lock_key, None, time=60):
+            def txn():
+                index = random.randint(0,20)
+                key_name = '%s:%s' % (name,index)
+                counter = ShardCount.get_by_key_name(key_name)
+                if counter is None:
+                    counter = ShardCount(key_name =key_name,name = name,model_type=model_type)
+                counter.count += num
+                counter.put()
+            db.run_in_transaction(txn)
         memcache.incr(name,num)
         
 

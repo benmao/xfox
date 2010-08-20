@@ -53,7 +53,7 @@ class MemcacheHandler(PublicHandler):
     def get(self):
         mems = MemcacheStatus.get_recent_24()
         self.template_value['mem'] = memcache.get_stats()
-        self.template_value['rates']=','.join([str(obj.hits*100.0/(obj.hits+obj.misses))for obj in mems ])
+        self.template_value['rates']=','.join([str(obj.hits*100.0/(obj.hits+obj.misses))for obj in mems[::-1] ])
         self.render("mem.html")
        
     

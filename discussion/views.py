@@ -250,7 +250,7 @@ def main():
                                                           #('/c/?',PostCommentHandler),
                                                           ('/c/ajax/',PostCommentAjaxHandler),
                                                           ('/p/(?P<slug>[a-z0-9-]{2,})/?',PostDisscussionHandler),
-                                                          ('/p/(?P<slug>[a-z0-9-]{2,})/(?P<key>[a-z0-9]+)/?',EditDisscussionHandler),
+                                                          ('/p/(?P<slug>[a-z0-9-]{2,})/(?P<key>[a-z0-9-]+)/?',EditDisscussionHandler),
                                                           ('/b/?',BookmarkHandler),
                                                           ('/f/?',FeedIndexHandler),
                                                           ('/f/(?P<key>[a-z0-9-]{2,})/?',FeedTagHandler),

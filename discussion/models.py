@@ -96,16 +96,11 @@ class Tag(db.Model):
     
     @delmem("tags")
     def put(self):
-        if not self.is_saved(): #create
-            self.category.count_tag +=1
-            self.category.put() #add category tag count
-        else:
+        if self.is_saved(): #create
             memcache.delete("tag:%s" % self.key().name()) #delete memcache
         super(Tag,self).put()
         
     def delete(self):
-        self.category.count_tag -=1
-        self.category.put()
         self.is_draft=True
         self.put() # set is_draft 
         
@@ -203,7 +198,6 @@ class Discussion(db.Model):
     @delmem("feeddiscussion")
     def put(self):
         if not self.is_saved():
-            ShardCount.get_increment_count("tagcount:"+self.tag.key().name(),"tagcount")
             taskqueue.add( url ='/t/d/follow/' ,params = {'dis':self.key()})
         else:
             self.last_updated = datetime.datetime.now() #update
@@ -368,9 +362,6 @@ class Comment(db.Model):
 
     def put(self):
         if not self.is_saved():
-            ShardCount.get_increment_count("usercomments:"+self.user.name,"usercomments")
-            #ShardCount.get_increment_count("discomments:"+self.dis.key().name(),"discomments")
-            self.dis.count_comment+=1
             self.dis.last_comment_by = self.user.name
             self.dis.last_comment = datetime.datetime.now()
             self.dis.put()

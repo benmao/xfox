@@ -48,11 +48,8 @@ class TestBase(unittest.TestCase):
         self.assertEqual(filter_url('a   -b   '),'a-b')
         self.assertEqual(filter_url('   %$#a$b.@! d  e'),'a-b-d-e')
         self.assertEqual(filter_url('ss-------dd'),'ss-dd')
+        self.assertEqual(filter_url('ss____ss---'),'ss-ss')
         
-    def test_re_mention(self):
-        self.assertEqual(re_mention('@abc')[0],'abc')
-        self.assertEqual(re_mention('haha@163.com')[0],'163.')
-        self.assertEqual(len(re_mention('@dd.')),0)
         
     def test_joinstr(self):
         self.assertEqual(joinstr("aa","bb"),"aabb")

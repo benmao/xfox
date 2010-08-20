@@ -92,7 +92,7 @@ def filter_url(url):
     can not startswith or endswith '-'
     '''
     url = url.strip().lower()
-    url = re.sub(r'\W+',' ',url)
+    url = re.sub(r'[^a-z0-9]+',' ',url)
     url = url.strip()
     return url.replace(' ','-')
 
