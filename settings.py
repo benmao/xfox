@@ -33,7 +33,7 @@ class Setting():
     timedelta = 0.8
     version = "0.1.2"
     
-    hubbub_hub_url ="http://pubsubhubbub.appspot.com/"
+
 
     
 #OpenID Provider

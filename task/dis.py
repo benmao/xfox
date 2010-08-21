@@ -45,7 +45,7 @@ class HubBubHandler(TaskHandler):
         'hub.mode': 'publish', 
         })
         response = urlfetch.fetch(self.setting.hubbub_hub_url, data, urlfetch.POST)
-        if response.status_code != 200:
+        if response.status_code /100 != 2:
             raise Exception("Hub ping failed", response.status_code, response.content)
         else:
             logging.info("%s/f/  hubbub success!" % (self.setting.domain,))

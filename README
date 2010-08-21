@@ -1,1 +1,17 @@
-http://xfox.appspot.com
+[xFox][1]是一款运行于[Google App Engine][2]的社区程序，简单，轻巧，效率是xFox追求的目标。
+
+**特点**：
+
+* Google Storage
+* Friendly URL
+* Markdown
+* Bookmark
+* Mention
+* OpenID
+* Follow
+* LaTex
+* Feed
+* Role
+
+[1]: http://xfox.appspot.com
+[2]: http://code.google.com/appengine/

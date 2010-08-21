@@ -257,7 +257,8 @@ class Discussion(db.Expando):
         
         dis = Discussion(key_name = key_name,title=title,content=content,tag=tag,f=f,user = user,ip=ip,user_agent=user_agent,slug=slug)
         dis.put()
-        taskqueue.add(url ='/t/d/hubbub/')
+        if 'G' in dis.role: #make true dis can view as guest
+            taskqueue.add(url ='/t/d/hubbub/')
         return dis
     
     @classmethod
