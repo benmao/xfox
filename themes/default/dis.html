@@ -18,7 +18,7 @@
             </div>
             
             <!-- content -->
-            <div class="box radius">
+            <div class="box radius" id="article">
             <p class="line1"><a href="/u/{{dis.user_name}}/">{{dis.user_name}}</a> Post at <span class="time">{{dis.created|humdate}}</span> {{disviews}} views
 			{% ifequal user.name dis.user_name %}
 			|<a href="/p/{{dis.tag_slug}}/{{dis.slug}}/">编辑</a>

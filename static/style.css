@@ -141,6 +141,29 @@ sub {
 }
 
 
+
+/* Article */
+
+#article ul {
+	margin:0 30px;
+	padding:5px 0;
+}
+
+#article h1,h2,h3,h4,h5,h6 {
+	font-size:100%;
+}
+
+#article ul li {
+	list-style:square outside none;
+}
+
+#article blockquote,
+#article pre{
+	border:1px solid #6CE26C;
+	margin 5px 10px;
+}
+
+
 .user strong{
 	margin:0 5px;
 }

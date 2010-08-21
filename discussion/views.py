@@ -32,15 +32,14 @@ class TagHandler(PublicWithSidebarHandler):
         check_roles(self,tag.role)
         
         self.template_value['tag']=tag
-       
         diss = Discussion.get_by_tag(tag)
         #paging
         prev = p -1 if p >1 else None
-        tnext = p+1 if diss.has_page(p+1) else None
-       
+        tmp = diss.fetch_page(p)
+        tnext = p+1 if len(tmp)==15 else None
         self.template_value['prev'] = prev
         self.template_value['next'] = tnext
-        self.template_value['diss'] = diss.fetch_page(p)
+        self.template_value['diss'] = tmp
         self.template_value['f_tag'] = {'key':tag.key().name(),'title':tag.title,'show': 'G' in tag.role} #only Public tag have feed 
         self.render('tag.html')
 
@@ -105,6 +104,7 @@ class PostDisscussionHandler(PublicHandler):
             dis =Discussion.new(tag,slug,title,content,self.user,f='M',ip=ip,user_agent=user_agent)
             self.redirect(dis.url)
         self.template_value['error']=u"不要忘记标题或内容哦"
+        self.template_value['tag']=tag
         self.template_value['title']=title
         self.template_value['content']=content
         self.render('p.html')

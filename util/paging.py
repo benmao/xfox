@@ -301,7 +301,7 @@ class PagedQuery(object):
 		self._query.ancestor(ancestor)
 		return self
 	
-	def count(self, limit=1000):
+	def count(self, limit=10000):
 		'''Returns the number of results this query fetches. This method should
 		behave identically to the method of the same name of db.Query and 
 		db.GqlQuery

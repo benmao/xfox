@@ -431,6 +431,8 @@ class DiscussionFollow(db.Model):
     @classmethod
     def new(cls,dis):
         obj = Discussion.get(dis)
+        if obj is None:
+            return
         followers = UserFollow.get_follower(obj.user)
         for follower in followers:
             disf = DiscussionFollow(dis=obj,user = follower)

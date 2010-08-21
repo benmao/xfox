@@ -49,6 +49,7 @@ class TestBase(unittest.TestCase):
         self.assertEqual(filter_url('   %$#a$b.@! d  e'),'a-b-d-e')
         self.assertEqual(filter_url('ss-------dd'),'ss-dd')
         self.assertEqual(filter_url('ss____ss---'),'ss-ss')
+        self.assertEqual(filter_url(u'哈哈------haha----haha---------'),'haha-haha')
         
         
     def test_joinstr(self):

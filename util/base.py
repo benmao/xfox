@@ -91,10 +91,8 @@ def filter_url(url):
     url contains [a-z0-9-]
     can not startswith or endswith '-'
     '''
-    url = url.strip().lower()
-    url = re.sub(r'[^a-z0-9]+',' ',url)
-    url = url.strip()
-    return url.replace(' ','-')
+    return  re.sub(r'[^a-z0-9]+','-',url.lower()).strip('-')
+
 
 
 def joinstr(*values):
