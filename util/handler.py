@@ -156,6 +156,7 @@ class AdminHandler(webapp.RequestHandler):
 class TaskHandler(webapp.RequestHandler):
     def initialize(self,request,response):
         webapp.RequestHandler.initialize(self,request,response)
+        self.setting = settings.Setting()
         
 if __name__=='__main__':
     pass
