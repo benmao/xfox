@@ -47,10 +47,9 @@ class MainHandler(PublicWithSidebarHandler):
     
 class UpdateHandler(PublicHandler):
     def get(self):
-        tag = Tag.get_tag_by_slug('ngpod')
-        tag.tag_type = 'img'
-        tag.put()
-            
+        self.template_value['haha']={'a':'111','b':'2222'}
+        self.render('test.html')
+        
 class MemcacheHandler(PublicHandler):
     def get(self):
         mems = MemcacheStatus.get_recent_24()

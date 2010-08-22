@@ -4,5 +4,7 @@
 {% endblock %}
 
 {%block body %}
-<p>欢迎<strong>{{user.name}}</strong>，访问<a href="http://github.com/benmao/xfox">http://github.com/benmao/xfox</a>贡献力量吧！！</p>
+{% for k in haha %}
+    {{k}}:{{haha|dict_value:k}}
+{% endfor %}
 {% endblock %}

@@ -19,15 +19,6 @@ from util.wsgi import webapp_add_wsgi_middleware
 from google.appengine.api import users
 from google.appengine.api import memcache
 
-class A():
-    def __init__(self,key,value):
-        self.key = key
-        self.value = value
-
-def dict2obj(dic):
-    if dic is None:
-        return None
-    return [ A(key,value) for key,value in dic.items()]
 
 class SignUpHandler(PublicHandler):
     def get(self):
@@ -235,7 +226,7 @@ class OpenIDRemoveHandler(PublicHandler):
 class UserSettingHandler(PublicHandler):
     @requires_login
     def get(self):
-        self.template_value['openids']= dict2obj(self.user.openid_dict)
+        self.template_value['openids']= self.user.openid_dict
         self.render("setting.html")
         
 class UserSettingPwdHandler(PublicHandler):

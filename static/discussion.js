@@ -1,6 +1,6 @@
 $(document).ready(function(){
 	$("a.closehandler").live("click",function(){
-		key = $(this).attr("href").replace('#','');
+		var key = $(this).attr("href").replace('#','');
 		$.ajax({
             type:'POST',
             url: '/a/discussion/close/',

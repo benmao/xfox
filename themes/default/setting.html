@@ -55,8 +55,8 @@
 				<table cellpadding="0" border="0">
 					{% for openid in openids  %}
                     <tr>
-                        <td>{{openid.value|cut:80}}</td>
-                        <td><a href="/a/openid/remove/?id={{openid.key}}">取消绑定</a></td>
+                        <td>{{openids|dict_value:openid|cut:60}}</td>
+                        <td><a href="/a/openid/remove/?id={{openid}}">取消绑定</a></td>
                     </tr>
 					{% endfor %}
                 </table>

@@ -1,8 +1,8 @@
 $(document).ready(function(){
     //Check remind every 1 Minute
     function check_remind(){
-        mention = $("#mention");
-		follow = $("#follow");
+        var mention = $("#mention");
+		var follow = $("#follow");
         if (mention[0]){ // logined user
             $.ajax({
                 type:'POST',
