@@ -10,13 +10,174 @@ import pickle
 import re
 import time
 import unicodedata
-
+import sys
+import os
 from google.appengine.ext import db
 from google.appengine.datastore import entity_pb
 from google.net.proto.ProtocolBuffer import ProtocolBufferDecodeError
 
 from django.utils import simplejson
 
+def get_protobuf_from_entity(entities):
+    """Converts one or more {{{db.Model}}} instances to encoded Protocol Buffers.
+
+    This is useful to store entities in memcache, and preferable than storing
+    the entities directly as it has slightly better performance and avoids
+    crashes when unpickling (when, for example, the entity class is moved to a
+    different module).
+
+    Cached protobufs can be de-serialized using [[get_entity_from_protobuf]].
+
+    Example usage:
+
+    <<code python>>
+    from google.appengine.api import memcache
+    from tipfy.ext.db import get_protobuf_from_entity
+
+    # Inside a handler, given that a MyModel model is defined.
+    entity = MyModel(key_name='foo')
+    entity.put()
+
+    # Cache the protobuf.
+    memcache.set('my-cache-key', get_protobuf_from_entity(entity))
+    <</code>>
+
+    This function derives from [[http://blog.notdot.net/2009/9/Efficient-model-memcaching|Nick's Blog]].
+
+    * Parameters:
+    ** entities: A single or a list of {{{db.Model}}} instances to be serialized.
+
+    ** Return:
+    ** One or more entities serialized to Protocol Buffer (a string or a
+       list).
+    """
+    if not entities:
+        return None
+    elif isinstance(entities, db.Model):
+        return db.model_to_protobuf(entities).Encode()
+    elif isinstance(entities, dict):
+        return dict((k, db.model_to_protobuf(v).Encode()) for k, v in \
+        entities.iteritems())
+    else:
+        return [db.model_to_protobuf(x).Encode() for x in entities]
+
+
+def get_entity_from_protobuf(data):
+    """Converts one or more encoded Protocol Buffers to {{{db.Model}}} instances.
+
+    This is used to de-serialize entities previously serialized using
+    [[get_protobuf_from_entity]]. After retrieving an entity protobuf
+    from memcache, this converts it back to a {{{db.Model}}} instance.
+
+    Example usage:
+
+    <<code python>>
+    from google.appengine.api import memcache
+    from tipfy.ext.db import get_entity_from_protobuf
+
+    # Get the protobuf from cache and de-serialize it.
+    protobuf = memcache.get('my-cache-key')
+    if protobuf:
+        entity = get_entity_from_protobuf(protobuf)
+    <</code>>
+
+    This function derives from [[http://blog.notdot.net/2009/9/Efficient-model-memcaching|Nick's Blog]].
+
+    * Parameters:
+    ** data: One or more entities serialized to Protocol Buffer (a string or a
+       list).
+
+    ** Return:
+    ** One or more entities de-serialized from Protocol Buffers (a
+       {{{db.Model}}} inatance or a list of {{{db.Model}}} instances).
+    """
+    if not data:
+        return None
+    elif isinstance(data, str):
+        return db.model_from_protobuf(entity_pb.EntityProto(data))
+    elif isinstance(data, dict):
+        return dict((k, db.model_from_protobuf(entity_pb.EntityProto(v))) \
+            for k, v in data.iteritems())
+    else:
+        return [db.model_from_protobuf(entity_pb.EntityProto(x)) for x in data]
+
+
+def get_reference_key(entity, prop_name):
+    """Returns a encoded key from a {{{db.ReferenceProperty}}} without fetching
+    the referenced entity.
+
+    Example usage:
+
+    <<code python>>
+    from google.appengine.ext import db
+    from tipfy.ext.db import get_reference_key
+
+    # Set a book entity with an author reference.
+    class Author(db.Model):
+        name = db.StringProperty()
+
+    class Book(db.Model):
+        title = db.StringProperty()
+        author = db.ReferenceProperty(Author)
+
+    author = Author(name='Stephen King')
+    author.put()
+
+    book = Book(key_name='the-shining', title='The Shining', author=author)
+    book.put()
+
+    # Now let's fetch the book and get the author key without fetching it.
+    fetched_book = Book.get_by_key_name('the-shining')
+    assert str(author.key()) == str(get_reference_key(fetched_book,
+        'author'))
+    <</code>>
+
+    * Parameters:
+    ** entity: A {{{db.Model}}} instance.
+    ** prop_name: The name of the {{{db.ReferenceProperty}}} property.
+
+    ** Return:
+    ** An entity Key, as a string.
+    """
+    return getattr(entity.__class__, prop_name).get_value_for_datastore(entity)
+
+def populate_entity(entity, **kwargs):
+    """Sets a batch of property values in an entity. This is useful to set
+    multiple properties coming from a form or set in a dictionary.
+
+    Example usage:
+
+    <<code python>>
+    from google.appengine.ext import db
+    from tipfy.ext.db import populate_entity
+
+    class Author(db.Model):
+        name = db.StringProperty(required=True)
+        city = db.StringProperty()
+        state = db.StringProperty()
+        country = db.StringProperty()
+
+    # Save an author entity.
+    author = Author(key_name='stephen-king', name='Stephen King')
+    author.put()
+
+    # Now let's update the record.
+    author = Author.get_by_key_name('stephen-king')
+    populate_entity(author, city='Lovell', state='Maine', country='USA')
+    author.put()
+    <</code>>
+
+    * Parameters:
+    ** entity: A {{{db.Model}}} instance.
+    ** kwargs: Keyword arguments for each entity property value.
+
+    ** Return:
+    ** {{{None}}}
+    """
+    properties = get_entity_properties(entity)
+    for key, value in kwargs.iteritems():
+        if key in properties:
+            setattr(entity, key, value)
 
 
 class ModelMixin(object):
@@ -201,5 +362,4 @@ class SlugProperty(db.Property):
             return self.default
 
         return _slugify(v, max_length=self.max_length, default=self.default)
-
 

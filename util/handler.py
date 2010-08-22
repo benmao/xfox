@@ -33,6 +33,12 @@ class Forbidden(Exception):
     pass
 
 
+def get_or_404(func,*args,**kwargs):
+    obj = func(*args,**kwargs)
+    if obj is None:
+        raise NotFound()
+    return obj
+
 class FeedHandler(webapp.RequestHandler):
     def initialize(self,request,response):
         webapp.RequestHandler.initialize(self,request,response)

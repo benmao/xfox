@@ -11,7 +11,7 @@ import logging
 
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
-from util.handler import PublicHandler,PublicWithSidebarHandler,FeedHandler,NotFound
+from util.handler import PublicHandler,PublicWithSidebarHandler,FeedHandler,NotFound,get_or_404
 from discussion.models import Tag,Discussion,Comment,Bookmark
 from account.models import User
 from util.decorator import requires_login,json_requires_login
@@ -24,12 +24,11 @@ from util.base import escape,filter_url
 from google.appengine.api import memcache
 
 
+
 class TagHandler(PublicWithSidebarHandler):
     def get(self,slug):
         p = int(self.request.get("p","1"))
-        tag = Tag.get_tag_by_slug(slug)
-        if tag is None:
-            raise NotFound
+        tag = get_or_404(Tag.get_tag_by_slug,slug)
         #check ACL
         check_roles(self,tag.role)
         
@@ -49,9 +48,7 @@ class TagHandler(PublicWithSidebarHandler):
 
 class DiscussionHandler(PublicWithSidebarHandler):
     def get(self,slug,key):
-        dis = Discussion.get_discussion_by_key(slug,key)
-        if dis is None:
-            return self.error(404)
+        dis = get_or_404(Discussion.get_discussion_by_key,slug,key)
         
         #check ACL
         check_roles(self,dis.role)
@@ -78,10 +75,7 @@ class PostDisscussionHandler(PublicHandler):
 
     @requires_login
     def get(self,slug):
-        tag = Tag.get_tag_by_slug(slug)
-        if tag is None:
-            return self.error(404)
-        
+        tag = get_or_404(Tag.get_tag_by_slug,slug)
         #check ACL
         check_roles(self,tag.role)
         check_roles(self,tag.add_role) #addrole
@@ -93,10 +87,7 @@ class PostDisscussionHandler(PublicHandler):
         
     @requires_login
     def post(self,slug):
-        tag = Tag.get_tag_by_slug(slug)
-        if tag is None:
-            return self.error(404)
-        
+        tag = get_or_404(Tag.get_tag_by_slug,slug)
         #check ACL
         check_roles(self,tag.role)
         check_roles(self,tag.add_role)
@@ -119,10 +110,7 @@ class PostDisscussionHandler(PublicHandler):
 class EditDisscussionHandler(PublicHandler):
     @requires_login
     def get(self,slug,key):
-        dis = Discussion.get_discussion_by_key(slug,key)
-        if dis is None:
-            return self.error(404)
-        
+        dis = get_or_404(Discussion.get_discussion_by_key,slug,key)
         #check ACL
         check_roles(self,dis.role)
         
@@ -159,9 +147,7 @@ class PostCommentHandler(PublicWithSidebarHandler):
     def post(self):
         key = self.request.get("key")
         content = self.request.get("content")
-        dis = Discussion.get_by_key_name(key)
-        if dis is None:
-            return self.error(404)
+        dis = get_or_404(Discussion.get_by_key_name,key)
         comment =Comment.new(self.user,dis,content)
         self.redirect(comment.url)
         
@@ -231,9 +217,7 @@ class FeedIndexHandler(FeedHandler):
         
 class FeedTagHandler(FeedHandler):
     def get(self,key):
-        tag = Tag.get_by_key_name(key)
-        if tag is None:
-            return self.error(404)
+        tag = get_or_404(Tag.get_by_key_name,key)
         
         #check feed ACL
         if not check_roles_feed(self,tag.role):
@@ -246,9 +230,7 @@ class FeedTagHandler(FeedHandler):
         
 class FeedUserHandler(FeedHandler):
     def get(self,name):
-        user = User.get_user_by_name(name)
-        if user is None:
-            raise NotFound()
+        user = get_or_404(User.get_user_by_name,name)
         diss = Discussion.get_recent_dis(user)
         self.template_value['diss']=diss
         self.template_value['lastupdated']= diss[0].created if len(diss)>0 else datetime.datetime.now()
