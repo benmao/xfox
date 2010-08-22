@@ -105,7 +105,7 @@ class PostDisscussionHandler(PublicHandler):
         content = self.request.get("content")
         ip = self.request.remote_addr
         user_agent =  escape(self.request.headers.get('User-Agent','Firefox'))
-        img_url = self.request.get("img_url")
+        img_url = escape(self.request.get("img_url"))
         slug = self.request.get("slug","")
         if len(title)>0 and len(content)>0:
             dis =Discussion.new(tag,slug,title,content,self.user,f='M',ip=ip,user_agent=user_agent,img_url=img_url)
