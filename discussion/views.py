@@ -5,12 +5,15 @@
 Created by ben on 2010/8/4 .
 Copyright (c) 2010 http://sa3.org All rights reserved. 
 """
+import settings
+import datetime
+import logging
 
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 from util.handler import PublicHandler,PublicWithSidebarHandler,FeedHandler,NotFound
 from discussion.models import Tag,Discussion,Comment,Bookmark
-import settings
+from account.models import User
 from util.decorator import requires_login,json_requires_login
 from util.paging import PagedQuery
 from google.appengine.api.labs import taskqueue
@@ -19,8 +22,7 @@ from util.acl import check_roles,check_roles_feed
 from util.wsgi  import webapp_add_wsgi_middleware
 from util.base import escape,filter_url
 from google.appengine.api import memcache
-import datetime
-import logging
+
 
 class TagHandler(PublicWithSidebarHandler):
     def get(self,slug):
@@ -242,6 +244,15 @@ class FeedTagHandler(FeedHandler):
         self.template_value['lastupdated']= diss[0].created if len(diss)>0 else datetime.datetime.now()
         self.render('rss.xml')
         
+class FeedUserHandler(FeedHandler):
+    def get(self,name):
+        user = User.get_user_by_name(name)
+        if user is None:
+            raise NotFound()
+        diss = Discussion.get_recent_dis(user)
+        self.template_value['diss']=diss
+        self.template_value['lastupdated']= diss[0].created if len(diss)>0 else datetime.datetime.now()
+        self.render('rss.xml')
                 
 class NotFoundHandler(PublicHandler):
     def get(self):
@@ -259,6 +270,7 @@ def main():
                                                           ('/b/?',BookmarkHandler),
                                                           ('/f/?',FeedIndexHandler),
                                                           ('/f/(?P<key>[a-z0-9-]{2,})/?',FeedTagHandler),
+                                                          ('/f/u/(?P<name>[a-z0-9]{3,16})/?',FeedUserHandler),
                                                           ('/(?P<slug>[a-z0-9-]{2,})/?', TagHandler),
                                                           ('/(?P<slug>[a-z0-9-]{2,})/(?P<key>[a-z0-9-]+)/?',DiscussionHandler),
                                                           ('/.*',NotFoundHandler),

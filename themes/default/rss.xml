@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <title><![CDATA[xFox]]></title>
-    <id>http://xfox.appspot.com/</id>
+    <id>{{setting.domain}}</id>
     <subtitle>xFox，技术的Geek</subtitle>
-    <link href="http://xfox.appspot.com/" />
-    <link href="http://xfox.appspot.com/f/" rel="self" />
+    <link href="{{setting.domain}}/" />
+    <link href="{{setting.domain}}/f/" rel="self" />
     <updated>{{lastupdated|datetz:"Y-m-d\TH:i:s+08:00"}}</updated>
 	{% for dis in diss %}
   <entry>
-      <link href="http://xfox.appspot.com{{dis.url}}"/>
-      <id>http://xfox.appspot.com{{dis.url}}</id>
+      <link href="{{setting.domain}}{{dis.url}}"/>
+      <id>{{setting.domain}}{{dis.url}}</id>
       <title><![CDATA[{{dis.title|escape}}]]></title>
       <content type="html"><![CDATA[
       {{dis.content_formated}}
       ]]></content>
       <author>
 	      <name>{{dis.user_name}}</name>
-	      <uri>http://xfox.appspot.com/u/{{dis.username}}/</uri>
+	      <uri>{{setting.domain}}/u/{{dis.username}}/</uri>
       </author>
       <updated>{{dis.created|datetz:"Y-m-d\TH:i:s+08:00"}}</updated>
   </entry>
