@@ -38,6 +38,7 @@ class FeedHandler(webapp.RequestHandler):
         webapp.RequestHandler.initialize(self,request,response)
         self.template_value = {}
         self.setting = settings.Setting()
+        self.template_value['setting'] = self.setting
         
     def render(self,template_file):
         template_file = "themes/default/%s" % (template_file)

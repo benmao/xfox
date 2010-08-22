@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <title><![CDATA[xFox]]></title>
+    <title><![CDATA[{{setting.title}}]]></title>
     <id>{{setting.domain}}</id>
-    <subtitle>xFox，技术的Geek</subtitle>
+    <subtitle><![CDATA[{{setting.description}}]]></subtitle>
     <link href="{{setting.domain}}/" />
     <link href="{{setting.domain}}/f/" rel="self" />
     <updated>{{lastupdated|datetz:"Y-m-d\TH:i:s+08:00"}}</updated>
