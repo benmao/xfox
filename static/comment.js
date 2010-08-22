@@ -13,6 +13,11 @@ $(document).ready(function(){
 					$("#info").text("评论成功了");
 					$(":input[name='content']").val("")
 					add_comment(decodeURI(json.comment));
+					
+					//remove localStorage
+					if (typeof(localStorage) == 'undefined'){
+						localStorage.removeItem(window.location.pathname);
+					}
 				}
 				if (json.error){
 					$("#info").text(json.error)
