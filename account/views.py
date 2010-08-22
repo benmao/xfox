@@ -98,6 +98,7 @@ class UserProfileHandler(PublicWithSidebarHandler):
         self.template_value['recent_dis']= Discussion.get_recent_dis(u)
         self.template_value['recent_comment'] = RecentCommentLog.get_recent_comment(u)
         self.template_value['recent_bookmark']= Bookmark.get_recent_bookmark(u)
+        self.template_value['f_tag'] = {'key':"u/%s" % u.name_lower,'title':u.name,'show': True} 
         self.render('user.html')
         
 class UserMentionHandler(PublicWithSidebarHandler):
