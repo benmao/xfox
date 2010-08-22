@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{%block head %}
+<title>{{setting.title}} > {{tag.title}}</title>
+<meta name="keywords" content="{{tag.key_words}}" />
+<meta name="description" content="{{tag.description}}" />
+{% endblock %}
+
+{%block body %}
+    	<div id="content" class="w680">
+        	<div class="box radius">
+            	<h2><a href="{{tag.url}}">{{tag.title|escape}}sssss</a></h2>
+            </div>
+            
+            <!-- content -->
+            <div class="box radius">
+                <ul id="album">
+                	{% for dis in diss %}
+                	<li><a href="{{dis.url}}"><img src="{{dis.img_url}}" alt="{{dis.title}}"></a></li>
+					{% endfor %}
+                </ul>
+            </div>
+            
+            <div class="box radius">
+            {% if prev %}<a class="prev" href="{{tag.url}}{{prev|humpage}}">前一页</a> {% endif %}
+            {% if next %}<a class="next" href="{{tag.url}}{{next|humpage}}">后一页</a> {% endif %}
+       		</div>
+        </div>
+     <!--sidebar include -->
+     {% include "sidebar.html" %}
+{% endblock %}

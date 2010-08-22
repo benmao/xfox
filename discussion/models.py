@@ -95,6 +95,9 @@ class Tag(db.Model):
     role = db.StringListProperty()
     add_role = db.StringListProperty()
     
+
+    tag_type = db.StringProperty()
+    
     @delmem("tags")
     def put(self):
         if self.is_saved(): #create
@@ -197,6 +200,14 @@ class Discussion(db.Expando):
     
     ip = db.StringProperty()
     user_agent = db.StringProperty()
+
+    prev_slug = db.StringProperty() 
+    prev_title = db.StringProperty()
+    
+    next_slug = db.StringProperty()
+    next_title = db.StringProperty()
+    
+    img_url = db.StringProperty() #for Image Album
     
     @delmem("feeddiscussion")
     def put(self):
@@ -246,7 +257,7 @@ class Discussion(db.Expando):
         return not Discussion.get_by_key_name("%s:%s" %(tag_slug,slug)) is None
     
     @classmethod
-    def new(self,tag,slug,title,content,user,f='T',ip =ip,user_agent=user_agent,):
+    def new(self,tag,slug,title,content,user,f='T',ip =ip,user_agent=user_agent,img_url = img_url):
         slug = filter_url(slug)
         if len(slug)==0:
             slug = Counter.get_max(":%s:" % tag.key().name()).value
@@ -256,6 +267,8 @@ class Discussion(db.Expando):
             key_name = "%s:%s" % (tag.key().name(),slug)
         
         dis = Discussion(key_name = key_name,title=title,content=content,tag=tag,f=f,user = user,ip=ip,user_agent=user_agent,slug=slug)
+        if tag.tag_type =='img':
+            dis.img_url = img_url
         dis.put()
         if 'G' in dis.role: #make true dis can view as guest
             taskqueue.add(url ='/t/d/hubbub/')

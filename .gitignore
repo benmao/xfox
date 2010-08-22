@@ -1,4 +1,6 @@
 boto/*
+tool/*
+static/a.jpg
 *.pyc
 *.pyo
 app.yaml

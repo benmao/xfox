@@ -163,6 +163,22 @@ sub {
 	margin 5px 10px;
 }
 
+#album {
+	width:100%;
+	margin:10px;
+}
+#album li{
+	width:200px;
+	height:160px;
+	float:left;
+	list-style:none;
+	margin: 5px 5px;
+}
+#album img{
+	height:160px;
+	width:200px;
+}
+
 
 .user strong{
 	margin:0 5px;

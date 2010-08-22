@@ -47,10 +47,9 @@ class MainHandler(PublicWithSidebarHandler):
     
 class UpdateHandler(PublicHandler):
     def get(self):
-        user = User.get_user_by_name('ben')
-        user.role.append('A')
-        print user.role
-        user.put()
+        tag = Tag.get_tag_by_slug('fff')
+        tag.tag_type = 'img'
+        tag.put()
             
 class MemcacheHandler(PublicHandler):
     def get(self):

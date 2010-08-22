@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{%block head %}
+<title>{{setting.title}} > 讨论</title>
+{% endblock %}
+
+{%block body %}
+    <div id="p_form">
+           <h3>在 <a href="{{tag.url}}">{{tag.title}}</a> 发表讨论</h3>
+        	<form method="post" class="radius" action="/p/{{tag.key.name}}/">
+			<p>
+            <label for="title">标题</label>
+            <input type="text" class="input_box radius" maxlength="100" value="{% if title %} {{title}} {% endif %}" name="title" id="title">
+            </p>
+            <p>
+            <label for="content">内容</label>
+            <textarea class="input_box radius" cols="100" rows="6" name="content" id="content" >{% if content %}{{content}}{% endif %}</textarea>
+            </p>
+            <p>
+	            <label for="slug">slug:[a-z0-9-]{1-10}，可以留空</label>
+				<input type="text" class="input_box radius" name="slug" id="check_slug">
+            </p>
+			<p>
+                <label for="slug">小图地址：</label>
+                <input type="text" class="input_box radius" name="img_url" id="check_slug">
+            </p>
+            {% if error %}
+            <p>{{error}}</p>
+            {% else %}
+            <p style="visibility:hidden">dd</p>
+            {% endif %}
+            <p>
+            <input type="submit" value="提交" class="button radius" />
+            </p>
+        </form>
+        </div>
+{% endblock %}

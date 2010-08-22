@@ -41,7 +41,9 @@ class TagHandler(PublicWithSidebarHandler):
         self.template_value['next'] = tnext
         self.template_value['diss'] = tmp
         self.template_value['f_tag'] = {'key':tag.key().name(),'title':tag.title,'show': 'G' in tag.role} #only Public tag have feed 
-        self.render('tag.html')
+        
+        template_name = "tag.html" if tag.tag_type is None else 'tag_%s.html' % tag.tag_type
+        self.render(template_name)
 
 class DiscussionHandler(PublicWithSidebarHandler):
     def get(self,slug,key):
@@ -83,7 +85,9 @@ class PostDisscussionHandler(PublicHandler):
         check_roles(self,tag.add_role) #addrole
         
         self.template_value['tag']=tag
-        self.render('p.html')
+        template_name = 'p.html' if tag.tag_type is None else 'p_%s.html' % tag.tag_type
+
+        self.render(template_name)
         
     @requires_login
     def post(self,slug):
@@ -99,9 +103,10 @@ class PostDisscussionHandler(PublicHandler):
         content = self.request.get("content")
         ip = self.request.remote_addr
         user_agent =  escape(self.request.headers.get('User-Agent','Firefox'))
+        img_url = self.request.get("img_url")
         slug = self.request.get("slug","")
         if len(title)>0 and len(content)>0:
-            dis =Discussion.new(tag,slug,title,content,self.user,f='M',ip=ip,user_agent=user_agent)
+            dis =Discussion.new(tag,slug,title,content,self.user,f='M',ip=ip,user_agent=user_agent,img_url=img_url)
             self.redirect(dis.url)
         self.template_value['error']=u"不要忘记标题或内容哦"
         self.template_value['tag']=tag
