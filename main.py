@@ -47,7 +47,7 @@ class MainHandler(PublicWithSidebarHandler):
     
 class UpdateHandler(PublicHandler):
     def get(self):
-        tag = Tag.get_tag_by_slug('fff')
+        tag = Tag.get_tag_by_slug('ngpod')
         tag.tag_type = 'img'
         tag.put()
             

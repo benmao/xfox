@@ -3,12 +3,16 @@
 <title>{{setting.title}} > {{tag.title}}</title>
 <meta name="keywords" content="{{tag.key_words}}" />
 <meta name="description" content="{{tag.description}}" />
+{% if prev %}
+<meta name="robots" content="noindex,follow" />
+{% endif %}
+
 {% endblock %}
 
 {%block body %}
     	<div id="content" class="w680">
         	<div class="box radius">
-            	<h2><a href="{{tag.url}}">{{tag.title|escape}}sssss</a></h2>
+            	<h2><a href="{{tag.url}}">{{tag.title|escape}}</a></h2>
             </div>
             
             <!-- content -->

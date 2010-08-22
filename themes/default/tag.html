@@ -3,6 +3,9 @@
 <title>{{setting.title}} > {{tag.title}}</title>
 <meta name="keywords" content="{{tag.key_words}}" />
 <meta name="description" content="{{tag.description}}" />
+{% if prev %}
+<meta name="robots" content="noindex,follow" />
+{% endif %}
 {% endblock %}
 
 {%block body %}
