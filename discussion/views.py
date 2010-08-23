@@ -123,10 +123,8 @@ class EditDisscussionHandler(PublicHandler):
     def post(self,slug,key):
         title = self.request.get("title").strip()
         content = self.request.get("content").strip()
-        dis = Discussion.get_discussion_by_key(slug,key)
+        dis = get_or_404(Discussion.get_discussion_by_key,slug,key)
         if len(title)> 0 and len(content) > 0:
-            if  dis is None:
-                return self.error(404)
             if dis.user_name != self.user.name:
                 return self.error(403)
             dis.title = title

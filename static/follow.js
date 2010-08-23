@@ -1,7 +1,7 @@
 $(document).ready(function(){
 	$("a.followhandler").live("click",function(){
-        key = $(this).attr("href").replace('#','');
-        obj = $(this).parent().parent();
+        var key = $(this).attr("href").replace('#','');
+        var obj = $(this).parent().parent();
         $.ajax({
             type:'POST',
             url: '/a/followread/',

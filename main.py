@@ -43,6 +43,7 @@ class MainHandler(PublicWithSidebarHandler):
     #@requires_login
     def get(self):
         self.template_value['diss'] = Discussion.get_recent()
+        self.template_value['bookmarks'] = Bookmark.all().order('-created').fetch(10)
         self.render('index.html')
     
 class UpdateHandler(PublicHandler):

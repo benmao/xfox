@@ -179,7 +179,14 @@ sub {
 	width:200px;
 }
 
+#bookmark_list{
+	margin:0 30px;
+    padding:5px 0;
+}
 
+#bookmark_list{
+	list-style:square;
+}
 .user strong{
 	margin:0 5px;
 }
