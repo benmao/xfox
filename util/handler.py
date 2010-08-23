@@ -24,6 +24,7 @@ from django.utils import simplejson
 import settings
 
 webapp.template.register_template_library('util.filter')
+webapp.template.register_template_library('util.cache')
 
 
 class NotFound(Exception):
