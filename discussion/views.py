@@ -41,7 +41,7 @@ class TagHandler(PublicWithSidebarHandler):
         self.template_value['prev'] = prev
         self.template_value['next'] = tnext
         self.template_value['diss'] = tmp
-        self.template_value['f_tag'] = {'key':tag.key().name(),'title':tag.title,'show': 'G' in tag.role} #only Public tag have feed 
+        self.template_value['f_tag'] = {'key':tag.key().name(),'title':tag.title,'show': 'G' in tag.role,'post':True} #only Public tag have feed 
         
         template_name = "tag.html" if tag.tag_type is None else 'tag_%s.html' % tag.tag_type
         self.render(template_name)
@@ -62,7 +62,7 @@ class DiscussionHandler(PublicWithSidebarHandler):
             logs.add(key)
             memcache.set(":visitlogs:",logs,3600)
         
-        self.template_value['f_tag']={'key':dis.tag_slug,'title':dis.tag_title,'show':'G' in dis.role}
+        self.template_value['f_tag']={'key':dis.tag_slug,'title':dis.tag_title,'show':'G' in dis.role,'post':True}
         self.template_value['disviews']=ShardCount.get_increment_count("disviews:"+key,"disviews")
         self.template_value['dis']=dis
         bookmark = Bookmark.get_bookmark(self.user,dis) if self.user else None
