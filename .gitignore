@@ -2,6 +2,7 @@ boto/*
 tool/*
 script/*
 static/a.jpg
+static/sitemap.xml
 *.pyc
 *.pyo
 app.yaml

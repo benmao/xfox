@@ -40,19 +40,36 @@ def get_or_404(func,*args,**kwargs):
         raise NotFound()
     return obj
 
+def render_sitemap(diss):
+    template_value = {
+        'setting':settings.Setting(),
+        'diss':diss
+        }
+    template_file = "themes/sitemap.xml"
+    path = os.path.join(os.path.dirname(__file__), r'../',template_file)
+    return template.render(path, template_value)
+
 class FeedHandler(webapp.RequestHandler):
     def initialize(self,request,response):
         webapp.RequestHandler.initialize(self,request,response)
-        self.template_value = {}
-        self.setting = settings.Setting()
-        self.template_value['setting'] = self.setting
+        self.template_value = {'setting':settings.Setting()}
         
     def render(self,template_file):
         template_file = "themes/%s" % (template_file)
         path = os.path.join(os.path.dirname(__file__), r'../',template_file)
         self.response.headers['Content-Type']='application/atom+xml'
         self.response.out.write(template.render(path, self.template_value))
+        
+class SitemapHandler(webapp.RequestHandler):
+    def initialize(self,request,response):
+        webapp.RequestHandler.initialize(self,request,response)
+        self.template_value = {'setting':settings.Setting()}
 
+    def render(self,template_file):
+        template_file = "themes/%s" % (template_file)
+        path = os.path.join(os.path.dirname(__file__), r'../',template_file)
+        self.response.out.write(template.render(path, self.template_value))
+        
 class PublicHandler(webapp.RequestHandler):
     
     def initialize(self,request,response):

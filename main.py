@@ -9,7 +9,7 @@ Copyright (c) 2010 http://sa3.org All rights reserved.
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 from dash.models import Counter
-from util.handler import PublicHandler,PublicWithSidebarHandler
+from util.handler import PublicHandler,PublicWithSidebarHandler,FeedHandler,SitemapHandler
 from util.decorator import requires_login
 from discussion.models import Tag,Discussion,Comment,Bookmark
 from util.base import *

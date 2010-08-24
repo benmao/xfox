@@ -16,6 +16,10 @@ handlers:
   static_files: static/robots.txt
   upload: static/robots.txt
 
+- url: /sitemap.xml
+  static_files: static/sitemap.xml
+  upload: static/sitemap.xml
+  
 - url: /PIE.htc
   static_files:  static/PIE.htc
   upload:  static/PIE.htc

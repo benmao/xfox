@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<urlset xmlns="http://www.google.com/schemas/sitemap/0.84">
+	{% for dis in diss %}
+	<url>
+		<loc>{{setting.domain}}{{dis.url}}</loc>
+		<lastmod>{{dis.created|date:"Y-m-d"}}</lastmod>
+		<changefreq>weekly</changefreq>
+	</url>
+	{% endfor %}
+</urlset>
