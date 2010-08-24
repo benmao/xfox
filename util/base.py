@@ -20,22 +20,16 @@ def random_str(length=6):
     strs = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
     return ''.join(random.sample(strs,length))
 
-def get_md5(str):
-    return md5.new(str).hexdigest()
+def get_md5(str_key):
+    return md5.new(str_key).hexdigest()
 
-def random_md5(str):
-    m = md5.new()
-    m.update(str)
-    m.update(random_str())
-    return m.hexdigest()
+def random_md5(str_key):
+    return get_md5(str_key+random_str())
 
 def encrypt_pwd(pwd,secret_key = None):
     if secret_key is None: 
         secret_key = random_str(6)
-    m = md5.new()
-    m.update(pwd)
-    m.update(secret_key)
-    return (secret_key,m.hexdigest())
+    return (secret_key,get_md5(pwd+secret_key))
 
 def check_email(email):
     email = email.lower()
