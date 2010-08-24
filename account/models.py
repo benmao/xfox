@@ -12,9 +12,8 @@ from google.appengine.ext import db
 
 from util.base import  *
 from util.decorator import *
-import datetime
-from dash.models import Counter
 from util.db import PickleProperty
+from dash.models import Counter
 
 class User(db.Model):
     name = db.StringProperty(required=True,indexed=True)
@@ -54,10 +53,8 @@ class User(db.Model):
             self.email = self.email.lower()
             self.email_md5 = get_md5(self.email)
             self.user_id = Counter.get_max("user").value
-            self.role.append("M")
-            self.role.append("G")
+            self.role.extend(['M','G'])
         super(User,self).put()
-    
     
     @classmethod
     def get_user_by_name(cls,name):

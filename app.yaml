@@ -38,6 +38,7 @@ handlers:
 
 - url: /d/.*
   script: dash/views.py
+  login: admin
   
 - url: /p/.*
   script: discussion/views.py

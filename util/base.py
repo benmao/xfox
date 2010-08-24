@@ -10,8 +10,9 @@ import time
 import string
 import md5
 import re
-from google.appengine.api.labs import taskqueue
 import logging
+import unicodedata
+from google.appengine.api.labs import taskqueue
 
 def add(x,y):
     return x+y
@@ -80,12 +81,14 @@ class Base36():
             return self.base36(int(self.num,36)+num)
         return self.base36(int(self.num,36)+int(num,36))
     
-def filter_url(url):
+def filter_url(s):
     '''
     url contains [a-z0-9-]
     can not startswith or endswith '-'
     '''
-    return  re.sub(r'[^a-z0-9]+','-',url.lower()).strip('-')
+    if not isinstance(s,str):
+        s = unicodedata.normalize('NFKD', s).encode('ascii', 'ignore')
+    return  re.sub(r'[^a-z0-9]+','-',s.lower()).strip('-')
 
 
 

@@ -175,13 +175,13 @@ class AdminHandler(webapp.RequestHandler):
         user = users.get_current_user()
         if not user:
             return  self.redirect(users.create_login_url(self.request.uri))
-        if users.is_current_user_admin():
-            return self.error(403)
+        if not users.is_current_user_admin():
+            self.redirect("/") 
         
     def render(self,template_file):        template_file = "dash/views/%s" % (template_file)
         path = os.path.join(os.path.dirname(__file__), r'../',template_file)
         self.response.out.write(template.render(path, self.template_value))
-        
+                
 class TaskHandler(webapp.RequestHandler):
     def initialize(self,request,response):
         webapp.RequestHandler.initialize(self,request,response)
