@@ -32,6 +32,7 @@ class CacheNode(template.Node):
         logging.info(cache_key)
         value = memcache.get(cache_key)
         if value is None:
+            logging.info("get data form render : %s" % cache_key)
             value = self.nodelist.render(context)
             memcache.set(cache_key, value, expire_time)
         return value

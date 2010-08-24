@@ -48,7 +48,7 @@ class FeedHandler(webapp.RequestHandler):
         self.template_value['setting'] = self.setting
         
     def render(self,template_file):
-        template_file = "themes/default/%s" % (template_file)
+        template_file = "themes/%s" % (template_file)
         path = os.path.join(os.path.dirname(__file__), r'../',template_file)
         self.response.headers['Content-Type']='application/atom+xml'
         self.response.out.write(template.render(path, self.template_value))

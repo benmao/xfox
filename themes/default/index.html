@@ -6,6 +6,7 @@
 {% endblock %}
 
 {%block body %}
+        {% cache 60 index %}
     	<div id="content" class="w680">
 		<div class = "box radius">
 			<h3>最近主题</h3>
@@ -46,6 +47,7 @@
 			</ul>
 		</div>
         </div>
+	  {% endcache %}
      <!--sidebar include -->
      {% include "sidebar.html" %}
 {% endblock %}
