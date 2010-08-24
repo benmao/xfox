@@ -10,18 +10,20 @@ import logging
 import traceback
 import sys
 import cgi
+import re
+import settings
+
+from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from django.http import parse_cookie
-from account.models import Session
-from google.appengine.api import users
-from discussion.models import Tag
-import re
-from dash.models import Counter
+from django.utils import simplejson
+
 from util.wsgi import RequestHandler
 from util.decorator import mem
-from django.utils import simplejson
-import settings
+from account.models import Session
+from discussion.models import Tag
+from dash.models import Counter
 
 webapp.template.register_template_library('util.filter')
 webapp.template.register_template_library('util.cache')

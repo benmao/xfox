@@ -7,7 +7,6 @@ Copyright (c) 2010 http://sa3.org All rights reserved.
 """
 from google.appengine.ext.webapp import *
 
-
 class XFoxWSGIApplication(WSGIApplication):
     '''
     xFox WSGI Application

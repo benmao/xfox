@@ -8,6 +8,7 @@ Copyright (c) 2010 http://sa3.org All rights reserved.
 
 import datetime
 from google.appengine.ext import webapp
+
 register = webapp.template.create_template_register()
 
 def datetz(value,arg):

@@ -7,8 +7,8 @@ Copyright (c) 2010 http://sa3.org All rights reserved.
 """
 import logging
 
-from google.appengine.api import memcache
 from functools import wraps
+from google.appengine.api import memcache
 from google.appengine.api import users
 
 #decorator for get data from memcache

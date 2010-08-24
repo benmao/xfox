@@ -5,15 +5,18 @@
 Created by ben on 2010/8/9 .
 Copyright (c) 2010 http://sa3.org All rights reserved. 
 """
-from google.appengine.ext import db
-from account.models import User
 import settings
-from boto.gs.connection import GSConnection
-from dash.models import Counter
-from google.appengine.api import images
 import logging
+
+from google.appengine.ext import db
+from google.appengine.api import images
 from google.appengine.api import urlfetch
+
+from boto.gs.connection import GSConnection
+
 from util.decorator import mem
+from account.models import User
+from dash.models import Counter
 
 def save_image_to_gs(key_name,bf,mime="image/png"):
     try:

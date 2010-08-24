@@ -9,11 +9,10 @@ import settings
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 
+from util.acl import *
 from util.handler import AdminHandler
-
 from discussion.models import *
 from account.models import *
-from util.acl import *
 
 class AdminIndexHandler(AdminHandler):
     def get(self):

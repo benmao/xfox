@@ -9,10 +9,10 @@ import settings
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 
-from util.handler import PublicHandler,PublicWithSidebarHandler
 from util.decorator import requires_login
-from gs.models import GSFile,LatexImage
 from util.wsgi import webapp_add_wsgi_middleware
+from util.handler import PublicHandler,PublicWithSidebarHandler
+from gs.models import GSFile,LatexImage
 
 class GsFileIndexHandler(PublicWithSidebarHandler):
     @requires_login

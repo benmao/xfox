@@ -10,6 +10,7 @@ from django import template
 from django.template import Context,Template,loader,resolve_variable
 from google.appengine.api import memcache
 from google.appengine.ext import webapp
+
 register = webapp.template.create_template_register()
 
 class CacheNode(template.Node):

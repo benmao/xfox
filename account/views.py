@@ -7,17 +7,18 @@ Copyright (c) 2010 http://sa3.org All rights reserved.
 """
 import logging
 import datetime
+import settings
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
-from  util.handler import PublicHandler,PublicWithSidebarHandler
-import settings
-from account.models import User,Mention,UserFollow,Session
-from util.base import *
-from discussion.models import Discussion,Comment,Bookmark,RecentCommentLog,DiscussionFollow
-from util.decorator import requires_login, json_requires_login,openid_requires_login,https_requires
-from util.wsgi import webapp_add_wsgi_middleware
 from google.appengine.api import users
 from google.appengine.api import memcache
+
+from util.base import *
+from  util.handler import PublicHandler,PublicWithSidebarHandler
+from util.wsgi import webapp_add_wsgi_middleware
+from util.decorator import requires_login, json_requires_login,openid_requires_login,https_requires
+from account.models import User,Mention,UserFollow,Session
+from discussion.models import Discussion,Comment,Bookmark,RecentCommentLog,DiscussionFollow
 
 
 class SignUpHandler(PublicHandler):

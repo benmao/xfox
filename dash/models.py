@@ -6,6 +6,7 @@ Created by ben on 2010/8/4 .
 Copyright (c) 2010 http://sa3.org All rights reserved. 
 """
 from google.appengine.ext import db
+
 from util.decorator import mem,delmem
 from util.base import Base36
     
