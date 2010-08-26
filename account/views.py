@@ -221,7 +221,7 @@ class OpenIDRemoveHandler(PublicHandler):
     def get(self):
         openid_id = self.request.get("id")
         User.remove_openid(self.user.name,openid_id)
-        memcache.delete(self.session_key) 
+        memcache.delete(self.session_key)
         self.redirect("/a/setting/")
             
 class UserSettingHandler(PublicHandler):

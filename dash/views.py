@@ -41,7 +41,7 @@ class CategoryNewHandler(AdminHandler):
         key_words = self.request.get("key_words")
         description = self.request.get("description")
         
-        Category.new(slug,title,key_words,description)
+        Category.add_or_update(slug,title,key_words,description)
         self.redirect("/d/category/")
     
 class CategoryOpertionHandler(AdminHandler):
@@ -95,7 +95,7 @@ class TagNewHandler(AdminHandler):
         #default role is Guest
         if not roles:
             roles = ['G']
-        Tag.new(slug,title,key_words,description,category,roles,add_roles)
+        Tag.add_or_update(slug,title,key_words,description,category,roles,add_roles)
         self.redirect("/d/tag/")
         
 class TagOpertionHandler(AdminHandler):

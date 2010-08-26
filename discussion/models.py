@@ -41,18 +41,20 @@ class Category(db.Model):
     is_draft = db.BooleanProperty(default =False)
     
     @classmethod
-    def new(cls,slug,title,key_words,description):
+    def add_or_update(cls,slug,title,key_words,description):
         slug = filter_url(slug)
-        obj = Category.all().filter("slug =",slug).get()
-        if obj is None:
-            #add new 
-            obj=Category(slug=slug)
+        cat = Category.all().filter("slug =",slug).get() or Category(slug=slug)
+
+        kwargs = {
+            'title':escape(title),
+            'key_words':escape(key_words),
+            'description':escape(description),
+            }
         
-        #update data
-        obj.title = title
-        obj.key_words = key_words
-        obj.description = description
-        obj.put()
+        for k in kwargs:
+            setattr(cat,k,kwargs[k])
+        
+        cat.put()
         
     @classmethod
     def get_all(cls):
@@ -98,12 +100,13 @@ class Tag(db.Model):
     role = db.StringListProperty()
     add_role = db.StringListProperty()
     
-
     tag_type = db.StringProperty()
+   
+    is_hot = db.BooleanProperty(default=True)
     
     @delmem("tags")
     def put(self):
-        if self.is_saved(): #create
+        if self.is_saved(): #update
             memcache.delete("tag:%s" % self.key().name()) #delete memcache
         super(Tag,self).put()
         
@@ -120,9 +123,12 @@ class Tag(db.Model):
         return '/%s/' % self.key().name()
     
     @classmethod
-    @mem('tags')
     def get_all(cls):
         return Tag.all().filter("is_draft =",False)
+
+    @classmethod
+    def get_hot(cls,limit=50):
+        return Tag.all().filter("is_hot =",True).order("count_discussion").fetch(limit)
     
     @classmethod
     def get_draft(cls):
@@ -136,22 +142,24 @@ class Tag(db.Model):
         return _x(slug)
     
     @classmethod
-    def new(cls,slug,title,key_words,description,category,role,add_role):
+    def add_or_update(cls,slug,title,key_words,description,category,role,add_role):
         '''
         Notice:http://code.google.com/intl/en/appengine/docs/python/datastore/keysandentitygroups.html
         '''
         slug = filter_url(slug)
         if len(slug)<2:
             return None
-        tag = Tag.get_by_key_name(slug)
-        if  tag is None:
-            tag = Tag(key_name = slug)
-        tag.title=title
-        tag.key_words=key_words
-        tag.description=description
-        tag.category = Category.get(category)
-        tag.role = role
-        tag.add_role = add_role
+        tag = Tag.get_by_key_name(slug) or Tag(key_name = slug)
+        kwargs = {
+            'title' : escape(title),
+            'key_words' : escape(key_words),
+            'description' : description,
+            'category' : Category.get(category),
+            'role':role,
+            'add_role':add_role,
+            }
+        for k in kwargs:
+            setattr(tag,k,kwargs[k])
         tag.put()
         return tag
     
@@ -220,7 +228,7 @@ class Discussion(db.Expando):
             self.tag_slug = self.tag.key().name()
             self.tag_title = self.tag.title
             self.user_name = self.user.name
-        else:
+        else: #edit
             self.last_updated = datetime.datetime.now() #update
             if self.edit_number:
                 self.edit_number+=1
@@ -228,9 +236,7 @@ class Discussion(db.Expando):
                 self.edit_number=1
             memcache.delete("dis:%s"%(self.key().name()))
         #hander format
-        self.title=escape(self.title) 
         self.content_formated = FORMAT_METHOD.get('M',get_markdown)(self.content)
-
         super(Discussion,self).put()
     
     def delete(self):
@@ -260,13 +266,25 @@ class Discussion(db.Expando):
         return not Discussion.get_by_key_name("%s:%s" %(tag_slug,slug)) is None
     
     @classmethod
+    def add(cls,tag,slug,title,content,user,**kwargs):
+        tag_key = tag.key().name()
+        slug = filter_url(slug) or Counter.get_max(":%s:" % tag_key).value
+        key_name = "%s:%s" % (tag_key,slug)
+        while Discussion.is_exist(key_name):
+            slug = Counter.get_max(":%s:" % tag.key().name()).value
+            key_name = "%s:%s" % (tag_key,slug)
+            
+        dis = Discussion(key_name = key_name,tag = tag,slug = slug,title=title,content=content,user=user,**kwargs)
+        dis.put()
+        return dis
+     
+    @classmethod
     def new(self,tag,slug,title,content,user,f='T',ip =ip,user_agent=user_agent,img_url = img_url):
         slug = filter_url(slug)
         if len(slug)==0:
             slug = Counter.get_max(":%s:" % tag.key().name()).value
         key_name = "%s:%s" % (tag.key().name(),slug)
         while Discussion.is_exist(key_name):
-            slug = Counter.get_max(":%s:" % tag.key().name()).value
             key_name = "%s:%s" % (tag.key().name(),slug)
         
         dis = Discussion(key_name = key_name,title=title,content=content,tag=tag,f=f,user = user,ip=ip,user_agent=user_agent,slug=slug)

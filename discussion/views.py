@@ -24,6 +24,7 @@ from util.handler import PublicHandler,PublicWithSidebarHandler,FeedHandler,NotF
 from account.models import User
 from dash.counter import ShardCount
 from discussion.models import Tag,Discussion,Comment,Bookmark
+from discussion.cell import get_cell
 
 class TagHandler(PublicWithSidebarHandler):
     def get(self,slug):
@@ -31,21 +32,9 @@ class TagHandler(PublicWithSidebarHandler):
         tag = get_or_404(Tag.get_tag_by_slug,slug)
         #check ACL
         check_roles(self,tag.role)
+        self.p = p
+        get_cell(tag.tag_type).tag_list(self,tag)
         
-        self.template_value['tag']=tag
-        diss = Discussion.get_by_tag(tag)
-        #paging
-        prev = p -1 if p >1 else None
-        tmp = diss.fetch_page(p)
-        tnext = p+1 if len(tmp)==15 else None
-        self.template_value['prev'] = prev
-        self.template_value['next'] = tnext
-        self.template_value['diss'] = tmp
-        self.template_value['f_tag'] = {'key':tag.key().name(),'title':tag.title,'show': 'G' in tag.role,'post':True} #only Public tag have feed 
-        
-        template_name = "tag.html" if tag.tag_type is None else 'tag_%s.html' % tag.tag_type
-        self.render(template_name)
-
 class DiscussionHandler(PublicWithSidebarHandler):
     def get(self,slug,key):
         dis = get_or_404(Discussion.get_discussion_by_key,slug,key)
@@ -98,8 +87,16 @@ class PostDisscussionHandler(PublicHandler):
         user_agent =  escape(self.request.headers.get('User-Agent','Firefox'))
         img_url = escape(self.request.get("img_url"))
         slug = self.request.get("slug","")
+
+        kwargs = {
+            'ip':ip,
+            'user_agent':user_agent,
+            'img_url':img_url,
+            'f':'M',
+            }
+            
         if len(title)>0 and len(content)>0:
-            dis =Discussion.new(tag,slug,title,content,self.user,f='M',ip=ip,user_agent=user_agent,img_url=img_url)
+            dis =Discussion.add(tag,slug,title,content,self.user,**kwargs)
             self.redirect(dis.url)
         self.template_value['error']=u"不要忘记标题或内容哦"
         self.template_value['tag']=tag
