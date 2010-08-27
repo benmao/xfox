@@ -95,6 +95,8 @@ class TagNewHandler(AdminHandler):
         roles = self.request.get("role[]",allow_multiple=True)
         add_roles = self.request.get("add_role[]",allow_multiple=True)
         tag_type = self.request.get("tag_type")
+        is_hot = self.request.get("is_hot")
+        
         #default role is Guest
         
         if not roles:
@@ -102,6 +104,7 @@ class TagNewHandler(AdminHandler):
     
         kwargs = {
             'tag_type':tag_type,
+            'is_hot': True if is_hot else False
             }
         
         Tag.add_or_update(slug,title,key_words,description,category,roles,add_roles,**kwargs)

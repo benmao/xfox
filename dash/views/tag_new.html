@@ -67,6 +67,11 @@
 		{% endfor %}
 	</select>
 	</li>
+	
+	<li>
+		<label>Is Hot(是否在侧边栏最热讨论区里显示)</label>
+		<input type="checkbox" name="is_hot" {% if tag.is_hot %} checked="checked" {% endif %}>
+	</li>
 </ul>	
 <input value="Save" class="Button" type="submit">
 </form>

@@ -167,7 +167,7 @@ class PublicHandler(webapp.RequestHandler):
 class PublicWithSidebarHandler(PublicHandler):
     def initialize(self,request,response):
         PublicHandler.initialize(self,request,response)
-        self.template_value['tags']=Tag.get_all()
+        self.template_value['hottags']= Tag.get_hot(50)
         
 class AdminHandler(webapp.RequestHandler):
     def initialize(self,request,response):
