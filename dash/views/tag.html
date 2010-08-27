@@ -33,7 +33,11 @@
    </tr>
   	{% endfor %}
    </tbody>
-
 </table>
+
+<div>
+	{% if prev %}<a class="prev" href="/d/tag/?p={{prev}}{% if cat %}&cat={{cat}} {% endif %}">前一页</a> {% endif %}
+	{% if next %}<a class="next" href="/d/tag/?p={{next}}{% if cat %}&cat={{cat}} {% endif %}">后一页</a> {% endif %}
+</div>
 
 {% endblock %}

@@ -159,7 +159,9 @@ class User(db.Model):
         user.put()
         return True,u'密码修改成功，下次登录请使用新密码'
         
-        
+    @classmethod
+    def get_all(cls):
+        return User.all()
         
 class UserFollow(db.Model):
     user = db.ReferenceProperty(User)

@@ -11,9 +11,12 @@ from google.appengine.ext.webapp import util
 
 from util.acl import *
 from util.handler import AdminHandler
+from util.paging import PagedQuery
 from discussion.models import *
 from discussion.cell import cell_dict
 from account.models import *
+
+PAGESIZE = 2
 
 class AdminIndexHandler(AdminHandler):
     def get(self):
@@ -59,7 +62,17 @@ class CategoryOpertionHandler(AdminHandler):
        
 class TagIndexHandler(AdminHandler):
     def get(self):
-        self.template_value['tags'] = Tag.get_all()
+        p =int(self.request.get("p","1"))
+        cat = self.request.get("cat",None)
+        tags = Tag.get_all()
+        if not cat is None:
+            tags.filter("category =",Category.get(cat))
+        q = PagedQuery(tags,PAGESIZE)
+        
+        self.template_value['cat'] = cat
+        self.template_value['prev'] = p-1 if p>1 else None
+        self.template_value['next'] = p+1 if q.has_page(p+1) else None
+        self.template_value['tags'] = q.fetch_page(p)
         self.render('tag.html')
         
 class A():
@@ -126,9 +139,13 @@ class TagOpertionHandler(AdminHandler):
 class TagDraftedHandler(AdminHandler):
     def get(self):
         self.template_value['tags']=Tag.get_draft()
-        self.render('tag_undrafted.html')
         
+class UserIndexHandler(AdminHandler):
+    def get(self):
+        self.template_value['users'] = User.get_all()
+        self.render('user.html')
 
+        
 def main():
     application = webapp.WSGIApplication([
                                                  ('/d/', AdminIndexHandler),
@@ -143,6 +160,8 @@ def main():
                                                  ('/d/tag/o/',TagOpertionHandler),
                                                  ('/d/tag/drafted/',TagDraftedHandler),
                                                  
+                                                 #User
+                                                 ('/d/a/',UserIndexHandler),
                                                  ],
                                          debug=settings.DEBUG)
     util.run_wsgi_app(application)

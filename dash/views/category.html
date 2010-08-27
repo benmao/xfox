@@ -21,7 +21,11 @@
       <td class="Alt">{{cat.slug}}</td>
       <td>{{cat.last_updated}}</td>
       <td class="Alt">{{cat.count_tag}}</td
-      <td><a href="/d/category/new/?slug={{cat.slug}}" >Edit</a> | <a href="/d/category/o/?slug={{cat.slug}}&action=draft">Draft</a></td>
+      <td>
+      	<a href="/d/category/new/?slug={{cat.slug}}" >Edit</a> | 
+		<a href="/d/category/o/?slug={{cat.slug}}&action=draft">Draft</a>|
+		<a href="/d/tag/?cat={{cat.key}}">Tags</a>
+	</td>
    </tr>
   	{% endfor %}
    </tbody>
