@@ -142,7 +142,7 @@ class Tag(db.Model):
         return _x(slug)
     
     @classmethod
-    def add_or_update(cls,slug,title,key_words,description,category,role,add_role):
+    def add_or_update(cls,slug,title,key_words,description,category,role,add_role,**kwargs):
         '''
         Notice:http://code.google.com/intl/en/appengine/docs/python/datastore/keysandentitygroups.html
         '''
@@ -150,14 +150,14 @@ class Tag(db.Model):
         if len(slug)<2:
             return None
         tag = Tag.get_by_key_name(slug) or Tag(key_name = slug)
-        kwargs = {
+        kwargs.update({
             'title' : escape(title),
             'key_words' : escape(key_words),
             'description' : description,
             'category' : Category.get(category),
             'role':role,
             'add_role':add_role,
-            }
+            })
         for k in kwargs:
             setattr(tag,k,kwargs[k])
         tag.put()
@@ -278,27 +278,11 @@ class Discussion(db.Expando):
         dis.put()
         return dis
      
-    @classmethod
-    def new(self,tag,slug,title,content,user,f='T',ip =ip,user_agent=user_agent,img_url = img_url):
-        slug = filter_url(slug)
-        if len(slug)==0:
-            slug = Counter.get_max(":%s:" % tag.key().name()).value
-        key_name = "%s:%s" % (tag.key().name(),slug)
-        while Discussion.is_exist(key_name):
-            key_name = "%s:%s" % (tag.key().name(),slug)
-        
-        dis = Discussion(key_name = key_name,title=title,content=content,tag=tag,f=f,user = user,ip=ip,user_agent=user_agent,slug=slug)
-        if tag.tag_type =='img':
-            dis.img_url = img_url
-        dis.put()
-        if 'G' in dis.role: #make true dis can view as guest
-            taskqueue.add(url ='/t/d/hubbub/')
-        return dis
     
     @classmethod
-    def get_by_tag(cls,tag):
+    def get_by_tag(cls,tag,page_size=15):
         diss = Discussion.all().filter('tag =',tag).order('-last_comment')
-        return PagedQuery(diss,15)
+        return PagedQuery(diss,page_size)
         
     @classmethod
     def get_recent_dis(cls,user):

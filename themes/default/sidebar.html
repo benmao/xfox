@@ -10,7 +10,8 @@
         <a href="/a/signup/">注册</a></p>
     </div>
     {% endif %}
-
+    
+	{% filecache 60 siderbar-taglist %}
     <div class="box radius">
         <h3>讨论区</h3>
 		<p>
@@ -19,6 +20,7 @@
             {% endfor %}
 		</p>
     </div>
+	{% endfilecache %}
     
     <div class="box radius">
         {% if f_tag %}

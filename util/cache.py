@@ -11,63 +11,73 @@ from django.template import Context,Template,loader,resolve_variable
 from google.appengine.api import memcache
 from google.appengine.ext import webapp
 
+from util import cachepy
+
+
 register = webapp.template.create_template_register()
 
 class CacheNode(template.Node):
-    def __init__(self,nodelist,expire_time_var,fragment_name,vary_on):
+    def __init__(self,nodelist,cache,expire_time_var,fragment_name,vary):
+        '''
+        args:
+        nodelist:nodelist object
+        cache: cache object in [memcache,filecache]
+        expire_time_var: cache expire_time
+        '''
         self.nodelist = nodelist
-        self.expire_time_var = expire_time_var
+        self.cache = cache
         self.fragment_name = fragment_name
-        self.vary_on = vary_on
+        self.expire_time_var = int(expire_time_var)
+        self.vary = vary
         
     def render(self,context):
-        expire_time = int(self.expire_time_var)
-        uname = "pu-lic" #None User name can like this
-        if not self.vary_on is None:
-            try:
-                uname = resolve_variable(self.vary_on,context)
-            except:
-                pass
-        
-        cache_key = 'template.cache.%s:%s' % (self.fragment_name,uname)
+        user_name = context['user'].name_lower if 'user' in context and context['user'] else 'pu-lic'
+        path = context['tp']
+        if 'user' in self.vary and 'path' in self.vary:
+            cache_key = 'template.cache.%s:%s:%s' % (self.fragment_name,user_name,path)
+        elif 'user' in self.vary:
+            cache_key = 'template.cache.%s:%s' % (self.fragment_name,user_name)
+        elif 'path' in self.vary:
+            cache_key = 'template.cache.%s:%s' % (self.fragment_name,path)
+        else:
+            cache_key = 'template.cache.%s' % (self.fragment_name)
+            
         logging.info(cache_key)
-        value = memcache.get(cache_key)
+        value = self.cache.get(cache_key)
         if value is None:
             logging.info("get data form render : %s" % cache_key)
             value = self.nodelist.render(context)
-            memcache.set(cache_key, value, expire_time)
+            self.cache.set(cache_key, value, self.expire_time_var)
         return value
     
-def do_cache(parser, token):
-    """
-    This will cache the contents of a template fragment for a given amount
-    of time.
+def do_memcache(parser,token):
+    nodelist = parser.parse(('endmemcache',))
+    parser.delete_first_token()
+    tokens = token.contents.split()
+    if len(tokens)<3:
+        raise TemplateSyntaxError(u"'%r' tag requires at least 2 arguments." % tokens[0])
+    return CacheNode(nodelist,memcache,tokens[1],tokens[2],tokens[3:])
 
-    Usage::
-
-        {% load cache %}
-        {% cache [expire_time] [fragment_name] %}
-            .. some expensive processing ..
-        {% endcache %}
-
-    This tag also supports varying by a list of arguments::
-
-        {% load cache %}
-        {% cache [expire_time] [fragment_name] [var1] [var2] .. %}
-            .. some expensive processing ..
-        {% endcache %}
-
-    Each unique set of arguments will result in a unique cache entry.
-    """
+def do_cache(parser,token):
     nodelist = parser.parse(('endcache',))
     parser.delete_first_token()
     tokens = token.contents.split()
-    if len(tokens) < 3:
+    if len(tokens)<3:
         raise TemplateSyntaxError(u"'%r' tag requires at least 2 arguments." % tokens[0])
-    return CacheNode(nodelist, tokens[1], tokens[2], tokens[3] if len(tokens) ==4 else None)
+    return CacheNode(nodelist,memcache,tokens[1],tokens[2],tokens[3:])
 
-register.tag('cache', do_cache)
+def do_filecache(parser,token):
+    nodelist = parser.parse(('endfilecache',))
+    parser.delete_first_token()
+    tokens = token.contents.split()
+    if len(tokens)<3:
+        raise TemplateSyntaxError(u"'%r' tag requires at least 2 arguments." % tokens[0])
+    return CacheNode(nodelist,cachepy,tokens[1],tokens[2],tokens[3:])
 
+
+register.tag('memcache',do_memcache)
+register.tag('cache',do_cache)
+register.tag('filecache',do_filecache)
 
 if __name__=='__main__':
     pass

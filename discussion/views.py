@@ -69,10 +69,8 @@ class PostDisscussionHandler(PublicHandler):
         check_roles(self,tag.role)
         check_roles(self,tag.add_role) #addrole
         
-        self.template_value['tag']=tag
-        template_name = 'p.html' if tag.tag_type is None else 'p_%s.html' % tag.tag_type
-
-        self.render(template_name)
+        self.m = 'get'
+        get_cell(tag.tag_type).add(self,tag)
         
     @requires_login
     def post(self,slug):
@@ -81,28 +79,8 @@ class PostDisscussionHandler(PublicHandler):
         check_roles(self,tag.role)
         check_roles(self,tag.add_role)
         
-        title = self.request.get("title").strip()
-        content = self.request.get("content")
-        ip = self.request.remote_addr
-        user_agent =  escape(self.request.headers.get('User-Agent','Firefox'))
-        img_url = escape(self.request.get("img_url"))
-        slug = self.request.get("slug","")
-
-        kwargs = {
-            'ip':ip,
-            'user_agent':user_agent,
-            'img_url':img_url,
-            'f':'M',
-            }
-            
-        if len(title)>0 and len(content)>0:
-            dis =Discussion.add(tag,slug,title,content,self.user,**kwargs)
-            self.redirect(dis.url)
-        self.template_value['error']=u"不要忘记标题或内容哦"
-        self.template_value['tag']=tag
-        self.template_value['title']=title
-        self.template_value['content']=content
-        self.render('p.html')
+        self.m = 'post'
+        get_cell(tag.tag_type).add(self,tag)
             
 class EditDisscussionHandler(PublicHandler):
     @requires_login
@@ -113,26 +91,21 @@ class EditDisscussionHandler(PublicHandler):
         
         if dis.user_name != self.user.name :
             return self.error(403) #shoud be 403 :)
-        self.template_value['dis']=dis
-        self.render("p_edit.html")
+        
+        self.m = 'get'
+        get_cell(dis.tag.tag_type).edit(self,dis)
         
     @requires_login
     def post(self,slug,key):
-        title = self.request.get("title").strip()
-        content = self.request.get("content").strip()
         dis = get_or_404(Discussion.get_discussion_by_key,slug,key)
-        if len(title)> 0 and len(content) > 0:
-            if dis.user_name != self.user.name:
-                return self.error(403)
-            dis.title = title
-            dis.content = content
-            dis.f = 'M'
-            dis.put()
-            self.redirect(dis.url)
-        self.template_value['error']=u"不要忘记标题或内容哦"
-        #save alter date to dis
-        self.template_value['dis']=dis
-        self.render('p_edit.html')
+         #check ACL
+        check_roles(self,dis.role)
+        
+        if dis.user_name != self.user.name :
+            return self.error(403) #shoud be 403 :)
+        
+        self.m = 'post'
+        get_cell(dis.tag.tag_type).edit(self,dis)
         
 class PostCommentHandler(PublicWithSidebarHandler):
     def get(self):

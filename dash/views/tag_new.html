@@ -58,6 +58,15 @@
     </tbody></table>
     
     </li>
+	
+	<li>
+    <label for="title">Type</label>
+	<select name="tag_type">
+		{% for key in tag_type %}
+		<option value="{{key}}" title="{{key}}" {% ifequal key tag.tag_type %}selected="selected"{% endifequal %}>{{key}}</option>
+		{% endfor %}
+	</select>
+	</li>
 </ul>	
 <input value="Save" class="Button" type="submit">
 </form>

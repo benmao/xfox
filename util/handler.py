@@ -111,6 +111,7 @@ class PublicHandler(webapp.RequestHandler):
             return self.redirect(self.request.path+"/",True)
         
         self.p = self.request.path.lower() #path
+        self.template_value['tp']=self.p
         
     def is_ajax(self):
         '''

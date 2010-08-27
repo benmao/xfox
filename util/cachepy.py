@@ -41,7 +41,7 @@ URL_KEY = 'URL_%s'
 Curious thing: A dictionary in the global scope can be referenced and changed inside a function without using the global statement,
 but it can not be redefined.
 """
-
+    
 def get( key ):
     """ Gets the data associated to the key or a None """
     if ACTIVE is False:

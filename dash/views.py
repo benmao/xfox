@@ -12,6 +12,7 @@ from google.appengine.ext.webapp import util
 from util.acl import *
 from util.handler import AdminHandler
 from discussion.models import *
+from discussion.cell import cell_dict
 from account.models import *
 
 class AdminIndexHandler(AdminHandler):
@@ -80,6 +81,7 @@ class TagNewHandler(AdminHandler):
             if not tag is None and obj.key in tag.add_role:
                 obj.add = True
             roles_list.append(obj)
+        self.template_value['tag_type'] = cell_dict.keys()
         self.template_value['roles'] = roles_list
         self.template_value['tag']=tag
         self.render("tag_new.html")
@@ -92,10 +94,17 @@ class TagNewHandler(AdminHandler):
         category = self.request.get("category")
         roles = self.request.get("role[]",allow_multiple=True)
         add_roles = self.request.get("add_role[]",allow_multiple=True)
+        tag_type = self.request.get("tag_type")
         #default role is Guest
+        
         if not roles:
             roles = ['G']
-        Tag.add_or_update(slug,title,key_words,description,category,roles,add_roles)
+    
+        kwargs = {
+            'tag_type':tag_type,
+            }
+        
+        Tag.add_or_update(slug,title,key_words,description,category,roles,add_roles,**kwargs)
         self.redirect("/d/tag/")
         
 class TagOpertionHandler(AdminHandler):
@@ -114,26 +123,6 @@ class TagDraftedHandler(AdminHandler):
         self.template_value['tags']=Tag.get_draft()
         self.render('tag_undrafted.html')
         
-        
-class RoleIndexHandler(AdminHandler):
-    def get(self):
-        self.template_value['roles']=Role.all() 
-        self.render("role.html")
-        
-class RoleNewHandler(AdminHandler):
-    def get(self):
-        key = self.request.get("key",None)
-        if not key is None:
-            self.template_value['role']= Role.get(key)
-        self.render('role_new.html')
-        
-    def post(self):
-        name = self.request.get("name").strip()
-        description = self.request.get("description").strip()
-        if len(name)==0:
-            return self.redirect("/d/role/new/")
-        Role.new(name,description)
-        self.redirect("/d/role/")
 
 def main():
     application = webapp.WSGIApplication([
@@ -149,10 +138,6 @@ def main():
                                                  ('/d/tag/o/',TagOpertionHandler),
                                                  ('/d/tag/drafted/',TagDraftedHandler),
                                                  
-                                                 #role
-                                                 #('/d/role/',RoleIndexHandler),
-                                                 #('/d/role/new/',RoleNewHandler),
-                                                 #user
                                                  ],
                                          debug=settings.DEBUG)
     util.run_wsgi_app(application)
