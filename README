@@ -2,16 +2,18 @@
 
 **特点**：
 
-* Google Storage
-* Friendly URL
-* Markdown
-* Bookmark
-* Mention
-* OpenID
-* Follow
-* LaTex
-* Feed
-* Role
+* 漂亮友好的URL
+* 支持Google Storage
+* 使用Local Storage作为自动保存
+* 支持Markdown
+* Bookmark,收藏自己喜欢的帖子
+* Mention，通知用户功能
+* 支持OpenID登录
+* 可以Follow用户
+* 支持LaTex公式
+* 支持Feed
+* 简单的权限Role
+* 自定义Tag模板
 
 [1]: http://xfox.appspot.com
 [2]: http://code.google.com/appengine/
