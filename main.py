@@ -17,7 +17,7 @@ from util.wsgi import webapp_add_wsgi_middleware
 from util.handler import PublicHandler,PublicWithSidebarHandler,FeedHandler,SitemapHandler
 
 from dash.models import Counter
-from discussion.models import Tag,Discussion,Comment,Bookmark
+from discussion.models import Tag,Discussion,Comment,Bookmark,Category
 from dash.models import Counter,MemcacheStatus
 from account.models import User
 
@@ -28,6 +28,7 @@ class MainHandler(PublicWithSidebarHandler):
     def get(self):
         self.template_value['diss'] = Discussion.get_recent()
         self.template_value['bookmarks'] = Bookmark.all().order('-created').fetch(10)
+        self.template_value['cats'] =  Category.get_all()
         self.render('index.html')
     
 class UpdateHandler(PublicHandler):

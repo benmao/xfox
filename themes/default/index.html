@@ -6,8 +6,9 @@
 {% endblock %}
 
 {%block body %}
-        {% cache 60 index %}
+
     	<div id="content" class="w680">
+    	{% cache 60 index %}
 		<div class = "box radius">
 			<h3>最近主题</h3>
 			<table class ="list">
@@ -46,8 +47,23 @@
                 {% endfor %}		
 			</ul>
 		</div>
+	   {% endcache %}
+		
+		{% filecache 600 cateogry %}
+		<div class="box radius">
+			<h3>讨论区导航|<a href="/add-tag/">添加讨论区</a></h3>
+			<table class="list">
+				{% for cat in cats %}
+				    <tr>
+				    	<td align="right">{{cat.title}}:</td>
+						<td width="90%" align="left">{% for tag in cat.tags %}<a href="{{tag.url}}" >{{tag.title}} </a>{% endfor %}</td>
+				    </tr>
+				{% endfor %}
+			</table>
+		</div>
+		{% endfilecache %}
         </div>
-	  {% endcache %}
+	  
      <!--sidebar include -->
      {% include "sidebar.html" %}
 {% endblock %}

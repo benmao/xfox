@@ -56,6 +56,10 @@ class Category(db.Model):
         
         cat.put()
         
+    @property
+    def tags(self):
+        return Tag.all().filter('category =',self).filter('is_draft =',False).filter('role =','G')
+    
     @classmethod
     def get_all(cls):
         return Category.all().filter("is_draft =",False)
