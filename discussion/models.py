@@ -108,6 +108,9 @@ class Tag(db.Model):
    
     is_hot = db.BooleanProperty(default=True)
     
+    header = db.TextProperty(required=False)
+    footer = db.TextProperty(required=False)
+    
     @delmem("tags")
     def put(self):
         if self.is_saved(): #update

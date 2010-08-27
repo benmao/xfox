@@ -13,7 +13,11 @@
         	<div class="box radius">
             	<h2><a href="{{tag.url}}">{{tag.title|escape}}</a></h2>
             </div>
-            
+            {% if tag.header %}
+			<div class="box radius">
+				<p>{{tag.header}}</p>
+			</div>
+			{% endif %}
             <!-- content -->
             <div class="box radius">
 			<table class ="list">

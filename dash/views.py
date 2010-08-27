@@ -104,7 +104,9 @@ class TagNewHandler(AdminHandler):
     
         kwargs = {
             'tag_type':tag_type,
-            'is_hot': True if is_hot else False
+            'is_hot': True if is_hot else False,
+            'header': self.request.get("header"),
+            'footer': self.request.get("footer"),
             }
         
         Tag.add_or_update(slug,title,key_words,description,category,roles,add_roles,**kwargs)

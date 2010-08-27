@@ -25,10 +25,19 @@
     <label for="description">Description</label>
     <textarea id="description" name="description" rows="6" cols="100" class="TextBox">{%if tag %}{{tag.description}}{% endif %}</textarea>   
     </li>
+	<li>
+		<label>Header(suporrt html)</label>
+		<textarea name="header" rows=6 cols="100" class="TextBox">{%if tag %}{{tag.header}}{%endif%}</textarea>
+	</li>
+    <li>
+        <label>Footer(suporrt html)</label>
+        <textarea name="footer" rows=6 cols="100" class="TextBox">{%if tag %}{{tag.footer}}{%endif%}</textarea>
+    </li>
+     <li>
     {% if tag %}
     <input id="category" name="category"   value="{{tag.category.key}}" class="InputBox" type="hidden">   
     {% else %}
-       <li>
+
       <label for="category">Category</label>
 		<select id="category" name="category">
    		{% for cat in cats %}
