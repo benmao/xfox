@@ -41,7 +41,7 @@
 			<h3>最近收藏</h3>
 			<ul id="bookmark_list">
 				{% for bookmark in bookmarks %}
-				<li><a href="/u/{{bookmark.user_name}}/">{{bookmark.user_name}}</a>
+				<li class="{{forloop.counter|humcolor}}"><a href="/u/{{bookmark.user_name}}/">{{bookmark.user_name}}</a>
 				收藏了
 				<a href="{{bookmark.dis_url}}" rel="bookmark">{{bookmark.dis_title}}</a> <span class="date">{{bookmark.created|humdate}}</span></li>
                 {% endfor %}		

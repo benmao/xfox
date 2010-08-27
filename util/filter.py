@@ -50,6 +50,10 @@ def dict_value(v1,v2):
 
 register.filter(dict_value)
 
+def humcolor(value):
+    return "l%s" % (value % 10)
+
+register.filter(humcolor)
 
 if __name__=='__main__':
     pass
