@@ -15,7 +15,7 @@ $(document).ready(function(){
 					add_comment(decodeURI(json.comment));
 					
 					//remove localStorage
-					if (typeof(localStorage) == 'undefined'){
+					if (typeof(localStorage) != 'undefined'){
 						localStorage.removeItem(window.location.pathname);
 					}
 				}
