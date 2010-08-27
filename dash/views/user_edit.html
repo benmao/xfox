@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>编辑用户 </h1>
+<form id="Form_User" method="post" action="/d/a/edit/?name={{user.name}}" class="User">
+<ul>
+   <li>
+     <label>用户名(不可修改)：</label>
+	   <input name="name" value="{{user.name}}" class="InputBox" type="text" readonly="readonly">   
+	</li>
+
+    <li>
+    <label>邮箱(不可修改):</label>
+	<input name="emial" value="{{user.email}}" class="InputBox" type="text" readonly="readonly"> 
+	</li>
+
+    <li>
+   <label>密码(如果不修改请留空):</label>
+    <input name="pwd" value="" class="InputBox" type="password">
+    </li>
+	
+    <li>
+    <table class="CheckBoxGrid">
+    <thead>
+    <tr>
+    <th style="padding: 0px;"><a href="#">用户组</a></th>
+    <td class="Alt" style="padding: 0px;"><a href="#">设置</a></td>
+    </tr></thead>
+    <tbody>
+    {% for role in roles %}
+    <tr>
+    <th style="padding: 0px;"><a href="#">{{role.name}}</a></th>
+    <td class="Alt"><input type="checkbox"  value="{{role.key}}" name="role[]" {% if role.role%} checked="checked" {% endif %} /></td>
+	</tr>
+    {% endfor %}
+    </tr>
+    </tbody></table>
+    
+    </li>
+	
+</ul>	
+<input value="Save" class="Button" type="submit">
+</form>
+
+{% endblock %}

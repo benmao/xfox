@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Manager User</h1>
+<table id="Category" class="AltColumns">
+   <thead>
+      <tr>
+         <th>Name</th>
+         <th>Email</th>
+         <th>Role</th>
+         <th>Uid</th>
+         <th>Options</th>
+	  </tr>
+   </thead>
+   <tbody>
+   {% for user in users %}
+   <tr class="Alt">
+      <td><strong>{{user.name}}</strong></td>
+      <td>{{user.email}}</td>
+      <td>{{user.role}}</td>
+      <td>{{user.user_id}}</td>
+	  <td><a href="/d/a/edit/?name={{user.name_lower}}" >Edit</a> </td>
+   </tr>
+  	{% endfor %}
+   </tbody>
+</table>
+
+<div>
+    {% if prev %}<a class="prev" href="/d/a/?p={{prev}}">前一页</a> {% endif %}
+    {% if next %}<a class="next" href="/d/a/?p={{next}}">后一页</a> {% endif %}
+</div>
+{% endblock %}
