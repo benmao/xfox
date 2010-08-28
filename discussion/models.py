@@ -416,7 +416,7 @@ class Comment(db.Model):
     
     @classmethod
     def get_by_dis(cls,dis):
-        return PagedQuery(Comment.all().filter('dis =',dis).order('created'),100)
+        return Comment.all().filter('dis =',dis).order('created')
         
 class RecentCommentLog(db.Model):
     user = db.ReferenceProperty(User)

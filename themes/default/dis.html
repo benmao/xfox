@@ -35,11 +35,16 @@
             {% for comment in comments %}
             <div class="comment radius" id="r-{{comment.key.name}}">
             	<div class="header">
-                <strong><a href="/u/{{comment.user_name}}/">{{comment.user_name}}</a></strong><span class="time">{{comment.created|humdate}}</span>
+                #{{forloop.counter|humfloor:p}}  <strong><a href="/u/{{comment.user_name}}/">{{comment.user_name}}</a></strong><span class="time">{{comment.created|humdate}}</span>
                 </div>
                 {{comment.content_formated}}
             </div>
 			{% endfor %}
+
+            <div class="box radius">
+				{% if prev %}<a class="prev" href="{{dis.url}}{% ifequal prev 1 %}{% else %}{{prev}}/{% endifequal %}">前一页</a> {% endif %}
+                {% if next %}<a class="next" href="{{dis.url}}{{next}}/">后一页</a> {% endif %}
+            </div>
             </div>
 			{% else %}
 			 <div class="box radius" id="comment_place">

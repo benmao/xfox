@@ -36,8 +36,9 @@ class TagHandler(PublicWithSidebarHandler):
         get_cell(tag.tag_type).tag_list(self,tag)
         
 class DiscussionHandler(PublicWithSidebarHandler):
-    def get(self,slug,key):
+    def get(self,slug,key,p="1"):
         dis = get_or_404(Discussion.get_discussion_by_key,slug,key)
+        p = int(p)
         
         #check ACL
         check_roles(self,dis.role)
@@ -56,8 +57,14 @@ class DiscussionHandler(PublicWithSidebarHandler):
         self.template_value['dis']=dis
         bookmark = Bookmark.get_bookmark(self.user,dis) if self.user else None
         self.template_value['bookmark'] = bookmark
-        comments = Comment.get_by_dis(dis).fetch_page(1)
-        self.template_value['comments'] = comments
+        
+        #comment page
+        comments = PagedQuery(Comment.get_by_dis(dis),self.setting.comment_pagesize)
+        temp = comments.fetch_page(p)
+        self.template_value['prev']= p-1 if p>1 else None
+        self.template_value['next']= p+1 if  len(temp) == self.setting.comment_pagesize else None
+        self.template_value['comments'] = temp
+        self.template_value['p']=p
         self.render("dis.html")
         
 class PostDisscussionHandler(PublicHandler):
@@ -223,6 +230,7 @@ def main():
                                                           ('/f/u/(?P<name>[a-z0-9]{3,16})/?',FeedUserHandler),
                                                           ('/(?P<slug>[a-z0-9-]{2,})/?', TagHandler),
                                                           ('/(?P<slug>[a-z0-9-]{2,})/(?P<key>[a-z0-9-]+)/?',DiscussionHandler),
+                                                          ('/(?P<slug>[a-z0-9-]{2,})/(?P<key>[a-z0-9-]+)/(?P<p>[0-9]+)/?',DiscussionHandler),
                                                           ('/.*',NotFoundHandler),
                                                           ],
                                          debug=settings.DEBUG)

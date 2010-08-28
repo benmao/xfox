@@ -32,11 +32,9 @@ class Setting():
     domain = "http://xfox.appspot.com"
     timedelta = 0.8
     version = "0.1.2"
-    
     theme = "default"
-    
-
-
+    hubbub_hub_url ="http://pubsubhubbub.appspot.com/" 
+    comment_pagesize=100
     
 #OpenID Provider
 OPENID = (

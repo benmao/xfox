@@ -32,5 +32,5 @@ $(document).ready(function(){
         };
     }
     //check_remind();
-    setInterval(check_remind,1000*60); //1 minute
+    //setInterval(check_remind,1000*60); //1 minute
 })

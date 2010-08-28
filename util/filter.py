@@ -7,6 +7,7 @@ Copyright (c) 2010 http://sa3.org All rights reserved.
 """
 
 import datetime
+import settings
 from google.appengine.ext import webapp
 
 register = webapp.template.create_template_register()
@@ -54,6 +55,11 @@ def humcolor(value):
     return "l%s" % (value % 10)
 
 register.filter(humcolor)
+
+def humfloor(value,p=1):
+    return (p-1)* settings.Setting.comment_pagesize + value
+
+register.filter(humfloor)
 
 if __name__=='__main__':
     pass
